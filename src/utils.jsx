@@ -74,7 +74,7 @@ export const originals = {
       name: "Lúcifer",
       original_name: "Lucifer",
       overview:
-        "Bored with living in the dark, the devil moves to Los Angeles, opens a piano bar and lends his wisdom to a murder investigator.",
+        "Entediado com a vida nas trevas, o diabo se muda para Los Angeles, abre um piano-bar e empresta sua sabedoria a uma investigadora de assassinatos.",
       poster_path: "/ulz1G3icgMBMB8Si4AZntnS6VD2.jpg",
       vote_average: 8.5,
     },
@@ -85,7 +85,7 @@ export const originals = {
       name: "Riverdale",
       original_name: "Riverdale",
       overview:
-        "While trying to deal with typical teenage problems like love, sex, school and family, Archie and the gang get involved in a great mystery.",
+        "Enquanto tentam lidar com problemas típicos da adolescência como amor, sexo, escola e família, Archie e sua turma se envolvem em um grande mistério.",
       poster_path: "/pHcNHYPg0c2vg7qay6wjJoApUgS.jpg",
       vote_average: 8.6,
     },

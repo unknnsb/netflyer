@@ -21,35 +21,35 @@ export default {
         slug: "originals",
         title: "Originals",
         items: await getData(
-          `/discover/tv/?with_network=213&language=pt-BR&api_key=${API_KEY}`
+          `/discover/tv/?with_network=213&api_key=${API_KEY}`
         ).catch(() => originals),
       },
       {
         slug: "trending",
         title: "Trending",
-        items: await getData(
-          `/trending/all/week?language=pt-BR&api_key=${API_KEY}`
-        ).catch(() => trending),
+        items: await getData(`/trending/all/week?api_key=${API_KEY}`).catch(
+          () => trending
+        ),
       },
       {
         slug: "toprated",
         title: "Top Rating",
-        items: await getData(
-          `/movie/top_rated?&language=pt-BR&api_key=${API_KEY}`
-        ).catch(() => toprated),
+        items: await getData(`/movie/top_rated?&api_key=${API_KEY}`).catch(
+          () => toprated
+        ),
       },
       {
         slug: "action",
         title: "Actions",
         items: await getData(
-          `/discover/movie?with_genres=28&language=pt-BR&api_key=${API_KEY}`
+          `/discover/movie?with_genres=28&api_key=${API_KEY}`
         ).catch(() => action),
       },
       {
         slug: "documentary",
         title: "Documentaries",
         items: await getData(
-          `/discover/movie?with_genres=99&language=pt-BR&api_key=${API_KEY}`
+          `/discover/movie?with_genres=99&api_key=${API_KEY}`
         ).catch(() => documentary),
       },
     ];
@@ -57,9 +57,9 @@ export default {
 
   getMovieInfo: async (movieId, type) => {
     if (type === "tv") {
-      return await getData(
-        `/tv/${movieId}?language=pt-BR&api_key=${API_KEY}`
-      ).catch(() => movieInfo[movieId]);
+      return await getData(`/tv/${movieId}?api_key=${API_KEY}`).catch(
+        () => movieInfo[movieId]
+      );
     }
 
     return null;
