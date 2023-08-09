@@ -11,7 +11,7 @@ export default ({ black }) => {
       </div>
       <div className="header--user">
         <img
-          src="https://www.mapheq.co.za/wp-content/uploads/2017/01/Profile-Pic-Demo-1.jpg"
+          src="/logo.png"
           alt="User"
         />
       </div>
