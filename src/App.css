@@ -40,7 +40,7 @@ body {
 }
 
 .lists {
-  margin-top: -280px;
+  margin-top: -180px;
 }
 
 footer {
@@ -65,4 +65,10 @@ footer {
 
 .hide {
   display: none !important;
+}
+
+@media (max-width: 768px) {
+  .lists {
+    margin-top: -280px;
+  }
 }
