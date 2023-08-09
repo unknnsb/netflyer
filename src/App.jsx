@@ -39,8 +39,6 @@ export default () => {
     };
   }, []);
 
-  console.log(featuredData.media_type);
-
   if (movieList.length <= 0) {
     return (
       <div className="loading">
