@@ -11,7 +11,7 @@ export default ({ black }) => {
       </div>
       <div className="header--user">
         <img
-          src="/logo.png"
+          src="https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-High-Quality-Image.png"
           alt="User"
         />
       </div>
