@@ -10,7 +10,7 @@ const index = () => {
       width="100%"
       height="100%"
       frameborder="0"
-      allowfullscreen="allowfullscreen
+      allowfullscreen="allowfullscreen"
     ></iframe>
   );
 };
