@@ -6,7 +6,7 @@ export default ({ black }) => {
     <header className={black ? "black" : ""}>
       <div className="header--logo">
         <a className="logo" href="/" title="Netflyer">
-          <img src="/logo.png" className="icon-logoupdate"/>
+          <img src="/logo.png" className="icon-logoUpdate"/>
         </a>
       </div>
       <div className="header--user">
