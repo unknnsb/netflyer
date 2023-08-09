@@ -32,12 +32,13 @@ export default ({ title, items }) => {
     setHideRightArrow(scrollX === window.innerWidth - listW - 60);
   }, [scrollX, listW]);
 
-  const onClick = (movie_id) => {
-    // window.location.href =
-    //   "https://multiembed.mov/directstream.php?video_id=" +
-    //   movie_id +
-    //   "&tmdb=1";
-    window.location.href = `/movie/${movie_id}`;
+  const onClick = (id, item) => {
+    window.location.href = `/movie/${id}`;
+    if (item.released_date) {
+      window.location.href = `/movie/${id}`;
+    } else if (item.first_air_date) {
+      window.location.href = `/tv/${id}`;
+    }
   };
 
   return (
@@ -74,7 +75,7 @@ export default ({ title, items }) => {
                 <img
                   src={`https://image.tmdb.org/t/p/w300${item.poster_path}`}
                   alt={item.title}
-                  onClick={() => onClick(item.id)}
+                  onClick={() => onClick(item.id, item)}
                 />
               </div>
             ))}
