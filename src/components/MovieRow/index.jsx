@@ -33,10 +33,11 @@ export default ({ title, items }) => {
   }, [scrollX, listW]);
 
   const onClick = (movie_id) => {
-    window.location.href =
-      "https://multiembed.mov/directstream.php?video_id=" +
-      movie_id +
-      "&tmdb=1";
+    // window.location.href =
+    //   "https://multiembed.mov/directstream.php?video_id=" +
+    //   movie_id +
+    //   "&tmdb=1";
+    window.location.href = `/movie/${movie_id}`;
   };
 
   return (
