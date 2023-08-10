@@ -13,10 +13,6 @@ const MovieDetails = () => {
 
   let { id } = useParams();
 
-  if (!isSignedIn) {
-    return <RedirectToSignIn />;
-  }
-
   useEffect(() => {
     const fetchMovieDetails = async () => {
       const response = await fetch(
