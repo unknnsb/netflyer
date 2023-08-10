@@ -6,6 +6,12 @@ import WatchMovie from "./components/WatchMovie";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import TvDetails from "./components/TvDetails.jsx";
 import WatchTv from "./components/WatchTv.jsx";
+import { ClerkProvider, SignIn, SignUp } from "@clerk/clerk-react";
+
+if (!import.meta.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY) {
+  throw new Error("Missing Publishable Key");
+}
+const clerkPubKey = import.meta.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY;
 
 const router = createBrowserRouter([
   {
@@ -28,10 +34,20 @@ const router = createBrowserRouter([
     path: "/watch/tv/:id/:episode",
     element: <WatchTv />,
   },
+  {
+    path: "/sign-in",
+    element: <SignIn routing="path" path="/sign-in" />,
+  },
+  {
+    path: "/sign-up",
+    element: <SignUp routing="path" path="/sign-up" />,
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <ClerkProvider publishableKey={clerkPubKey}>
+      <RouterProvider router={router} />
+    </ClerkProvider>
   </React.StrictMode>
 );

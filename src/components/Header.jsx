@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./styles/Header.css";
 import { AiOutlineSearch } from "react-icons/ai";
+import { useUser } from "@clerk/clerk-react";
 
 const Header = () => {
   const [blackHeader, setBlackHeader] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchInput, setShowSearchInput] = useState(false);
+  const { user } = useUser();
 
   const fetchSearchResults = async () => {
     try {
@@ -48,10 +50,7 @@ const Header = () => {
         </a>
       </div>
       <div className="header--user">
-        <img
-          src="https://www.pngall.com/wp-content/uploads/5/User-Profile-.png"
-          alt="User"
-        />
+        <img src={`${user.profileImageUrl}`} alt={`${user.username} profile`} />
       </div>
       <div className="header--search">
         {!showSearchInput && (

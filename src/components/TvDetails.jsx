@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import MovieRow from "./MovieRow";
 import Header from "./Header";
 import "./styles/TvDetails.css";
+import { RedirectToSignIn, useUser } from "@clerk/clerk-react";
 
 const TvDetails = () => {
   const [tvDetails, setTvDetails] = useState(null);
@@ -11,6 +12,10 @@ const TvDetails = () => {
   const navigate = useNavigate();
 
   let { id } = useParams();
+
+  if (!isSignedIn) {
+    return <RedirectToSignIn />;
+  }
 
   useEffect(() => {
     const fetchtvDetails = async () => {
@@ -36,7 +41,7 @@ const TvDetails = () => {
     fetchRecommendations();
   }, [id]);
 
-  if (!tvDetails) {
+  if (!tvDetails || !isLoaded) {
     return (
       <div className="loading">
         <img
