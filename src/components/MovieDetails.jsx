@@ -57,7 +57,7 @@ const MovieDetails = () => {
       <div className="movieDetails">
         <div className="movie-info">
           <div className="image-container">
-            <a href={`/watch/${id}`}>
+            <a href={`/watch/movie/${id}`}>
               <img
                 src={`https://image.tmdb.org/t/p/w500${movieDetails.poster_path}`}
                 alt={movieDetails.title || movieDetails.name}

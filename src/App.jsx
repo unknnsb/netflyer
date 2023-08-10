@@ -37,6 +37,12 @@ export default () => {
     );
   }
 
+  const breakingBad = {
+    id: 1396,
+    title: "Breaking Bad",
+    poster_path: "https://picfiles.alphacoders.com/422/thumb-1920-422251.jpg",
+  };
+
   return (
     <div className="page">
       <Header />
@@ -44,6 +50,25 @@ export default () => {
       {featuredData && <FeaturedMovie item={featuredData} />}
 
       <section className="lists">
+        <div
+          style={{
+            marginLeft: 20,
+          }}
+          className="movieRow--item"
+        >
+          <h1
+            style={{
+              marginLeft: 20,
+            }}
+          >
+            For You Suni
+          </h1>
+          <img
+            src={`${breakingBad.poster_path}`}
+            alt={breakingBad.title}
+            onClick={() => (window.location.href = `/tv/${breakingBad.id}`)}
+          />
+        </div>
         {movieList.map((item) => (
           <MovieRow
             key={item.title}
