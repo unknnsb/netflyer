@@ -51,6 +51,14 @@ const TvDetails = () => {
     : tvDetails.overview.slice(0, 150) +
       (tvDetails.overview.length > 150 ? "..." : "");
 
+  const end = () => {
+    if (tvDetails.next_episode_to_air === null) {
+      return tvDetails.last_air_date;
+    } else {
+      return <span>Not Ended</span>;
+    }
+  };
+
   return (
     <>
       <Header />
@@ -75,8 +83,14 @@ const TvDetails = () => {
             </button>
           )}
 
-          <p>Release Date: {tvDetails.release_date}</p>
-          <p>Runtime: {tvDetails.runtime} minutes</p>
+          <p>Release Date: {tvDetails.first_air_date}</p>
+          <p>
+            Ended:{" "}
+            {tvDetails.next_episode_to_air === null
+              ? tvDetails.last_air_date
+              : "Not Ended"}
+          </p>
+          <p>Runtime: {tvDetails.episode_run_time} minutes</p>
           <p>
             Genres: {tvDetails.genres.map((genre) => genre.name).join(", ")}
           </p>
