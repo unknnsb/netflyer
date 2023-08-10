@@ -1,0 +1,154 @@
+.tvDetails {
+  position: relative;
+  color: #fff;
+  padding: 40px 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.tv-info {
+  text-align: left;
+  max-width: 900px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  margin: 20px;
+}
+
+.tv-info img {
+  width: 100%;
+  height: auto;
+  max-height: 600px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.tv-info h1 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: #e50914;
+}
+
+.tv-info p {
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.tv-info button {
+  background-color: #e50914;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.tv-info button:hover {
+  background-color: #ff0b24;
+}
+
+.tvRow {
+  margin-top: 20px;
+}
+
+.loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99;
+  background-color: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Overlay */
+.image-container {
+  position: relative;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0.8;
+  /* background-color: rgba(0, 0, 0, 0.4); */
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.video-logo {
+  width: 60%;
+  max-width: 150px;
+  height: auto;
+}
+
+/* Media Queries */
+@media (max-width: 1200px) {
+  .tv-info {
+    padding: 15px;
+    max-width: 100%;
+  }
+
+  .tv-info h1 {
+    font-size: 1.5rem;
+  }
+
+  .tv-info p {
+    font-size: 0.9rem;
+  }
+
+  .tv-info button {
+    padding: 6px 12px;
+  }
+
+  .tvRow {
+    margin-top: 15px;
+  }
+
+  .overlay {
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+}
+
+@media (max-width: 768px) {
+  .tv-info {
+    padding: 10px;
+  }
+
+  .tv-info h1 {
+    font-size: 1.2rem;
+    max-width: 100%;
+  }
+
+  .tv-info p {
+    font-size: 0.8rem;
+  }
+
+  .tv-info button {
+    padding: 5px 10px;
+  }
+
+  .tvRow {
+    margin-top: 10px;
+  }
+
+  .overlay {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+}

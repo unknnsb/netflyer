@@ -4,6 +4,7 @@ import App from "./App.jsx";
 import MovieDetails from "./components/MovieDetails";
 import WatchMovie from "./components/WatchMovie";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import TvDetails from "./components/TvDetails.jsx";
 
 const router = createBrowserRouter([
   {
@@ -15,7 +16,11 @@ const router = createBrowserRouter([
     element: <MovieDetails />,
   },
   {
-    path: "/watch/:id",
+    path: "/tv/:id",
+    element: <TvDetails />,
+  },
+  {
+    path: "/watch/movie/:id",
     element: <WatchMovie />,
   },
 ]);
