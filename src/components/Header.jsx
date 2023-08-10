@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./styles/Header.css";
 import { AiOutlineSearch } from "react-icons/ai";
+import { useUser } from "@clerk/clerk-react";
 
 const Header = () => {
   const [blackHeader, setBlackHeader] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchInput, setShowSearchInput] = useState(false);
+  const { user } = useUser();
 
   const fetchSearchResults = async () => {
     try {
@@ -48,10 +50,7 @@ const Header = () => {
         </a>
       </div>
       <div className="header--user">
-        <img
-          src="https://www.pngall.com/wp-content/uploads/5/User-Profile-.png"
-          alt="User"
-        />
+        <img src={`${user.profileImageUrl}`} alt={`${user.username} profile`} />
       </div>
       <div className="header--search">
         {!showSearchInput && (
@@ -78,11 +77,19 @@ const Header = () => {
           </button>
           {searchResults.map((result) => (
             <div key={result.id} className="search-result">
-              <img
-                src={`https://image.tmdb.org/t/p/w200/${result.poster_path}`}
-                alt={result.title || result.name}
-              />
-              <p>{result.title || result.name}</p>
+              <a
+                style={{
+                  textDecoration: "none",
+                  color: "#fff",
+                }}
+                href={`/tv/${result.id}`}
+              >
+                <img
+                  src={`https://image.tmdb.org/t/p/w200/${result.poster_path}`}
+                  alt={result.title || result.name}
+                />
+                <p>{result.title || result.name}</p>
+              </a>
             </div>
           ))}
         </div>

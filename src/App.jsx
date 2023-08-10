@@ -4,10 +4,12 @@ import Tmdb from "./Tmdb";
 import MovieRow from "./components/MovieRow";
 import FeaturedMovie from "./components/FeaturedMovie";
 import Header from "./components/Header";
+import { RedirectToSignIn, useUser } from "@clerk/clerk-react";
 
 export default () => {
   const [movieList, setMovieList] = useState([]);
   const [featuredData, setFeaturedData] = useState(null);
+  const { isLoaded, isSignedIn, user } = useUser();
 
   useEffect(() => {
     const loadAll = async () => {
@@ -26,7 +28,7 @@ export default () => {
     loadAll();
   }, []);
 
-  if (movieList.length <= 0) {
+  if (movieList.length <= 0 || !isLoaded) {
     return (
       <div className="loading">
         <img
@@ -35,6 +37,10 @@ export default () => {
         ></img>
       </div>
     );
+  }
+
+  if (!isLoaded || !isSignedIn) {
+    return <RedirectToSignIn />;
   }
 
   const breakingBad = {

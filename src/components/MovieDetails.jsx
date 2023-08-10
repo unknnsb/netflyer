@@ -3,13 +3,19 @@ import { useParams } from "react-router-dom";
 import MovieRow from "./MovieRow";
 import Header from "./Header";
 import "./styles/MovieDetails.css";
+import { RedirectToSignIn, useUser } from "@clerk/clerk-react";
 
 const MovieDetails = () => {
   const [movieDetails, setMovieDetails] = useState(null);
   const [showFullOverview, setShowFullOverview] = useState(false);
   const [recommendations, setRecommendations] = useState([]);
+  const { isLoaded, user, isSignedIn } = useUser();
 
   let { id } = useParams();
+
+  if (!isSignedIn) {
+    return <RedirectToSignIn />;
+  }
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
@@ -35,7 +41,7 @@ const MovieDetails = () => {
     fetchRecommendations();
   }, [id]);
 
-  if (!movieDetails) {
+  if (!movieDetails || !isLoaded) {
     return (
       <div className="loading">
         <img

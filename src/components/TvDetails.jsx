@@ -3,12 +3,14 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import MovieRow from "./MovieRow";
 import Header from "./Header";
 import "./styles/TvDetails.css";
+import { RedirectToSignIn, useUser } from "@clerk/clerk-react";
 
 const TvDetails = () => {
   const [tvDetails, setTvDetails] = useState(null);
   const [showFullOverview, setShowFullOverview] = useState(false);
   const [recommendations, setRecommendations] = useState([]);
   const navigate = useNavigate();
+  const { isSignedIn, isLoaded } = useUser();
 
   let { id } = useParams();
 
@@ -36,7 +38,7 @@ const TvDetails = () => {
     fetchRecommendations();
   }, [id]);
 
-  if (!tvDetails) {
+  if (!tvDetails || !isLoaded) {
     return (
       <div className="loading">
         <img
