@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import MovieRow from "./MovieRow";
 import Header from "./Header";
 import "./styles/TvDetails.css";
@@ -8,6 +8,7 @@ const TvDetails = () => {
   const [tvDetails, setTvDetails] = useState(null);
   const [showFullOverview, setShowFullOverview] = useState(false);
   const [recommendations, setRecommendations] = useState([]);
+  const navigate = useNavigate();
 
   let { id } = useParams();
 
@@ -51,13 +52,17 @@ const TvDetails = () => {
     : tvDetails.overview.slice(0, 150) +
       (tvDetails.overview.length > 150 ? "..." : "");
 
+  const watch = (num) => {
+    navigate(`/watch/tv/${id}/${num}`);
+  };
+
   return (
     <>
       <Header />
       <div className="tvDetails">
         <div className="tv-info">
           <div className="image-container">
-            <a href={`/watch/${id}`}>
+            <a href={`/watch/tv/${id}/1`}>
               <img
                 src={`https://image.tmdb.org/t/p/w500${tvDetails.poster_path}`}
                 alt={tvDetails.original_name}
@@ -85,9 +90,19 @@ const TvDetails = () => {
           <p>Runtime: {tvDetails.episode_run_time} minutes</p>
           <p>Total Episode: {tvDetails.number_of_episodes}</p>
           <p>Total Seasons: {tvDetails.number_of_seasons}</p>
-          <p>
-            Genres: {tvDetails.genres.map((genre) => genre.name).join(", ")}
-          </p>
+
+          {tvDetails.genres ? (
+            <p>
+              Genres: {tvDetails.genres.map((genre) => genre.name).join(", ")}
+            </p>
+          ) : (
+            <p>Loading genres...</p>
+          )}
+          <div className="episodeList">
+            <button onClick={() => watch(1)}>EP 1</button>
+            <button onClick={() => watch(2)}>EP 2</button>
+            <button onClick={() => watch(3)}>EP 3</button>
+          </div>
           <MovieRow
             title="Recommended Shows"
             items={{ results: recommendations }}

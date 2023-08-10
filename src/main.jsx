@@ -5,6 +5,7 @@ import MovieDetails from "./components/MovieDetails";
 import WatchMovie from "./components/WatchMovie";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import TvDetails from "./components/TvDetails.jsx";
+import WatchTv from "./components/WatchTv.jsx";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
   {
     path: "/watch/movie/:id",
     element: <WatchMovie />,
+  },
+  {
+    path: "/watch/tv/:id/:episode",
+    element: <WatchTv />,
   },
 ]);
 
