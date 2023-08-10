@@ -10,12 +10,9 @@ const TvDetails = () => {
   const [showFullOverview, setShowFullOverview] = useState(false);
   const [recommendations, setRecommendations] = useState([]);
   const navigate = useNavigate();
+  const { isSignedIn, isLoaded } = useUser();
 
   let { id } = useParams();
-
-  if (!isSignedIn) {
-    return <RedirectToSignIn />;
-  }
 
   useEffect(() => {
     const fetchtvDetails = async () => {
