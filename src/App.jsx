@@ -8,7 +8,6 @@ import Header from "./components/Header";
 export default () => {
   const [movieList, setMovieList] = useState([]);
   const [featuredData, setFeaturedData] = useState(null);
-  const [blackHeader, setBlackHeader] = useState(false);
 
   useEffect(() => {
     const loadAll = async () => {
@@ -27,18 +26,6 @@ export default () => {
     loadAll();
   }, []);
 
-  useEffect(() => {
-    const scrollListener = () => {
-      setBlackHeader(window.scrollY > 15);
-    };
-
-    window.addEventListener("scroll", scrollListener);
-
-    return () => {
-      window.removeEventListener("scroll", scrollListener);
-    };
-  }, []);
-
   if (movieList.length <= 0) {
     return (
       <div className="loading">
@@ -52,7 +39,7 @@ export default () => {
 
   return (
     <div className="page">
-      <Header black={blackHeader} />
+      <Header />
 
       {featuredData && <FeaturedMovie item={featuredData} />}
 

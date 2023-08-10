@@ -1,8 +1,8 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import "./styles.css";
+import "./styles/WatchMovie.css";
 
-const index = () => {
+const WatchMovie = () => {
   const { id } = useParams();
   return (
     <iframe
@@ -15,4 +15,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default WatchMovie;

@@ -1,7 +1,7 @@
 import React from "react";
-import "./styles.css";
+import "./styles/FeaturedMovie.css";
 
-export default ({
+const FeaturedMovie = ({
   item: {
     overview,
     genres,
@@ -53,3 +53,5 @@ export default ({
     </section>
   );
 };
+
+export default FeaturedMovie;
