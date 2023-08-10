@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
+import "./styles/MovieRow.css";
 
-import "./styles.css";
-
-export default ({ title, items }) => {
+const MovieRow = ({ title, items }) => {
   const listW = items.results.length * 280;
   const [scrollX, setScrollX] = useState(0);
   const [hideLeftArrow, setHideLeftArrow] = useState(true);
@@ -84,3 +83,5 @@ export default ({ title, items }) => {
     </div>
   );
 };
+
+export default MovieRow;

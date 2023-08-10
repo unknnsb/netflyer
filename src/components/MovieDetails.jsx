@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import MovieRow from "../MovieRow";
-import Header from "../Header";
-import "./styles.css";
+import MovieRow from "./MovieRow";
+import Header from "./Header";
+import "./styles/MovieDetails.css";
 
 const MovieDetails = () => {
   const [movieDetails, setMovieDetails] = useState(null);
@@ -36,15 +36,20 @@ const MovieDetails = () => {
   }, [id]);
 
   if (!movieDetails) {
-    return <div>Loading...</div>;
+    return (
+      <div className="loading">
+        <img
+          src="https://cdn.lowgif.com/small/0534e2a412eeb281-the-counterintuitive-tech-behind-netflix-s-worldwide.gif"
+          alt="loading"
+        ></img>
+      </div>
+    );
   }
 
   const overview = showFullOverview
     ? movieDetails.overview
     : movieDetails.overview.slice(0, 150) +
       (movieDetails.overview.length > 150 ? "..." : "");
-
-  const streamMovie = `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1`;
 
   return (
     <>
