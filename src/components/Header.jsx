@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./styles/Header.css";
+import { AiOutlineSearch } from "react-icons/ai";
 
 const Header = () => {
   const [blackHeader, setBlackHeader] = useState(false);
@@ -55,7 +56,7 @@ const Header = () => {
       <div className="header--search">
         {!showSearchInput && (
           <button className="search-icon" onClick={toggleSearchInput}>
-            <i className="fa fa-search"></i>
+            <AiOutlineSearch />
           </button>
         )}
         {showSearchInput && (
