@@ -1,29 +1,51 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./styles/Header.css";
-import { AiOutlineSearch } from "react-icons/ai";
+import { AiOutlineSearch, AiOutlineClose } from "react-icons/ai";
 import { useUser } from "@clerk/clerk-react";
+import "../styles/Header.css";
 
 const Header = () => {
   const [blackHeader, setBlackHeader] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchInput, setShowSearchInput] = useState(false);
+  const [notFoundMessage, setNotFoundMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const { user } = useUser();
 
   const fetchSearchResults = async () => {
     try {
+      setIsLoading(true); // Set loading state
       const response = await axios.get(
         `https://api.themoviedb.org/3/search/multi?api_key=bb2818a2abb39fbdf6da79343e5e376b&query=${searchQuery}`
       );
       setSearchResults(response.data.results);
+      if (response.data.results.length === 0) {
+        setNotFoundMessage(`Not Found for: ${searchQuery}`);
+      } else {
+        setNotFoundMessage("");
+      }
     } catch (error) {
       console.error("Error fetching search results:", error);
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false); // Disable loading state after 3 seconds
+      }, 1000);
     }
   };
 
   const toggleSearchInput = () => {
     setShowSearchInput(!showSearchInput);
+    setSearchResults([]);
+    setSearchQuery("");
+    setNotFoundMessage("");
+  };
+
+  const clearSearchResults = () => {
+    setSearchResults([]);
+    setSearchQuery("");
+    setNotFoundMessage("");
+    setShowSearchInput(false);
   };
 
   useEffect(() => {
@@ -67,31 +89,50 @@ const Header = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
             <button onClick={fetchSearchResults}>Search</button>
+            <button onClick={clearSearchResults}>
+              <AiOutlineClose />
+            </button>
           </div>
         )}
       </div>
       {searchResults.length > 0 && (
         <div className="search-results">
-          <button className="close-button" onClick={toggleSearchInput}>
-            X
-          </button>
-          {searchResults.map((result) => (
-            <div key={result.id} className="search-result">
-              <a
-                style={{
-                  textDecoration: "none",
-                  color: "#fff",
-                }}
-                href={`/tv/${result.id}`}
-              >
-                <img
-                  src={`https://image.tmdb.org/t/p/w200/${result.poster_path}`}
-                  alt={result.title || result.name}
-                />
-                <p>{result.title || result.name}</p>
-              </a>
+          <div className="close-button">
+            <button onClick={clearSearchResults}>
+              <AiOutlineClose />
+            </button>
+          </div>
+          {isLoading ? (
+            <div className="loading">
+              <img
+                src="https://cdn.lowgif.com/small/0534e2a412eeb281-the-counterintuitive-tech-behind-netflix-s-worldwide.gif"
+                alt="loading"
+              />
             </div>
-          ))}
+          ) : (
+            <>
+              {notFoundMessage && (
+                <p className="not-found">{notFoundMessage}</p>
+              )}
+              {searchResults.map((result) => (
+                <div key={result.id} className="search-result">
+                  <a
+                    style={{
+                      textDecoration: "none",
+                      color: "#fff",
+                    }}
+                    href={`/tv/${result.id}`}
+                  >
+                    <img
+                      src={`https://image.tmdb.org/t/p/w200/${result.poster_path}`}
+                      alt={result.title || result.name}
+                    />
+                    <p>{result.title || result.name}</p>
+                  </a>
+                </div>
+              ))}
+            </>
+          )}
         </div>
       )}
     </header>

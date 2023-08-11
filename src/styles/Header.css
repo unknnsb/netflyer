@@ -1,22 +1,24 @@
+/* Minimal Header Styles */
+
+/* Base header styles */
 header {
   position: fixed;
   z-index: 999;
-  top: 0px;
-  left: 0px;
-  right: 0px;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 70px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 15px; /* Adjust padding for responsiveness */
+  padding: 0 15px;
   background: transparent;
   transition: all ease 0.5s;
 }
 
 @media (min-width: 768px) {
-  /* Apply styles for screens with a minimum width of 768px */
   header {
-    padding: 0 30px; /* Reset padding for larger screens */
+    padding: 0 30px;
   }
 }
 
@@ -24,31 +26,36 @@ header.black {
   background: #141414;
 }
 
-.header--logo {
-  height: 25px;
-}
-
-.header--logo img {
-  height: 100%;
-}
-
+/* Logo styles */
+.header--logo,
 .header--user {
   height: 35px;
 }
 
+.header--logo img,
 .header--user img {
   height: 100%;
   border-radius: 5px;
   background-color: transparent;
 }
 
+/* Search icon */
+.search-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #e50914;
+}
+
+/* Search input styles */
 .header--search {
   display: flex;
   align-items: center;
 }
 
 .header--search input[type="text"] {
-  width: 100%;
+  flex: 1;
   padding: 10px;
   border: none;
   border-radius: 5px;
@@ -67,47 +74,13 @@ header.black {
   font-size: 14px;
 }
 
-/* Your existing header styles */
-
-/* Styles for the search icon */
-.search-icon {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  color: #e50914;
-}
-
-/* Styles for the search input */
-.search-input {
-  display: flex;
-  align-items: center;
-}
-
-.search-input input[type="text"] {
-  width: 100%;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  font-size: 14px;
-  margin-right: 10px;
-}
-
-.search-input button {
-  background: #e50914;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 8px 15px;
-  cursor: pointer;
-  font-size: 14px;
-}
+/* Search Results Styles */
 .search-results {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  background-color: black;
+  background-color: rgba(0, 0, 0, 0.8);
   position: fixed;
   top: 70px;
   left: 0;
@@ -118,7 +91,6 @@ header.black {
   overflow-y: auto;
 }
 
-/* Display search results in a row */
 .search-results .search-result {
   width: calc(33.33% - 10px);
   display: flex;
@@ -137,6 +109,7 @@ header.black {
   margin-top: 10px;
   font-size: 14px;
   text-align: center;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .close-button {
@@ -153,8 +126,13 @@ header.black {
     width: 60%;
     margin: 0 auto;
   }
+
+  .search-result {
+    width: calc(25% - 10px);
+  }
 }
 
+/* Additional styles */
 .icon-logoUpdate {
   text-decoration: none;
   font-size: 25px;

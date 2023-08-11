@@ -1,49 +1,34 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
-import MovieDetails from "./components/MovieDetails";
-import WatchMovie from "./components/WatchMovie";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import TvDetails from "./components/TvDetails.jsx";
-import WatchTv from "./components/WatchTv.jsx";
 import { ClerkProvider, SignIn, SignUp } from "@clerk/clerk-react";
 
-if (!import.meta.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY) {
+import App from "./App.jsx";
+import MovieDetails from "./pages/MovieDetails";
+import TvDetails from "./pages/TvDetails.jsx";
+import WatchMovie from "./pages/WatchMovie";
+import WatchTv from "./pages/WatchTv.jsx";
+
+// Ensure that the Publishable Key is available
+const clerkPubKey = import.meta.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY;
+if (!clerkPubKey) {
   throw new Error("Missing Publishable Key");
 }
-const clerkPubKey = import.meta.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY;
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <App />,
-  },
-  {
-    path: "/movie/:id",
-    element: <MovieDetails />,
-  },
-  {
-    path: "/tv/:id",
-    element: <TvDetails />,
-  },
-  {
-    path: "/watch/movie/:id",
-    element: <WatchMovie />,
-  },
-  {
-    path: "/watch/tv/:id/:episode",
-    element: <WatchTv />,
-  },
-  {
-    path: "/sign-in",
-    element: <SignIn routing="path" path="/sign-in" />,
-  },
-  {
-    path: "/sign-up",
-    element: <SignUp routing="path" path="/sign-up" />,
-  },
-]);
+// Define routes
+const routes = [
+  { path: "/", element: <App /> },
+  { path: "/movie/:id", element: <MovieDetails /> },
+  { path: "/tv/:id", element: <TvDetails /> },
+  { path: "/watch/movie/:id", element: <WatchMovie /> },
+  { path: "/watch/tv/:id/:season/:episode", element: <WatchTv /> },
+  { path: "/sign-in", element: <SignIn routing="path" path="/sign-in" /> },
+  { path: "/sign-up", element: <SignUp routing="path" path="/sign-up" /> },
+];
 
+const router = createBrowserRouter(routes);
+
+// Render the app
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ClerkProvider publishableKey={clerkPubKey}>

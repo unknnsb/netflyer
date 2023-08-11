@@ -1,5 +1,5 @@
 import React from "react";
-import "./styles/FeaturedMovie.css";
+import "../styles/FeaturedMovie.css";
 
 const FeaturedMovie = ({
   item: {
