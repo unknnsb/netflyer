@@ -6,35 +6,27 @@ import "./styles/MovieDetails.css";
 import { useUser } from "@clerk/clerk-react";
 
 const MovieDetails = () => {
+  const { id } = useParams();
   const [movieDetails, setMovieDetails] = useState(null);
   const [showFullOverview, setShowFullOverview] = useState(false);
   const [recommendations, setRecommendations] = useState([]);
   const { isLoaded, user, isSignedIn } = useUser();
 
-  let { id } = useParams();
-
   useEffect(() => {
-    const fetchMovieDetails = async () => {
-      const response = await fetch(
-        `https://api.themoviedb.org/3/movie/${id}?api_key=bb2818a2abb39fbdf6da79343e5e376b`
-      );
+    const fetchData = async (url, setDataCallback) => {
+      const response = await fetch(url);
       const data = await response.json();
-      setMovieDetails(data);
+      setDataCallback(data);
     };
 
-    fetchMovieDetails();
-  }, [id]);
-
-  useEffect(() => {
-    const fetchRecommendations = async () => {
-      const response = await fetch(
-        `https://api.themoviedb.org/3/movie/${id}/recommendations?api_key=bb2818a2abb39fbdf6da79343e5e376b`
-      );
-      const data = await response.json();
-      setRecommendations(data.results.slice(0, 10));
-    };
-
-    fetchRecommendations();
+    fetchData(
+      `https://api.themoviedb.org/3/movie/${id}?api_key=bb2818a2abb39fbdf6da79343e5e376b`,
+      setMovieDetails
+    );
+    fetchData(
+      `https://api.themoviedb.org/3/movie/${id}/recommendations?api_key=bb2818a2abb39fbdf6da79343e5e376b`,
+      (data) => setRecommendations(data.results.slice(0, 10))
+    );
   }, [id]);
 
   if (!movieDetails || !isLoaded) {
@@ -52,8 +44,6 @@ const MovieDetails = () => {
     ? movieDetails.overview
     : movieDetails.overview.slice(0, 150) +
       (movieDetails.overview.length > 150 ? "..." : "");
-
-  console.log(recommendations);
 
   return (
     <>
