@@ -21,7 +21,7 @@ const routes = [
   { path: "/movie/:id", element: <MovieDetails /> },
   { path: "/tv/:id", element: <TvDetails /> },
   { path: "/watch/movie/:id", element: <WatchMovie /> },
-  { path: "/watch/tv/:id/:episode", element: <WatchTv /> },
+  { path: "/watch/tv/:id/:season/:episode", element: <WatchTv /> },
   { path: "/sign-in", element: <SignIn routing="path" path="/sign-in" /> },
   { path: "/sign-up", element: <SignUp routing="path" path="/sign-up" /> },
 ];

@@ -48,6 +48,7 @@
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s;
+  margin-top: 10px;
 }
 
 .tv-info button:hover {
@@ -86,7 +87,7 @@
   justify-content: center;
   align-items: center;
   opacity: 0.8;
-  /* background-color: rgba(0, 0, 0, 0.4); */
+  background-color: rgba(0, 0, 0, 0.6);
   border-radius: 8px;
   cursor: pointer;
   transition: opacity 0.3s;
@@ -96,6 +97,37 @@
   width: 60%;
   max-width: 150px;
   height: auto;
+}
+
+.tvSelector {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.tvSelector select {
+  background-color: #fff;
+  color: #000;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  margin-right: 10px;
+}
+
+.tvSelector button {
+  background-color: #e50914;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-right: 5px;
+}
+
+.tvSelector button:hover {
+  background-color: #ff0b24;
 }
 
 /* Media Queries */
@@ -119,10 +151,6 @@
 
   .tvRow {
     margin-top: 15px;
-  }
-
-  .overlay {
-    background-color: rgba(0, 0, 0, 0.6);
   }
 }
 
@@ -148,7 +176,18 @@
     margin-top: 10px;
   }
 
-  .overlay {
-    background-color: rgba(0, 0, 0, 0.7);
+  .tvSelector {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .tvSelector select {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .tvSelector button {
+    width: 100%;
+    padding: 8px 16px;
   }
 }
