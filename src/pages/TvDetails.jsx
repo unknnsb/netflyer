@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import MovieRow from "./MovieRow";
-import Header from "./Header";
-import "./styles/TvDetails.css";
+import MovieRow from "../components/MovieRow";
+import Header from "../components/Header";
+import "../styles/TvDetails.css";
 import { RedirectToSignIn, useUser } from "@clerk/clerk-react";
 
 const TvDetails = () => {

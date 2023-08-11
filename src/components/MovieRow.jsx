@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./styles/MovieRow.css";
+import "../styles/MovieRow.css";
 
 const MovieRow = ({ title, items }) => {
   const listW = items.results.length * 280;

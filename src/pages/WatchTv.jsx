@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import "./styles/WatchMovie.css";
+import "../styles/WatchMovie.css";
 
 const WatchTv = () => {
   const { id, episode } = useParams();

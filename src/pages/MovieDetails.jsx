@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import MovieRow from "./MovieRow";
-import Header from "./Header";
-import "./styles/MovieDetails.css";
+import MovieRow from "../components/MovieRow";
+import Header from "../components/Header";
+import "../styles/MovieDetails.css";
 import { useUser } from "@clerk/clerk-react";
 
 const MovieDetails = () => {
