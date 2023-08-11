@@ -2,8 +2,33 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import MovieRow from "../components/MovieRow";
 import Header from "../components/Header";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import "../styles/TvDetails.css";
 import { useUser } from "@clerk/clerk-react";
+
+const sliderSettings = {
+  dots: true,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 3,
+  slidesToScroll: 1,
+  responsive: [
+    {
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: 2,
+      },
+    },
+    {
+      breakpoint: 600,
+      settings: {
+        slidesToShow: 1,
+      },
+    },
+  ],
+};
 
 const TvDetails = () => {
   const [tvDetails, setTvDetails] = useState(null);
@@ -12,6 +37,7 @@ const TvDetails = () => {
   const [recommendations, setRecommendations] = useState([]);
   const [allEpisodesVisible, setAllEpisodesVisible] = useState(false);
   const [episodes, setEpisodes] = useState([]);
+  const [credits, setCredits] = useState([]);
   const navigate = useNavigate();
   const { isSignedIn, isLoaded } = useUser();
 
@@ -56,6 +82,18 @@ const TvDetails = () => {
 
     fetchEpisodes();
   }, [id, selectedSeason]);
+
+  useEffect(() => {
+    const fetchCredits = async () => {
+      const response = await fetch(
+        `https://api.themoviedb.org/3/tv/${id}/credits?api_key=bb2818a2abb39fbdf6da79343e5e376b`
+      );
+      const data = await response.json();
+      setCredits(data.cast);
+    };
+
+    fetchCredits();
+  }, [id]);
 
   if (!tvDetails || !isLoaded) {
     return (
@@ -109,6 +147,11 @@ const TvDetails = () => {
         Episode {episode.episode_number}: {episode.name}
       </button>
     ));
+  };
+
+  const openWikipediaPage = (originalName) => {
+    const wikipediaUrl = `https://en.wikipedia.org/wiki/${originalName}`;
+    window.open(wikipediaUrl, "_blank");
   };
 
   return (
@@ -173,6 +216,25 @@ const TvDetails = () => {
             title="Recommended Shows"
             items={{ results: recommendations }}
           />
+          <div className="cast-carousel">
+            <h2>Cast</h2>
+            {credits.length > 0 && (
+              <Slider {...sliderSettings}>
+                {credits.map((credit) => (
+                  <div key={credit.id} className="cast-item">
+                    <img
+                      src={`https://image.tmdb.org/t/p/w500${credit.profile_path}`}
+                      alt={credit.name}
+                      onClick={() => openWikipediaPage(credit.original_name)}
+                    />
+                    <p>
+                      <strong>{credit.name}</strong> as {credit.character}
+                    </p>
+                  </div>
+                ))}
+              </Slider>
+            )}
+          </div>
         </div>
       </div>
     </>

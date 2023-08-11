@@ -4,12 +4,38 @@ import MovieRow from "../components/MovieRow";
 import Header from "../components/Header";
 import "../styles/MovieDetails.css";
 import { useUser } from "@clerk/clerk-react";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick";
+
+const sliderSettings = {
+  dots: true,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 3,
+  slidesToScroll: 1,
+  responsive: [
+    {
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: 2,
+      },
+    },
+    {
+      breakpoint: 600,
+      settings: {
+        slidesToShow: 1,
+      },
+    },
+  ],
+};
 
 const MovieDetails = () => {
   const { id } = useParams();
   const [movieDetails, setMovieDetails] = useState(null);
   const [showFullOverview, setShowFullOverview] = useState(false);
   const [recommendations, setRecommendations] = useState([]);
+  const [casts, setCasts] = useState([]); // Added state for casts
   const { isLoaded, user, isSignedIn } = useUser();
 
   useEffect(() => {
@@ -26,6 +52,11 @@ const MovieDetails = () => {
     fetchData(
       `https://api.themoviedb.org/3/movie/${id}/recommendations?api_key=bb2818a2abb39fbdf6da79343e5e376b`,
       (data) => setRecommendations(data.results.slice(0, 10))
+    );
+    fetchData(
+      // Fetching casts data
+      `https://api.themoviedb.org/3/movie/${id}/casts?api_key=bb2818a2abb39fbdf6da79343e5e376b`,
+      (data) => setCasts(data.cast)
     );
   }, [id]);
 
@@ -91,6 +122,24 @@ const MovieDetails = () => {
               items={{ results: recommendations }}
             />
           )}
+          <div>
+            <h2>Cast</h2>
+            {casts.length > 0 && (
+              <Slider {...sliderSettings}>
+                {casts.map((cast) => (
+                  <div key={cast.id} className="cast-item">
+                    <img
+                      src={`https://image.tmdb.org/t/p/w500${cast.profile_path}`}
+                      alt={cast.name}
+                    />
+                    <p>
+                      <strong>{cast.name}</strong> as {cast.character}
+                    </p>
+                  </div>
+                ))}
+              </Slider>
+            )}
+          </div>
         </div>
       </div>
     </>
