@@ -98,6 +98,13 @@
   height: auto;
 }
 
+.letterboxd {
+  text-decoration: underline;
+  font-size: 1rem;
+  font-weight: 300;
+  color: white;
+}
+
 /* Media Queries */
 @media (max-width: 1200px) {
   .movie-info {

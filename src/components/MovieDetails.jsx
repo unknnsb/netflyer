@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import MovieRow from "./MovieRow";
 import Header from "./Header";
 import "./styles/MovieDetails.css";
-import { RedirectToSignIn, useUser } from "@clerk/clerk-react";
+import { useUser } from "@clerk/clerk-react";
 
 const MovieDetails = () => {
   const [movieDetails, setMovieDetails] = useState(null);
@@ -53,6 +53,8 @@ const MovieDetails = () => {
     : movieDetails.overview.slice(0, 150) +
       (movieDetails.overview.length > 150 ? "..." : "");
 
+  console.log(recommendations);
+
   return (
     <>
       <Header />
@@ -77,15 +79,28 @@ const MovieDetails = () => {
             </button>
           )}
 
+          <p>
+            Letterboxd:{" "}
+            <a
+              className="letterboxd"
+              href={`https://letterboxd.com/tmdb/${id}`}
+            >
+              {movieDetails.original_title}
+            </a>
+          </p>
           <p>Release Date: {movieDetails.release_date}</p>
           <p>Runtime: {movieDetails.runtime} minutes</p>
           <p>
             Genres: {movieDetails.genres.map((genre) => genre.name).join(", ")}
           </p>
-          <MovieRow
-            title="Recommended Movies"
-            items={{ results: recommendations }}
-          />
+          {recommendations.length === 0 ? (
+            <>Recommended Movies: 0</>
+          ) : (
+            <MovieRow
+              title="Recommended Movies"
+              items={{ results: recommendations }}
+            />
+          )}
         </div>
       </div>
     </>
