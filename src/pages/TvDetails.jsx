@@ -162,6 +162,11 @@ const TvDetails = () => {
                   View All Episodes
                 </button>
               )}
+              {allEpisodesVisible && (
+                <button onClick={() => setAllEpisodesVisible(false)}>
+                  Hide All Episode
+                </button>
+              )}
             </div>
           </div>
           <MovieRow

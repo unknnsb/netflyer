@@ -38,7 +38,7 @@ const FeaturedMovie = ({
           </div>
           <div className="featured--description">{description}</div>
           <div className="featured--buttons">
-            <a href={`/watch/${id}`} className="featured--watchbutton">
+            <a href={`/tv/${id}`} className="featured--watchbutton">
               ► Play
             </a>
             <a href={`/list/add/${id}`} className="featured--mylistbutton">

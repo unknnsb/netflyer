@@ -67,7 +67,7 @@ export default () => {
               marginLeft: 20,
             }}
           >
-            For You
+            Developer Picklist
           </h1>
           <img
             src={`${breakingBad.poster_path}`}
