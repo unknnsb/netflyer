@@ -74,7 +74,7 @@ const TvDetails = () => {
               </div>
             </a>
           </div>
-          <h1>{tvDetails.original_name}</h1>
+          <h1>{tvDetails.name}</h1>
           <p>{overview}</p>
           {tvDetails.overview.length > 150 && (
             <button onClick={() => setShowFullOverview(!showFullOverview)}>
