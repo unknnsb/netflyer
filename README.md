@@ -4,7 +4,7 @@ TODO:
 - [x] add movie watch page
 - [x] add series info page
 - [x] add watch series page
-- [ ] add series season + episode selector
+- [x] add series season + episode selector
 - [x] improve search bar
 - [ ] add watch list
 - [ ] add menu bar
