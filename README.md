@@ -2,5 +2,5 @@ TODO:
 
 - [x] add movie info page
 - [x] add movie watch page
-- [ ] add series info page
-- [ ] add watch series page
+- [x] add series info page
+- [x] add watch series page
