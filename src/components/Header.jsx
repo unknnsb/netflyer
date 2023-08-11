@@ -60,6 +60,15 @@ const Header = () => {
     };
   }, []);
 
+  const onClick = (id, item) => {
+    window.location.href = `/movie/${id}`;
+    if (item.released_date) {
+      window.location.href = `/movie/${id}`;
+    } else if (item.first_air_date) {
+      window.location.href = `/tv/${id}`;
+    }
+  };
+
   return (
     <header className={`header ${blackHeader ? "black" : ""}`}>
       <div className="header--logo">
@@ -121,7 +130,7 @@ const Header = () => {
                       textDecoration: "none",
                       color: "#fff",
                     }}
-                    href={`/tv/${result.id}`}
+                    onClick={() => onClick(result.id, result)}
                   >
                     <img
                       src={`https://image.tmdb.org/t/p/w200/${result.poster_path}`}
