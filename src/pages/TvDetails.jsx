@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import MovieRow from "../components/MovieRow";
 import Header from "../components/Header";
 import Slider from "react-slick";
@@ -40,7 +40,6 @@ const TvDetails = () => {
   const [credits, setCredits] = useState([]);
   const navigate = useNavigate();
   const { isSignedIn, isLoaded } = useUser();
-
   let { id } = useParams();
 
   useEffect(() => {
@@ -51,7 +50,6 @@ const TvDetails = () => {
       const data = await response.json();
       setTvDetails(data);
     };
-
     fetchtvDetails();
   }, [id]);
 
@@ -63,7 +61,6 @@ const TvDetails = () => {
       const data = await response.json();
       setRecommendations(data.results.slice(0, 10));
     };
-
     fetchRecommendations();
   }, [id]);
 
@@ -73,13 +70,11 @@ const TvDetails = () => {
         `https://api.themoviedb.org/3/tv/${id}/season/${selectedSeason}?api_key=bb2818a2abb39fbdf6da79343e5e376b`
       );
       const data = await response.json();
-      // Filter out specials
       const filteredEpisodes = data.episodes.filter(
         (episode) => episode.season_number !== 0
       );
       setEpisodes(filteredEpisodes);
     };
-
     fetchEpisodes();
   }, [id, selectedSeason]);
 
@@ -91,9 +86,18 @@ const TvDetails = () => {
       const data = await response.json();
       setCredits(data.cast);
     };
-
     fetchCredits();
   }, [id]);
+
+  const shareOnTwitter = () => {
+    const shareUrl = `https://twitter.com/intent/tweet?url=${window.location.href}`;
+    window.open(shareUrl, "_blank");
+  };
+
+  const shareOnFacebook = () => {
+    const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`;
+    window.open(shareUrl, "_blank");
+  };
 
   if (!tvDetails || !isLoaded) {
     return (
@@ -138,7 +142,6 @@ const TvDetails = () => {
     const displayedEpisodes = allEpisodesVisible
       ? episodes
       : episodes.slice(0, 10);
-
     return displayedEpisodes.map((episode) => (
       <button
         key={episode.id}
@@ -239,6 +242,15 @@ const TvDetails = () => {
                 ))}
               </Slider>
             )}
+          </div>
+          <div className="social-sharing">
+            <p>Share:</p>
+            <a href="#" onClick={shareOnTwitter}>
+              Twitter
+            </a>
+            <a href="#" onClick={shareOnFacebook}>
+              Facebook
+            </a>
           </div>
         </div>
       </div>
