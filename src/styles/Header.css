@@ -1,6 +1,3 @@
-/* Minimal Header Styles */
-
-/* Base header styles */
 header {
   position: fixed;
   z-index: 999;
@@ -12,34 +9,28 @@ header {
   justify-content: space-between;
   align-items: center;
   padding: 0 15px;
-  background: transparent;
+  background: 0 0;
   transition: all ease 0.5s;
 }
-
 @media (min-width: 768px) {
   header {
     padding: 0 30px;
   }
 }
-
 header.black {
   background: #141414;
 }
-
-/* Logo styles */
 .header--logo,
 .header--user {
   height: 35px;
 }
-
 .header--user {
   display: flex;
   align-items: center;
 }
-
-.header--user .header--watchlist button{
+.header--user .header--watchlist button {
   background: #e50914;
-  color: white;
+  color: #fff;
   border: none;
   border-radius: 5px;
   padding: 8px 15px;
@@ -48,29 +39,23 @@ header.black {
   font-size: 14px;
   margin-left: 5px;
 }
-
 .header--logo img,
 .header--user img {
   height: 100%;
   border-radius: 5px;
   background-color: transparent;
 }
-
-/* Search icon */
 .search-icon {
-  background: none;
+  background: 0 0;
   border: none;
   cursor: pointer;
   font-size: 18px;
   color: #e50914;
 }
-
-/* Search input styles */
 .header--search {
   display: flex;
   align-items: center;
 }
-
 .header--search input[type="text"] {
   flex: 1;
   padding: 10px;
@@ -79,10 +64,9 @@ header.black {
   font-size: 14px;
   outline: none;
 }
-
 .header--search button {
   background: #e50914;
-  color: white;
+  color: #fff;
   border: none;
   border-radius: 5px;
   padding: 8px 15px;
@@ -90,8 +74,6 @@ header.black {
   cursor: pointer;
   font-size: 14px;
 }
-
-/* Search Results Styles */
 .search-results {
   display: flex;
   flex-wrap: wrap;
@@ -107,7 +89,6 @@ header.black {
   padding: 20px;
   overflow-y: auto;
 }
-
 .search-results .search-result {
   width: calc(33.33% - 10px);
   display: flex;
@@ -115,41 +96,34 @@ header.black {
   align-items: center;
   margin: 0 5px;
 }
-
 .search-result img {
   max-width: 100%;
   height: auto;
   border-radius: 5px;
 }
-
 .search-result p {
   margin-top: 10px;
   font-size: 14px;
   text-align: center;
   color: rgba(255, 255, 255, 0.8);
 }
-
 .close-button {
   position: absolute;
   top: 10px;
   right: 10px;
   font-size: 16px;
-  color: white;
+  color: #fff;
   cursor: pointer;
 }
-
 @media (min-width: 768px) {
   .search-results {
     width: 60%;
     margin: 0 auto;
   }
-
   .search-result {
     width: calc(25% - 10px);
   }
 }
-
-/* Additional styles */
 .icon-logoUpdate {
   text-decoration: none;
   font-size: 25px;
@@ -158,7 +132,6 @@ header.black {
   vertical-align: middle;
   cursor: pointer;
 }
-
 .icon-logoUpdate:before {
   content: "\e5d0";
 }
