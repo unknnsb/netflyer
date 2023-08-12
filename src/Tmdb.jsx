@@ -27,7 +27,7 @@ export default {
       {
         slug: "trending",
         title: "Trending",
-        items: await getData(`/trending/all/week?api_key=${API_KEY}`).catch(
+        items: await getData(`/trending/all/day?api_key=${API_KEY}`).catch(
           () => trending
         ),
       },
@@ -35,6 +35,13 @@ export default {
         slug: "toprated",
         title: "Top Rating",
         items: await getData(`/movie/top_rated?&api_key=${API_KEY}`).catch(
+          () => toprated
+        ),
+      },
+      {
+        slug: "toprated",
+        title: "Top Rating Tv",
+        items: await getData(`/tv/top_rated?&api_key=${API_KEY}`).catch(
           () => toprated
         ),
       },
