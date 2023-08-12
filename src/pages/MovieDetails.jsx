@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { FaTwitter, FaFacebook, FaInstagram } from "react-icons/fa"; // Import social media icons
 import MovieRow from "../components/MovieRow";
 import Header from "../components/Header";
 import "../styles/MovieDetails.css";
@@ -37,6 +38,7 @@ const MovieDetails = () => {
   const [recommendations, setRecommendations] = useState([]);
   const [casts, setCasts] = useState([]); // Added state for casts
   const { isLoaded, user, isSignedIn } = useUser();
+  const [shareUrl, setShareUrl] = useState(""); // Added state for sharing URL
 
   useEffect(() => {
     const fetchData = async (url, setDataCallback) => {
@@ -54,10 +56,12 @@ const MovieDetails = () => {
       (data) => setRecommendations(data.results.slice(0, 10))
     );
     fetchData(
-      // Fetching casts data
       `https://api.themoviedb.org/3/movie/${id}/casts?api_key=bb2818a2abb39fbdf6da79343e5e376b`,
       (data) => setCasts(data.cast)
     );
+
+    // Update the share URL in the state
+    setShareUrl(window.location.href);
   }, [id]);
 
   if (!movieDetails || !isLoaded) {
@@ -119,6 +123,31 @@ const MovieDetails = () => {
           <p>
             Genres: {movieDetails.genres.map((genre) => genre.name).join(", ")}
           </p>
+          {/* Social media sharing buttons */}
+          <div className="social-sharing">
+            <p>Share:</p>
+            <a
+              href={`https://twitter.com/intent/tweet?url=${shareUrl}&text=Check%20out%20${movieDetails.original_title}%20on%20Netflyer `}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FaTwitter />
+            </a>
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FaFacebook />
+            </a>
+            <a
+              href={`https://www.instagram.com/?url=${shareUrl}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FaInstagram />
+            </a>
+          </div>
           {recommendations.length === 0 ? (
             <>Recommended Movies: 0</>
           ) : (

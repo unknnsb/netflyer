@@ -9,7 +9,6 @@
   align-items: center;
   overflow: hidden;
 }
-
 .tv-info {
   text-align: left;
   max-width: 900px;
@@ -18,7 +17,6 @@
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
   margin: 20px;
 }
-
 .tv-info img {
   width: 100%;
   height: auto;
@@ -28,18 +26,15 @@
   margin-bottom: 20px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
 }
-
 .tv-info h1 {
   font-size: 2rem;
   margin-bottom: 10px;
   color: #e50914;
 }
-
 .tv-info p {
   font-size: 1rem;
   margin-bottom: 10px;
 }
-
 .tv-info button {
   background-color: #e50914;
   color: #fff;
@@ -50,15 +45,12 @@
   transition: background-color 0.3s;
   margin-top: 10px;
 }
-
 .tv-info button:hover {
   background-color: #ff0b24;
 }
-
 .tvRow {
   margin-top: 20px;
 }
-
 .loading {
   position: fixed;
   top: 0;
@@ -71,12 +63,9 @@
   justify-content: center;
   align-items: center;
 }
-
-/* Overlay */
 .image-container {
   position: relative;
 }
-
 .overlay {
   position: absolute;
   top: 0;
@@ -92,19 +81,16 @@
   cursor: pointer;
   transition: opacity 0.3s;
 }
-
 .video-logo {
   width: 60%;
   max-width: 150px;
   height: auto;
 }
-
 .tvSelector {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
 }
-
 .tvSelector select {
   background-color: #fff;
   color: #000;
@@ -114,7 +100,6 @@
   font-size: 1rem;
   margin-right: 10px;
 }
-
 .tvSelector button {
   background-color: #e50914;
   color: #fff;
@@ -125,67 +110,52 @@
   transition: background-color 0.3s;
   margin-right: 5px;
 }
-
 .tvSelector button:hover {
   background-color: #ff0b24;
 }
-
-/* Media Queries */
 @media (max-width: 1200px) {
   .tv-info {
     padding: 15px;
     max-width: 100%;
   }
-
   .tv-info h1 {
     font-size: 1.5rem;
   }
-
   .tv-info p {
     font-size: 0.9rem;
   }
-
   .tv-info button {
     padding: 6px 12px;
   }
-
   .tvRow {
     margin-top: 15px;
   }
 }
-
 @media (max-width: 768px) {
   .tv-info {
     padding: 10px;
   }
-
   .tv-info h1 {
     font-size: 1.2rem;
     max-width: 100%;
   }
-
   .tv-info p {
     font-size: 0.8rem;
   }
-
   .tv-info button {
     padding: 5px 10px;
   }
-
   .tvRow {
     margin-top: 10px;
   }
-
   .tvSelector {
     flex-direction: column;
     align-items: flex-start;
   }
-
   .tvSelector select {
     width: 100%;
     margin-bottom: 10px;
   }
-
   .tvSelector button {
     width: 100%;
     padding: 8px 16px;

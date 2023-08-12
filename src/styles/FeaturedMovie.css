@@ -3,13 +3,11 @@
   background-size: cover;
   background-position: center;
 }
-
 .featured--vertical {
   width: inherit;
   height: inherit;
   background: linear-gradient(to top, #111 10%, transparent);
 }
-
 .featured--horizontal {
   width: inherit;
   height: inherit;
@@ -21,38 +19,32 @@
   padding-bottom: 280px;
   padding-top: 70px;
 }
-
 .featured--name {
   font-size: 60px;
-  font-weight: bold;
+  font-weight: 700;
 }
-
 .featured--info {
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 700;
   margin-top: 15px;
 }
-
 .featured--points {
   color: #46d369;
 }
-
 .featured--description {
   margin-top: 15px;
   font-size: 20px;
   color: #999;
   max-width: 40%;
 }
-
 .featured--buttons {
   margin-top: 15px;
 }
-
 .featured--mylistbutton,
 .featured--watchbutton {
   display: inline-block;
   font-size: 20px;
-  font-weight: bold;
+  font-weight: 700;
   padding: 12px 25px;
   border-radius: 5px;
   text-decoration: none;
@@ -60,52 +52,42 @@
   opacity: 1;
   transition: all ease 0.2s;
 }
-
 .featured--mylistbutton:hover,
 .featured--watchbutton:hover {
   opacity: 0.7;
 }
-
 .featured--watchbutton {
   background-color: #fff;
   color: #000;
 }
-
 .featured--mylistbutton {
   background-color: #333;
   color: #fff;
 }
-
 .featured--genres {
   margin-top: 15px;
   font-size: 18px;
   color: #999;
 }
-
 @media (max-width: 960px) {
   .featured {
     height: 110vh;
     min-height: 300px;
   }
-
   .featured--name {
     font-size: 40px;
   }
-
   .featured--horizontal {
     padding-left: 16px;
   }
-
   .featured--info {
     font-size: 16px;
   }
-
   .featured--description {
     font-size: 14px;
     max-width: 100%;
     margin-right: 30px;
   }
-
   .featured--mylistbutton,
   .featured--watchbutton,
   .featured--genres {

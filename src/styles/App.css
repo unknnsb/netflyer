@@ -1,5 +1,4 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
-
 @font-face {
   font-family: nf-icon;
   src: url(https://assets.nflxext.com/ffe/siteui/fonts/nf-icon-v1-93.eot);
@@ -14,7 +13,6 @@
   font-weight: 400;
   font-style: normal;
 }
-
 [class*=" icon-"],
 [class^="icon-"] {
   font-family: nf-icon;
@@ -27,29 +25,24 @@
   -moz-transform: translateZ(0);
   transform: translateZ(0);
 }
-
 * {
   box-sizing: border-box;
 }
-
 body {
   background-color: #111;
   color: #fff;
   margin: 0;
   font-family: "Roboto", sans-serif;
 }
-
 .lists {
   margin-top: -180px;
 }
-
 footer {
   margin: 50px 0;
   font-size: 20px;
   padding: 5px;
   text-align: center;
 }
-
 .loading {
   position: fixed;
   top: 0;
@@ -62,11 +55,9 @@ footer {
   justify-content: center;
   align-items: center;
 }
-
 .hide {
   display: none !important;
 }
-
 @media (max-width: 768px) {
   .lists {
     margin-top: -280px;
