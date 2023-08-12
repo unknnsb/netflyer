@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { RedirectToSignIn, useUser } from "@clerk/clerk-react";
 import "./styles/App.css";
 import Tmdb from "./Tmdb";
 import MovieRow from "./components/MovieRow";
 import FeaturedMovie from "./components/FeaturedMovie";
 import Header from "./components/Header";
-import { RedirectToSignIn, useUser } from "@clerk/clerk-react";
 
 export default () => {
   const [movieList, setMovieList] = useState([]);

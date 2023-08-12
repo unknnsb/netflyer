@@ -11,6 +11,10 @@
   overflow: hidden;
 }
 
+.add-to-list {
+  margin-left: 5px;
+}
+
 .movie-info {
   text-align: left;
   max-width: 900px;

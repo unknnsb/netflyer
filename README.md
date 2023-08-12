@@ -6,7 +6,7 @@ TODO:
 - [x] add watch series page
 - [x] add series season + episode selector
 - [x] improve search bar
-- [ ] add watch list
+- [x] add watch list
 - [ ] add menu bar
 - [ ] add manage account
 

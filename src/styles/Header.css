@@ -32,6 +32,23 @@ header.black {
   height: 35px;
 }
 
+.header--user {
+  display: flex;
+  align-items: center;
+}
+
+.header--user .header--watchlist button{
+  background: #e50914;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 15px;
+  margin-left: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 5px;
+}
+
 .header--logo img,
 .header--user img {
   height: 100%;

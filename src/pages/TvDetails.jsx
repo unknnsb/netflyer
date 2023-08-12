@@ -177,7 +177,12 @@ const TvDetails = () => {
               {showFullOverview ? "Read Less" : "Read More"}
             </button>
           )}
-
+          <button
+            className="add-to-list"
+            onClick={() => (window.location.href = `/list/add/${id}?tv=true`)}
+          >
+            Add to List
+          </button>
           <p>Release Date: {tvDetails.first_air_date}</p>
           <p>
             Ended:{" "}
