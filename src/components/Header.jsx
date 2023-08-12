@@ -82,7 +82,13 @@ const Header = () => {
       </div>
       <div className="header--user">
         <img src={`${user.profileImageUrl}`} alt={`${user.username} profile`} />
+        <div className="header--watchlist">
+          <button onClick={() => (window.location.href = "/list")}>
+            Watch List
+          </button>
+        </div>
       </div>
+
       <div className="header--search">
         {!showSearchInput && (
           <button className="search-icon" onClick={toggleSearchInput}>

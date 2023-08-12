@@ -99,7 +99,12 @@ const MovieDetails = () => {
               {showFullOverview ? "Read Less" : "Read More"}
             </button>
           )}
-
+          <button
+            className="add-to-list"
+            onClick={() => (window.location.href = `/list/add/${id}?tv=false`)}
+          >
+            Add to List
+          </button>
           <p>
             Letterboxd:{" "}
             <a
