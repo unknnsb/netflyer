@@ -93,6 +93,25 @@
   font-weight: 300;
   color: #fff;
 }
+.social-sharing {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+.social-sharing p {
+  margin-right: 10px;
+  font-size: 1rem;
+  color: #e50914;
+}
+.social-sharing a {
+  color: #fff;
+  font-size: 1.2rem;
+  margin-right: 10px;
+  transition: color 0.3s;
+}
+.social-sharing a:hover {
+  color: #ff0b24;
+}
 @media (max-width: 1200px) {
   .movie-info {
     padding: 15px;
