@@ -12,10 +12,18 @@
 .movieRow--list {
   transition: all ease 0.8s;
 }
+.movieRow--item {
+  display: inline-block;
+  width: 280px;
+  cursor: pointer;
+}
 .movieRow--item img {
   width: 100%;
   transform: scale(0.9);
   transition: all ease 0.2s;
+}
+.movieRow--item img:hover {
+  transform: scale(1);
 }
 .movieRow--left,
 .movieRow--right {
@@ -50,4 +58,38 @@
 }
 .icon-leftCaret:before {
   content: "\e868";
+}
+@media (max-width: 960px) {
+  .movieRow--left,
+  .movieRow--right {
+    opacity: 1;
+    display: none;
+  }
+  .movieRow h2 {
+    margin-left: 16px;
+  }
+  .movieRow--listarea {
+    padding-left: 16px;
+  }
+  .movieRow--list {
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    display: inline-block;
+    width: 100% !important;
+  }
+  .movieRow--list::-webkit-scrollbar-track {
+    background: #000;
+  }
+  .movieRow--list::-webkit-scrollbar-thumb {
+    background: #babcbe;
+    border-radius: 8px;
+  }
+  .movieRow--list::-webkit-scrollbar {
+    border-radius: 8px;
+    height: 6px;
+  }
+  .movieRow--item {
+    width: 180px;
+  }
 }

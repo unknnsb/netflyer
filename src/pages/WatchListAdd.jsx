@@ -4,8 +4,8 @@ import axios from "axios";
 import { useUser } from "@clerk/clerk-react";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
-import "../styles/WatchListAdd.css";
 import Header from "../components/Header";
+import Loading from "../components/Loading";
 
 const WatchListAdd = () => {
   const { id } = useParams();
@@ -57,42 +57,44 @@ const WatchListAdd = () => {
   };
 
   if (!isLoaded) {
-    return (
-      <div className="loading">
-        <img
-          src="https://cdn.lowgif.com/small/0534e2a412eeb281-the-counterintuitive-tech-behind-netflix-s-worldwide.gif"
-          alt="loading"
-        ></img>
-      </div>
-    );
+    return <Loading />;
   }
 
   return (
-    <>
+    <div className="min-h-screen">
       <Header />
-      <div className="watchlist-container">
-        <h2>Add to Watch List</h2>
-        <div className="watchlist-details">
+      <div className="max-w-screen-md mt-20 mx-auto p-4">
+        <h2 className="text-2xl text-white font-semibold mb-4">
+          Add to Watch List
+        </h2>
+        <div className="flex flex-col items-center">
           {details.poster_path && (
             <img
+              className="w-60 h-80 rounded-lg mb-4 object-cover"
               src={`https://image.tmdb.org/t/p/w300${details.poster_path}`}
               alt={details.title || details.name}
             />
           )}
-          <h3>{details.title || details.name}</h3>
-          <button onClick={addToWatchList}>Add to Watch List</button>
+          <h3 className="text-white text-lg font-semibold">
+            {details.title || details.name}
+          </h3>
+          <button
+            className="px-4 py-2 mt-4 rounded-md bg-green-600 text-white"
+            onClick={addToWatchList}
+          >
+            Add to Watch List
+          </button>
         </div>
         {loading && (
-          <div className="loading">
-            <img
-              src="https://cdn.lowgif.com/small/0534e2a412eeb281-the-counterintuitive-tech-behind-netflix-s-worldwide.gif"
-              alt="loading"
-            ></img>
+          <div className="flex justify-center items-center mt-4">
+            <Loading />
           </div>
         )}
-        {message && <p className="success">{message}</p>}
+        {message && (
+          <p className="text-green-500 mt-2 text-center">{message}</p>
+        )}
       </div>
-    </>
+    </div>
   );
 };
 

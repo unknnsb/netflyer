@@ -45,7 +45,7 @@ export default () => {
 
   return (
     <div className="page">
-      <Header />
+      <Header changeOnScroll={true} />
 
       {featuredData && <FeaturedMovie item={featuredData} />}
 

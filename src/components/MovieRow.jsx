@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../styles/MovieRow.css"
+import "../styles/MovieRow.css";
 
 const MovieRow = ({ title, items }) => {
   const listW = items.results.length * 280;
@@ -41,41 +41,40 @@ const MovieRow = ({ title, items }) => {
   };
 
   return (
-    <div className="mb-8 relative">
-      <h2 className="ml-8">{title}</h2>
+    <div className="movieRow">
+      <h2>{title}</h2>
       <div
-        className={`absolute left-0 w-10 h-425 bg-black bg-opacity-60 z-50 flex items-center justify-center overflow-hidden cursor-pointer transition-opacity duration-200 ${
-          hideLeftArrow ? "opacity-0" : "opacity-100"
+        className={`movieRow--left indicator-icon ${
+          hideLeftArrow ? "hide" : ""
         }`}
         onClick={handleLeftArrow}
       >
-        <i className="icon-leftCaret text-2xl" />
+        <i className="icon-leftCaret" />
       </div>
       <div
-        className={`absolute right-0 w-10 h-425 bg-black bg-opacity-60 z-50 flex items-center justify-center overflow-hidden cursor-pointer transition-opacity duration-200 ${
-          hideRightArrow ? "opacity-0" : "opacity-100"
+        className={`movieRow--right indicator-icon ${
+          hideRightArrow ? "hide" : ""
         }`}
         onClick={handleRightArrow}
       >
-        <i className="icon-rightCaret text-2xl" />
+        <i className="icon-rightCaret" />
       </div>
 
-      <div className="overflow-hidden pl-8">
+      <div className="movieRow--listarea">
         <div
-          className="whitespace-nowrap overflow-x-auto overflow-y-hidden inline-block"
+          className="movieRow--list"
           style={{
-            marginLeft: `${scrollX}px`,
-            width: `${items.results.length * 280}px`,
+            marginLeft: scrollX,
+            width: items.results.length * 280,
           }}
         >
           {items.results.length &&
             items.results.map((item, index) => (
-              <div key={index} className="inline-block w-72 cursor-pointer">
+              <div key={index} className="movieRow--item">
                 <img
                   src={`https://image.tmdb.org/t/p/w300${item.poster_path}`}
                   alt={item.title}
                   onClick={() => onClick(item.id, item)}
-                  className="w-full transform scale-90 transition-transform duration-200 hover:scale-100"
                 />
               </div>
             ))}

@@ -5,8 +5,9 @@ import Header from "../components/Header";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import "../styles/TvDetails.css";
 import { useUser } from "@clerk/clerk-react";
+import RecommendationCard from "../components/RecommendationCard";
+import Loading from "../components/Loading";
 
 const sliderSettings = {
   dots: true,
@@ -32,25 +33,26 @@ const sliderSettings = {
 
 const TvDetails = () => {
   const [tvDetails, setTvDetails] = useState(null);
-  const [selectedSeason, setSelectedSeason] = useState(1);
-  const [showFullOverview, setShowFullOverview] = useState(false);
+  const [allEpisodesVisibleBySeason, setAllEpisodesVisibleBySeason] = useState(
+    {}
+  );
+  const [selectedSeasonNumber, setSelectedSeasonNumber] = useState(1);
   const [recommendations, setRecommendations] = useState([]);
-  const [allEpisodesVisible, setAllEpisodesVisible] = useState(false);
   const [episodes, setEpisodes] = useState([]);
   const [credits, setCredits] = useState([]);
   const navigate = useNavigate();
   const { isSignedIn, isLoaded } = useUser();
-  let { id } = useParams();
+  const { id } = useParams();
 
   useEffect(() => {
-    const fetchtvDetails = async () => {
+    const fetchTvDetails = async () => {
       const response = await fetch(
         `https://api.themoviedb.org/3/tv/${id}?api_key=bb2818a2abb39fbdf6da79343e5e376b`
       );
       const data = await response.json();
       setTvDetails(data);
     };
-    fetchtvDetails();
+    fetchTvDetails();
   }, [id]);
 
   useEffect(() => {
@@ -67,7 +69,7 @@ const TvDetails = () => {
   useEffect(() => {
     const fetchEpisodes = async () => {
       const response = await fetch(
-        `https://api.themoviedb.org/3/tv/${id}/season/${selectedSeason}?api_key=bb2818a2abb39fbdf6da79343e5e376b`
+        `https://api.themoviedb.org/3/tv/${id}/season/${selectedSeasonNumber}?api_key=bb2818a2abb39fbdf6da79343e5e376b`
       );
       const data = await response.json();
       const filteredEpisodes = data.episodes.filter(
@@ -76,7 +78,7 @@ const TvDetails = () => {
       setEpisodes(filteredEpisodes);
     };
     fetchEpisodes();
-  }, [id, selectedSeason]);
+  }, [id, selectedSeasonNumber]);
 
   useEffect(() => {
     const fetchCredits = async () => {
@@ -99,162 +101,149 @@ const TvDetails = () => {
     window.open(shareUrl, "_blank");
   };
 
-  if (!tvDetails || !isLoaded) {
-    return (
-      <div className="loading">
-        <img
-          src="https://cdn.lowgif.com/small/0534e2a412eeb281-the-counterintuitive-tech-behind-netflix-s-worldwide.gif"
-          alt="loading"
-        ></img>
-      </div>
-    );
-  }
-
-  const overview = showFullOverview
-    ? tvDetails.overview
-    : tvDetails.overview.slice(0, 150) +
-      (tvDetails.overview.length > 150 ? "..." : "");
-
   const watch = (season, episode) => {
     navigate(`/watch/tv/${id}/${season}/${episode}`);
   };
 
-  const renderSeasonSelector = () => {
-    const options = [];
-    for (let i = 1; i <= tvDetails.number_of_seasons; i++) {
-      options.push(
-        <option key={i} value={i}>
-          Season {i}
-        </option>
-      );
-    }
-    return (
-      <select
-        value={selectedSeason}
-        onChange={(e) => setSelectedSeason(Number(e.target.value))}
-      >
-        {options}
-      </select>
-    );
+  const addToWatchList = () => {
+    navigate(`/list/add/${id}?tv=true`);
   };
 
-  const renderEpisodes = () => {
-    const displayedEpisodes = allEpisodesVisible
+  const toggleEpisodesVisibility = (seasonNumber) => {
+    setAllEpisodesVisibleBySeason((prevState) => ({
+      ...prevState,
+      [seasonNumber]: !prevState[seasonNumber],
+    }));
+  };
+
+  const renderEpisodes = (seasonNumber) => {
+    const displayedEpisodes = allEpisodesVisibleBySeason[seasonNumber]
       ? episodes
       : episodes.slice(0, 10);
     return displayedEpisodes.map((episode) => (
       <button
         key={episode.id}
-        onClick={() => watch(selectedSeason, episode.episode_number)}
+        onClick={() => watch(seasonNumber, episode.episode_number)}
+        className="bg-red-500 ml-3 hover:bg-red-600 text-white px-4 py-2 rounded-md focus:outline-none"
       >
         Episode {episode.episode_number}: {episode.name}
       </button>
     ));
   };
 
-  const openWikipediaPage = (originalName) => {
-    const wikipediaUrl = `https://en.wikipedia.org/wiki/${originalName}`;
-    window.open(wikipediaUrl, "_blank");
-  };
+  if (!tvDetails) {
+    return <Loading />;
+  }
 
   return (
-    <>
-      <Header />
-      <div className="tvDetails">
-        <div className="tv-info">
-          <div className="image-container">
-            <a href={`/watch/tv/${id}/1`}>
-              <img
-                src={`https://image.tmdb.org/t/p/w500${tvDetails.poster_path}`}
-                alt={tvDetails.original_name}
-              />
-              <div className="overlay">
-                <img src="/play.png" alt="Video Logo" className="video-logo" />
-              </div>
-            </a>
+    <div>
+      <Header changeOnScroll={false} />
+      <div className="container mx-auto p-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="col-span-1">
+            <img
+              src={`https://image.tmdb.org/t/p/w500${tvDetails.poster_path}`}
+              alt={tvDetails.original_name}
+              className="w-full h-auto rounded-lg shadow-md"
+            />
           </div>
-          <h1>{tvDetails.name}</h1>
-          <p>{overview}</p>
-          {tvDetails.overview.length > 150 && (
-            <button onClick={() => setShowFullOverview(!showFullOverview)}>
-              {showFullOverview ? "Read Less" : "Read More"}
+          <div className="col-span-2 space-y-4 md:mt-20">
+            <h1 className="text-2xl font-bold">{tvDetails.name}</h1>
+            <p className="text-gray-600">{tvDetails.overview}</p>
+            <button
+              onClick={() => setShowFullOverview(!showFullOverview)}
+              className="text-red-500 hover:underline focus:outline-none"
+            >
+              Read More
             </button>
-          )}
-          <button
-            className="add-to-list"
-            onClick={() => (window.location.href = `/list/add/${id}?tv=true`)}
-          >
-            Add to List
-          </button>
-          <p>Release Date: {tvDetails.first_air_date}</p>
-          <p>
-            Ended:{" "}
-            {tvDetails.next_episode_to_air === null
-              ? tvDetails.last_air_date
-              : "Not Ended"}
-          </p>
-          <p>Runtime: {tvDetails.episode_run_time} minutes</p>
-          <p>Total Episode: {tvDetails.number_of_episodes}</p>
-          <p>Total Seasons: {tvDetails.number_of_seasons}</p>
-
-          {tvDetails.genres ? (
-            <p>
-              Genres: {tvDetails.genres.map((genre) => genre.name).join(", ")}
-            </p>
-          ) : (
-            <p>Loading genres...</p>
-          )}
-          <div className="tvSelector">
-            <div className="seasonSelector">{renderSeasonSelector()}</div>
-            <div className="episodeList">
-              {renderEpisodes()}
-              {episodes.length > 10 && !allEpisodesVisible && (
-                <button onClick={() => setAllEpisodesVisible(true)}>
-                  View All Episodes
+            <button
+              className="bg-red-500 ml-2 hover:bg-red-600 text-white px-4 py-2 rounded-md focus:outline-none"
+              onClick={addToWatchList}
+            >
+              Add to Watch List
+            </button>
+            <div className="flex items-center space-x-2">
+              <p className="text-gray-600">Share:</p>
+              <button
+                className="text-red-500 hover:text-red-600 focus:outline-none"
+                onClick={shareOnTwitter}
+              >
+                Twitter
+              </button>
+              <button
+                className="text-red-500 hover:text-red-600 focus:outline-none"
+                onClick={shareOnFacebook}
+              >
+                Facebook
+              </button>
+            </div>
+            <div className="mt-4">
+              <div className="flex items-center space-x-4">
+                <p className="text-gray-600">Select Season:</p>
+                <select
+                  value={selectedSeasonNumber}
+                  onChange={(e) =>
+                    setSelectedSeasonNumber(Number(e.target.value))
+                  }
+                  className="bg-gray-100 p-2 text-black rounded-md focus:outline-none"
+                >
+                  {tvDetails.seasons.map((season) => (
+                    <option
+                      key={season.season_number}
+                      value={season.season_number}
+                    >
+                      Season {season.season_number}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  onClick={() => toggleEpisodesVisibility(selectedSeasonNumber)}
+                  className="text-red-500 hover:underline focus:outline-none"
+                >
+                  {allEpisodesVisibleBySeason[selectedSeasonNumber]
+                    ? "Show Less Episodes"
+                    : "Show All Episodes"}
                 </button>
-              )}
-              {allEpisodesVisible && (
-                <button onClick={() => setAllEpisodesVisible(false)}>
-                  Hide All Episode
-                </button>
+              </div>
+              <div className="mt-2 space-y-2">
+                {renderEpisodes(selectedSeasonNumber)}
+              </div>
+            </div>
+            <div className="mt-6">
+              <h2 className="text-xl font-semibold">People Also Watch</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+                {recommendations.map((recommendation) => (
+                  <RecommendationCard
+                    key={recommendation.id}
+                    movie={recommendation}
+                  />
+                ))}
+              </div>
+            </div>
+            <div className="mt-6">
+              <h2 className="text-xl font-semibold">Cast</h2>
+              {credits.length > 0 && (
+                <Slider {...sliderSettings}>
+                  {credits.map((credit) => (
+                    <div key={credit.id} className="cast-item">
+                      <img
+                        src={`https://image.tmdb.org/t/p/w500${credit.profile_path}`}
+                        alt={credit.name}
+                        onClick={() => openWikipediaPage(credit.original_name)}
+                        className="w-full h-auto rounded-lg cursor-pointer"
+                      />
+                      <p className="mt-2">
+                        <strong>{credit.name}</strong> as {credit.character}
+                      </p>
+                    </div>
+                  ))}
+                </Slider>
               )}
             </div>
           </div>
-          <MovieRow
-            title="Recommended Shows"
-            items={{ results: recommendations }}
-          />
-          <div className="cast-carousel">
-            <h2>Cast</h2>
-            {credits.length > 0 && (
-              <Slider {...sliderSettings}>
-                {credits.map((credit) => (
-                  <div key={credit.id} className="cast-item">
-                    <img
-                      src={`https://image.tmdb.org/t/p/w500${credit.profile_path}`}
-                      alt={credit.name}
-                      onClick={() => openWikipediaPage(credit.original_name)}
-                    />
-                    <p>
-                      <strong>{credit.name}</strong> as {credit.character}
-                    </p>
-                  </div>
-                ))}
-              </Slider>
-            )}
-          </div>
-          <div className="social-sharing">
-            <p>Share:</p>
-            <a href="#" onClick={shareOnTwitter}>
-              Twitter
-            </a>
-            <a href="#" onClick={shareOnFacebook}>
-              Facebook
-            </a>
-          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

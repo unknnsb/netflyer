@@ -6,7 +6,7 @@ import Loading from "./Loading";
 import { AiOutlineSearch } from "react-icons/ai";
 import { BsListCheck } from "react-icons/bs";
 
-const Header = () => {
+const Header = ({ changeOnScroll }) => {
   const [scrollBgColor, setScrollBgColor] = useState("transparent");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -14,7 +14,11 @@ const Header = () => {
   const navigate = useNavigate();
 
   const handleScroll = () => {
-    setScrollBgColor(window.scrollY > 0 ? "black" : "transparent");
+    if (changeOnScroll) {
+      setScrollBgColor(window.scrollY > 0 ? "black" : "transparent");
+    } else {
+      setScrollBgColor("black"); // Always set to dark color when changeOnScroll is false
+    }
   };
 
   const handleSearchChange = async (event) => {
@@ -61,8 +65,8 @@ const Header = () => {
   return (
     <header
       className={classNames("fixed w-full top-0 z-50 transition duration-300", {
-        "bg-transparent": scrollBgColor === "transparent",
-        "bg-black": scrollBgColor === "black",
+        "bg-transparent": !changeOnScroll && scrollBgColor === "transparent",
+        "bg-black": changeOnScroll || scrollBgColor === "black",
       })}
     >
       <div className="flex items-center justify-between px-6 py-4">
