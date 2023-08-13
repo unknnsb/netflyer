@@ -8,7 +8,7 @@ import {
   deleteDoc,
   doc,
 } from "firebase/firestore";
-import { db } from "../firebase";
+import { db } from "../services/firebase";
 import Header from "../components/Header";
 import Loading from "../components/Loading";
 

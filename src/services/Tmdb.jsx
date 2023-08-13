@@ -5,7 +5,7 @@ import {
   action,
   documentary,
   movieInfo,
-} from "./utils";
+} from "../utils/utils";
 
 const API_KEY = "bb2818a2abb39fbdf6da79343e5e376b";
 const API_BASE = "https://api.themoviedb.org/3";
