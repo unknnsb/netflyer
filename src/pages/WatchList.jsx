@@ -10,31 +10,33 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import Header from "../components/Header";
-import "../styles/WatchList.css";
+import Loading from "../components/Loading";
 
 const WatchListItem = ({ item, removeFromWatchlist }) => (
-  <li className="watchlist-item" key={item.id}>
-    <div className="item-content">
-      <img
-        className="item-poster"
-        src={`https://image.tmdb.org/t/p/w92${item.poster}`}
-        alt={item.title}
-      />
-      <div className="item-details">
-        <p className="item-title">{item.title}</p>
-        <p className="item-type">{item.isTvShow ? "(TV Show)" : "(Movie)"}</p>
+  <li className="flex mb-4" key={item.id}>
+    <img
+      className="w-16 h-24 rounded-md object-cover mr-4"
+      src={`https://image.tmdb.org/t/p/w92${item.poster}`}
+      alt={item.title}
+    />
+    <div className="flex flex-col">
+      <p className="text-white text-lg font-semibold">{item.title}</p>
+      <p className="text-gray-400 text-sm">
+        {item.isTvShow ? "(TV Show)" : "(Movie)"}
+      </p>
+      <div className="mt-2">
         <button
-          className="remove-button"
+          className="px-4 py-2 rounded-md bg-red-600 text-white mr-2"
           onClick={() => removeFromWatchlist(item.id)}
         >
           Remove
         </button>
         <button
-          className="play-list"
-          onClick={ () =>
-            item.isTvShow
-              ? (window.location.href = `/tv/${item.id}`)
-              : (window.location.href = `/movie/${item.id}`)
+          className="px-4 py-2 rounded-md bg-green-600 text-white"
+          onClick={() =>
+            (window.location.href = item.isTvShow
+              ? `/tv/${item.id}`
+              : `/movie/${item.id}`)
           }
         >
           Watch
@@ -87,11 +89,11 @@ const WatchList = () => {
     );
 
     if (filteredItems.length === 0) {
-      return <p className="empty-message">Watch List Is Empty...</p>;
+      return <p className="text-white">Watch List Is Empty...</p>;
     }
 
     return (
-      <ul className="watchlist">
+      <ul className="mt-4">
         {filteredItems.map((item) => (
           <WatchListItem
             key={item.id}
@@ -104,37 +106,27 @@ const WatchList = () => {
   };
 
   if (!isLoaded) {
-    return (
-      <div className="loading">
-        <img
-          className="loading-gif"
-          src="https://cdn.lowgif.com/small/0534e2a412eeb281-the-counterintuitive-tech-behind-netflix-s-worldwide.gif"
-          alt="loading"
-        ></img>
-      </div>
-    );
+    return <Loading />;
   }
 
   return (
-    <div className="watchlist-container">
-      <Header />
-      <h2 className="watchlist-title">Watch List</h2>
-      {loading ? (
-        <div className="loading">
-          <img
-            className="loading-gif"
-            src="https://cdn.lowgif.com/small/0534e2a412eeb281-the-counterintuitive-tech-behind-netflix-s-worldwide.gif"
-            alt="loading"
-          ></img>
-        </div>
-      ) : (
-        <div>
-          <h3 className="watchlist-category">TV Shows</h3>
-          {renderWatchlist(true)}
-          <h3 className="watchlist-category">Movies</h3>
-          {renderWatchlist(false)}
-        </div>
-      )}
+    <div className="min-h-screen">
+      <Header changeOnScroll={false} />
+      <div className="max-w-screen-md mt-20 mx-auto p-4">
+        <h2 className="text-2xl text-white font-semibold mb-4">Watch List</h2>
+        {loading ? (
+          <div className="flex justify-center items-center">
+            <Loading />
+          </div>
+        ) : (
+          <div>
+            <h3 className="text-lg text-white font-semibold mb-2">TV Shows</h3>
+            {renderWatchlist(true)}
+            <h3 className="text-lg text-white font-semibold mt-4">Movies</h3>
+            {renderWatchlist(false)}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

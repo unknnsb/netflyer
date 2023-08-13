@@ -10,6 +10,7 @@ import WatchMovie from "./pages/WatchMovie";
 import WatchTv from "./pages/WatchTv.jsx";
 import WatchListAdd from "./pages/WatchListAdd.jsx";
 import WatchList from "./pages/WatchList.jsx";
+import "./index.css"
 
 // Ensure that the Publishable Key is available
 const clerkPubKey = import.meta.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY;

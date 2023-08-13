@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { FaTwitter, FaFacebook, FaInstagram } from "react-icons/fa"; // Import social media icons
-import MovieRow from "../components/MovieRow";
+import { FaTwitter, FaFacebook, FaInstagram } from "react-icons/fa";
 import Header from "../components/Header";
-import "../styles/MovieDetails.css";
 import { useUser } from "@clerk/clerk-react";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
+import Loading from "../components/Loading";
+import RecommendationCard from "../components/RecommendationCard";
 
 const sliderSettings = {
   dots: true,
@@ -36,9 +34,9 @@ const MovieDetails = () => {
   const [movieDetails, setMovieDetails] = useState(null);
   const [showFullOverview, setShowFullOverview] = useState(false);
   const [recommendations, setRecommendations] = useState([]);
-  const [casts, setCasts] = useState([]); // Added state for casts
-  const { isLoaded, user, isSignedIn } = useUser();
-  const [shareUrl, setShareUrl] = useState(""); // Added state for sharing URL
+  const [casts, setCasts] = useState([]);
+  const { isLoaded } = useUser();
+  const [shareUrl, setShareUrl] = useState("");
 
   useEffect(() => {
     const fetchData = async (url, setDataCallback) => {
@@ -59,20 +57,11 @@ const MovieDetails = () => {
       `https://api.themoviedb.org/3/movie/${id}/casts?api_key=bb2818a2abb39fbdf6da79343e5e376b`,
       (data) => setCasts(data.cast)
     );
-
-    // Update the share URL in the state
     setShareUrl(window.location.href);
   }, [id]);
 
   if (!movieDetails || !isLoaded) {
-    return (
-      <div className="loading">
-        <img
-          src="https://cdn.lowgif.com/small/0534e2a412eeb281-the-counterintuitive-tech-behind-netflix-s-worldwide.gif"
-          alt="loading"
-        ></img>
-      </div>
-    );
+    return <Loading />;
   }
 
   const overview = showFullOverview
@@ -81,102 +70,117 @@ const MovieDetails = () => {
       (movieDetails.overview.length > 150 ? "..." : "");
 
   return (
-    <>
-      <Header />
-      <div className="movieDetails">
-        <div className="movie-info">
-          <div className="image-container">
-            <a href={`/watch/movie/${id}`}>
-              <img
-                src={`https://image.tmdb.org/t/p/w500${movieDetails.poster_path}`}
-                alt={movieDetails.title || movieDetails.name}
-              />
-              <div className="overlay">
-                <img src="/play.png" alt="Video Logo" className="video-logo" />
-              </div>
-            </a>
-          </div>
-          <h1>{movieDetails.original_title}</h1>
-          <p>{overview}</p>
-          {movieDetails.overview.length > 150 && (
-            <button onClick={() => setShowFullOverview(!showFullOverview)}>
-              {showFullOverview ? "Read Less" : "Read More"}
-            </button>
-          )}
-          <button
-            className="add-to-list"
-            onClick={() => (window.location.href = `/list/add/${id}?tv=false`)}
-          >
-            Add to List
-          </button>
-          <p>
-            Letterboxd:{" "}
-            <a
-              className="letterboxd"
-              href={`https://letterboxd.com/tmdb/${id}`}
-            >
-              {movieDetails.original_title}
-            </a>
-          </p>
-          <p>Release Date: {movieDetails.release_date}</p>
-          <p>Runtime: {movieDetails.runtime} minutes</p>
-          <p>
-            Genres: {movieDetails.genres.map((genre) => genre.name).join(", ")}
-          </p>
-          {/* Social media sharing buttons */}
-          <div className="social-sharing">
-            <p>Share:</p>
-            <a
-              href={`https://twitter.com/intent/tweet?url=${shareUrl}&text=Check%20out%20${movieDetails.original_title}%20on%20Netflyer `}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FaTwitter />
-            </a>
-            <a
-              href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FaFacebook />
-            </a>
-            <a
-              href={`https://www.instagram.com/?url=${shareUrl}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FaInstagram />
-            </a>
-          </div>
-          {recommendations.length === 0 ? (
-            <>Recommended Movies: 0</>
-          ) : (
-            <MovieRow
-              title="Recommended Movies"
-              items={{ results: recommendations }}
+    <div>
+      <Header changeOnScroll={false} />
+      <div className="container mx-auto p-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="col-span-1">
+            <img
+              src={`https://image.tmdb.org/t/p/w500${movieDetails.poster_path}`}
+              alt={movieDetails.title || movieDetails.name}
+              className="w-full h-auto rounded-lg shadow-md"
             />
-          )}
-          <div>
-            <h2>Cast</h2>
-            {casts.length > 0 && (
-              <Slider {...sliderSettings}>
-                {casts.map((cast) => (
-                  <div key={cast.id} className="cast-item">
-                    <img
-                      src={`https://image.tmdb.org/t/p/w500${cast.profile_path}`}
-                      alt={cast.name}
-                    />
-                    <p>
-                      <strong>{cast.name}</strong> as {cast.character}
-                    </p>
-                  </div>
-                ))}
-              </Slider>
+          </div>
+          <div className="col-span-2 space-y-4 md:mt-20">
+            <h1 className="text-2xl font-bold">
+              {movieDetails.original_title}
+            </h1>
+            <p className="text-gray-600">{overview}</p>
+            {movieDetails.overview.length > 150 && (
+              <button
+                onClick={() => setShowFullOverview(!showFullOverview)}
+                className="text-red-500 hover:underline focus:outline-none"
+              >
+                {showFullOverview ? "Read Less" : "Read More"}
+              </button>
             )}
+            <button
+              className="bg-red-500 ml-2 hover:bg-red-600 text-white px-4 py-2 rounded-md focus:outline-none"
+              onClick={() => (window.location.href = `/watch/movie/${id}`)}
+            >
+              Watch
+            </button>
+            <button
+              className="bg-red-500 ml-2 hover:bg-red-600 text-white px-4 py-2 rounded-md focus:outline-none"
+              onClick={() => (window.location.href = `/list/add/${id}`)}
+            >
+              Add To List
+            </button>
+            <p className="text-gray-600">
+              Letterboxd:{" "}
+              <a
+                className="text-red-500 hover:underline"
+                href={`https://letterboxd.com/tmdb/${id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {movieDetails.original_title}
+              </a>
+            </p>
+            <p>Release Date: {movieDetails.release_date}</p>
+            <p>Runtime: {movieDetails.runtime} minutes</p>
+            <p>
+              Genres:{" "}
+              {movieDetails.genres.map((genre) => genre.name).join(", ")}
+            </p>
+            <div className="flex items-center space-x-2">
+              <p className="text-gray-600">Share:</p>
+              <a
+                href={`https://twitter.com/intent/tweet?url=${shareUrl}&text=Check%20out%20${movieDetails.original_title}%20on%20Netflyer `}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaTwitter className="text-red-500 hover:text-red-600" />
+              </a>
+              <a
+                href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaFacebook className="text-red-500 hover:text-red-600" />
+              </a>
+              <a
+                href={`https://www.instagram.com/?url=${shareUrl}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaInstagram className="text-red-500 hover:text-red-600" />
+              </a>
+            </div>
+            <div className="mt-6">
+              <h2 className="text-xl font-semibold">People Also Watch</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+                {recommendations.map((recommendation) => (
+                  <RecommendationCard
+                    key={recommendation.id}
+                    movie={recommendation}
+                  />
+                ))}
+              </div>
+            </div>
+            <div className="mt-6">
+              <h2 className="text-xl font-semibold">Cast</h2>
+              {casts.length > 0 && (
+                <Slider {...sliderSettings}>
+                  {casts.map((cast) => (
+                    <div key={cast.id} className="cast-item">
+                      <img
+                        src={`https://image.tmdb.org/t/p/w500${cast.profile_path}`}
+                        alt={cast.name}
+                        className="w-full h-auto rounded-lg"
+                      />
+                      <p className="mt-2">
+                        <strong>{cast.name}</strong> as {cast.character}
+                      </p>
+                    </div>
+                  ))}
+                </Slider>
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
