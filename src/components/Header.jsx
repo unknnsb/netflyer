@@ -1,155 +1,133 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { AiOutlineSearch, AiOutlineClose } from "react-icons/ai";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import classNames from "classnames";
 import { useUser } from "@clerk/clerk-react";
-import "../styles/Header.css";
+import Loading from "./Loading";
+import { AiOutlineSearch } from "react-icons/ai";
+import { BsListCheck } from "react-icons/bs";
 
 const Header = () => {
-  const [blackHeader, setBlackHeader] = useState(false);
+  const [scrollBgColor, setScrollBgColor] = useState("transparent");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [showSearchInput, setShowSearchInput] = useState(false);
-  const [notFoundMessage, setNotFoundMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
+  const navigate = useNavigate();
 
-  const fetchSearchResults = async () => {
+  const handleScroll = () => {
+    setScrollBgColor(window.scrollY > 0 ? "black" : "transparent");
+  };
+
+  const handleSearchChange = async (event) => {
+    const query = event.target.value;
+    setSearchQuery(query);
+
+    if (!query) {
+      setSearchResults([]);
+      return;
+    }
+
+    const TMDB_API_KEY = "bb2818a2abb39fbdf6da79343e5e376b";
+    const TMDB_API_URL = "https://api.themoviedb.org/3/search/multi";
+
     try {
-      setIsLoading(true); // Set loading state
-      const response = await axios.get(
-        `https://api.themoviedb.org/3/search/multi?api_key=bb2818a2abb39fbdf6da79343e5e376b&query=${searchQuery}`
+      const response = await fetch(
+        `${TMDB_API_URL}?api_key=${TMDB_API_KEY}&query=${query}`
       );
-      setSearchResults(response.data.results);
-      if (response.data.results.length === 0) {
-        setNotFoundMessage(`Not Found for: ${searchQuery}`);
-      } else {
-        setNotFoundMessage("");
-      }
+      const data = await response.json();
+      setSearchResults(data.results || []);
     } catch (error) {
       console.error("Error fetching search results:", error);
-    } finally {
-      setTimeout(() => {
-        setIsLoading(false); // Disable loading state after 3 seconds
-      }, 1000);
     }
-  };
-
-  const toggleSearchInput = () => {
-    setShowSearchInput(!showSearchInput);
-    setSearchResults([]);
-    setSearchQuery("");
-    setNotFoundMessage("");
-  };
-
-  const clearSearchResults = () => {
-    setSearchResults([]);
-    setSearchQuery("");
-    setNotFoundMessage("");
-    setShowSearchInput(false);
   };
 
   useEffect(() => {
-    const scrollListener = () => {
-      setBlackHeader(window.scrollY > 15);
-    };
-
-    window.addEventListener("scroll", scrollListener);
-
+    window.addEventListener("scroll", handleScroll);
     return () => {
-      window.removeEventListener("scroll", scrollListener);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
-  const onClick = (id, item) => {
-    window.location.href = `/movie/${id}`;
-    if (item.released_date) {
-      window.location.href = `/movie/${id}`;
-    } else if (item.first_air_date) {
-      window.location.href = `/tv/${id}`;
-    }
+  const redirectToResult = (result) => {
+    const path = result.first_air_date
+      ? `/tv/${result.id}`
+      : `/movie/${result.id}`;
+    navigate(path);
   };
 
-  return (
-    <header className={`header ${blackHeader ? "black" : ""}`}>
-      <div className="header--logo">
-        <a className="logo" href="/" title="Netflyer">
-          <img
-            src="/logo.png"
-            className="icon-logoUpdate"
-            alt="Netflyer Logo"
-          />
-        </a>
-      </div>
-      <div className="header--user">
-        <img src={`${user.profileImageUrl}`} alt={`${user.username} profile`} />
-        <div className="header--watchlist">
-          <button onClick={() => (window.location.href = "/list")}>
-            Watch List
-          </button>
-        </div>
-      </div>
+  if (!isLoaded) {
+    return <Loading />;
+  }
 
-      <div className="header--search">
-        {!showSearchInput && (
-          <button className="search-icon" onClick={toggleSearchInput}>
-            <AiOutlineSearch />
-          </button>
-        )}
-        {showSearchInput && (
-          <div className="search-input">
+  return (
+    <header
+      className={classNames("fixed w-full top-0 z-50 transition duration-300", {
+        "bg-transparent": scrollBgColor === "transparent",
+        "bg-black": scrollBgColor === "black",
+      })}
+    >
+      <div className="flex items-center justify-between px-6 py-4">
+        <div className="flex items-center">
+          <img
+            onClick={() => navigate("/")}
+            src="/logo.png"
+            alt="Netflix Logo"
+            className="h-8 mr-6 "
+          />
+          <div className="relative md:block hidden">
             <input
               type="text"
-              placeholder="Search movies and TV series..."
+              placeholder="Search Movie/Series/Anime..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleSearchChange}
+              className="bg-gray-700 text-white px-4 py-2 rounded-lg w-64"
             />
-            <button onClick={fetchSearchResults}>Search</button>
-            <button onClick={clearSearchResults}>
-              <AiOutlineClose />
-            </button>
-          </div>
-        )}
-      </div>
-      {searchResults.length > 0 && (
-        <div className="search-results">
-          <div className="close-button">
-            <button onClick={clearSearchResults}>
-              <AiOutlineClose />
-            </button>
-          </div>
-          {isLoading ? (
-            <div className="loading">
-              <img
-                src="https://cdn.lowgif.com/small/0534e2a412eeb281-the-counterintuitive-tech-behind-netflix-s-worldwide.gif"
-                alt="loading"
-              />
-            </div>
-          ) : (
-            <>
-              {notFoundMessage && (
-                <p className="not-found">{notFoundMessage}</p>
-              )}
-              {searchResults.map((result) => (
-                <div key={result.id} className="search-result">
-                  <a
-                    style={{
-                      textDecoration: "none",
-                      color: "#fff",
-                    }}
-                    onClick={() => onClick(result.id, result)}
+            {searchQuery && (
+              <div className="absolute top-full left-0 mt-2 bg-white text-gray-800 rounded-lg py-2 px-4 shadow">
+                {searchResults.map((result) => (
+                  <div
+                    key={result.id}
+                    className="mb-2 cursor-pointer"
+                    onClick={() => redirectToResult(result)}
                   >
                     <img
-                      src={`https://image.tmdb.org/t/p/w200/${result.poster_path}`}
-                      alt={result.title || result.name}
+                      src={`https://image.tmdb.org/t/p/w92${result.poster_path}`}
+                      alt={`${result.title || result.name} Poster`}
+                      className="h-12 mr-2 rounded"
                     />
-                    <p>{result.title || result.name}</p>
-                  </a>
-                </div>
-              ))}
-            </>
-          )}
+                    <span>{result.title || result.name}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-      )}
+        <div className="flex items-center space-x-4">
+          <Link
+            to="/list"
+            className="text-white md:block hidden hover:text-gray-300"
+          >
+            Watch List
+          </Link>
+          <div className="flex items-center">
+            <img
+              src={`${user.profileImageUrl}`}
+              alt={`${user.username} User Profile`}
+              className="h-8 rounded-full"
+            />
+          </div>
+        </div>
+        <div className="md:hidden flex">
+          <button
+            onClick={() => navigate("/search")}
+            className="text-white hover:text-gray-300"
+          >
+            <AiOutlineSearch className="h-6 w-6" />
+          </button>
+          <Link to="/list" className="text-white hover:text-gray-300 ml-4">
+            <BsListCheck className="h-6 w-6" />
+          </Link>
+        </div>
+      </div>
     </header>
   );
 };

@@ -49,7 +49,7 @@ export default () => {
 
       {featuredData && <FeaturedMovie item={featuredData} />}
 
-      <section className="lists">
+      <section className="mt-[-180px]">
         {movieList.map((item) => (
           <MovieRow
             key={item.title}
@@ -58,7 +58,9 @@ export default () => {
           ></MovieRow>
         ))}
       </section>
-      <footer>Copyright © 2023 Netflyer</footer>
+      <footer className="mt-10 text-center text-gray-400 text-sm">
+        Copyright © 2023 Netflyer
+      </footer>
     </div>
   );
 };

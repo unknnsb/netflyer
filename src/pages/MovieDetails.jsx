@@ -8,6 +8,7 @@ import { useUser } from "@clerk/clerk-react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
+import Loading from "../components/Loading";
 
 const sliderSettings = {
   dots: true,
@@ -65,14 +66,7 @@ const MovieDetails = () => {
   }, [id]);
 
   if (!movieDetails || !isLoaded) {
-    return (
-      <div className="loading">
-        <img
-          src="https://cdn.lowgif.com/small/0534e2a412eeb281-the-counterintuitive-tech-behind-netflix-s-worldwide.gif"
-          alt="loading"
-        ></img>
-      </div>
-    );
+    return <Loading />;
   }
 
   const overview = showFullOverview
