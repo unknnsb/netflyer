@@ -41,8 +41,12 @@ const TvDetails = () => {
   const [episodes, setEpisodes] = useState([]);
   const [credits, setCredits] = useState([]);
   const navigate = useNavigate();
-  const { isSignedIn, isLoaded } = useUser();
+  const { isSignedIn } = useUser();
   const { id } = useParams();
+
+  if (!isSignedIn) {
+    navigate("/sign-in");
+  }
 
   useEffect(() => {
     const fetchTvDetails = async () => {

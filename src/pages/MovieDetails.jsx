@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { FaTwitter, FaFacebook, FaInstagram } from "react-icons/fa";
 import Header from "../components/Header";
 import { useUser } from "@clerk/clerk-react";
@@ -35,8 +35,13 @@ const MovieDetails = () => {
   const [showFullOverview, setShowFullOverview] = useState(false);
   const [recommendations, setRecommendations] = useState([]);
   const [casts, setCasts] = useState([]);
-  const { isLoaded } = useUser();
+  const { isLoaded, isSignedIn } = useUser();
   const [shareUrl, setShareUrl] = useState("");
+  const navigate = useNavigate();
+
+  if (!isSignedIn) {
+    navigate("/sign-in");
+  }
 
   useEffect(() => {
     const fetchData = async (url, setDataCallback) => {
@@ -68,7 +73,6 @@ const MovieDetails = () => {
     ? movieDetails.overview
     : movieDetails.overview.slice(0, 150) +
       (movieDetails.overview.length > 150 ? "..." : "");
-
   return (
     <div>
       <Header changeOnScroll={false} />
