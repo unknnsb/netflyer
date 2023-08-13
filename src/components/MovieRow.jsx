@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../styles/MovieRow.css";
+import "../styles/MovieRow.css"
 
 const MovieRow = ({ title, items }) => {
   const listW = items.results.length * 280;
@@ -41,40 +41,41 @@ const MovieRow = ({ title, items }) => {
   };
 
   return (
-    <div className="movieRow">
-      <h2>{title}</h2>
+    <div className="mb-8 relative">
+      <h2 className="ml-8">{title}</h2>
       <div
-        className={`movieRow--left indicator-icon ${
-          hideLeftArrow ? "hide" : ""
+        className={`absolute left-0 w-10 h-425 bg-black bg-opacity-60 z-50 flex items-center justify-center overflow-hidden cursor-pointer transition-opacity duration-200 ${
+          hideLeftArrow ? "opacity-0" : "opacity-100"
         }`}
         onClick={handleLeftArrow}
       >
-        <i className="icon-leftCaret" />
+        <i className="icon-leftCaret text-2xl" />
       </div>
       <div
-        className={`movieRow--right indicator-icon ${
-          hideRightArrow ? "hide" : ""
+        className={`absolute right-0 w-10 h-425 bg-black bg-opacity-60 z-50 flex items-center justify-center overflow-hidden cursor-pointer transition-opacity duration-200 ${
+          hideRightArrow ? "opacity-0" : "opacity-100"
         }`}
         onClick={handleRightArrow}
       >
-        <i className="icon-rightCaret" />
+        <i className="icon-rightCaret text-2xl" />
       </div>
 
-      <div className="movieRow--listarea">
+      <div className="overflow-hidden pl-8">
         <div
-          className="movieRow--list"
+          className="whitespace-nowrap overflow-x-auto overflow-y-hidden inline-block"
           style={{
-            marginLeft: scrollX,
-            width: items.results.length * 280,
+            marginLeft: `${scrollX}px`,
+            width: `${items.results.length * 280}px`,
           }}
         >
           {items.results.length &&
             items.results.map((item, index) => (
-              <div key={index} className="movieRow--item">
+              <div key={index} className="inline-block w-72 cursor-pointer">
                 <img
                   src={`https://image.tmdb.org/t/p/w300${item.poster_path}`}
                   alt={item.title}
                   onClick={() => onClick(item.id, item)}
+                  className="w-full transform scale-90 transition-transform duration-200 hover:scale-100"
                 />
               </div>
             ))}
