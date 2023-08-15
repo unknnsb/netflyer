@@ -1,40 +1,40 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import Header from "../components/Header";
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import Header from '../components/Header'
 
 const SearchPage = () => {
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
-  const navigate = useNavigate();
+  const [query, setQuery] = useState('')
+  const [results, setResults] = useState([])
+  const navigate = useNavigate()
 
-  const apiKey = "bb2818a2abb39fbdf6da79343e5e376b";
-  const baseUrl = "https://api.themoviedb.org/3/search/multi"; // Fetch both movies and TV series
+  const apiKey = 'bb2818a2abb39fbdf6da79343e5e376b'
+  const baseUrl = 'https://api.themoviedb.org/3/search/multi' // Fetch both movies and TV series
 
   const fetchResults = async () => {
     try {
       const response = await fetch(
         `${baseUrl}?api_key=${apiKey}&query=${query}`
-      );
-      const data = await response.json();
-      setResults(data.results);
+      )
+      const data = await response.json()
+      setResults(data.results)
     } catch (error) {
-      console.error("Error fetching results:", error);
+      console.error('Error fetching results:', error)
     }
-  };
+  }
 
   useEffect(() => {
-    if (query !== "") {
-      fetchResults();
+    if (query !== '') {
+      fetchResults()
     }
-  }, [query]);
+  }, [query])
 
   const onClick = (res) => {
     if (res.first_air_date) {
-      navigate(`/tv/${res.id}`);
+      navigate(`/tv/${res.id}`)
     } else {
-      navigate(`/movie/${res.id}`);
+      navigate(`/movie/${res.id}`)
     }
-  };
+  }
 
   return (
     <>
@@ -74,7 +74,7 @@ const SearchPage = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default SearchPage;
+export default SearchPage

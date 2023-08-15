@@ -1,85 +1,85 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import classNames from "classnames";
-import { SignOutButton, useUser } from "@clerk/clerk-react";
-import Loading from "./Loading";
-import { AiOutlineSearch } from "react-icons/ai";
-import { BsListCheck } from "react-icons/bs";
+import { SignOutButton, useUser } from '@clerk/clerk-react'
+import classNames from 'classnames'
+import React, { useEffect, useState } from 'react'
+import { AiOutlineSearch } from 'react-icons/ai'
+import { BsListCheck } from 'react-icons/bs'
+import { Link, useNavigate } from 'react-router-dom'
+import Loading from './Loading'
 
 const Header = ({ changeOnScroll }) => {
-  const [scrollBgColor, setScrollBgColor] = useState("transparent");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [isAccountOpen, setIsAccountOpen] = useState(false);
-  const { user, isLoaded } = useUser();
-  const navigate = useNavigate();
+  const [scrollBgColor, setScrollBgColor] = useState('transparent')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchResults, setSearchResults] = useState([])
+  const [isAccountOpen, setIsAccountOpen] = useState(false)
+  const { user, isLoaded } = useUser()
+  const navigate = useNavigate()
 
   const handleOpenAccount = () => {
-    setIsAccountOpen(!isAccountOpen);
-  };
+    setIsAccountOpen(!isAccountOpen)
+  }
 
   const handleScroll = () => {
     if (changeOnScroll) {
-      setScrollBgColor(window.scrollY > 0 ? "black" : "transparent");
+      setScrollBgColor(window.scrollY > 0 ? 'black' : 'transparent')
     } else {
-      setScrollBgColor("black"); // Always set to dark color when changeOnScroll is false
+      setScrollBgColor('black') // Always set to dark color when changeOnScroll is false
     }
-  };
+  }
 
   const handleSearchChange = async (event) => {
-    const query = event.target.value;
-    setSearchQuery(query);
+    const query = event.target.value
+    setSearchQuery(query)
 
     if (!query) {
-      setSearchResults([]);
-      return;
+      setSearchResults([])
+      return
     }
 
-    const TMDB_API_KEY = "bb2818a2abb39fbdf6da79343e5e376b";
-    const TMDB_API_URL = "https://api.themoviedb.org/3/search/multi";
+    const TMDB_API_KEY = 'bb2818a2abb39fbdf6da79343e5e376b'
+    const TMDB_API_URL = 'https://api.themoviedb.org/3/search/multi'
 
     try {
       const response = await fetch(
         `${TMDB_API_URL}?api_key=${TMDB_API_KEY}&query=${query}`
-      );
-      const data = await response.json();
-      setSearchResults(data.results || []);
+      )
+      const data = await response.json()
+      setSearchResults(data.results || [])
     } catch (error) {
-      console.error("Error fetching search results:", error);
+      console.error('Error fetching search results:', error)
     }
-  };
+  }
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll)
     return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
 
   const redirectToResult = (result) => {
     const path = result.first_air_date
       ? `/tv/${result.id}`
-      : `/movie/${result.id}`;
-    navigate(path);
-  };
+      : `/movie/${result.id}`
+    navigate(path)
+  }
 
   if (!isLoaded) {
-    return <Loading />;
+    return <Loading />
   }
 
   return (
     <header
-      className={classNames("fixed w-full top-0 z-50 transition duration-300", {
-        "bg-transparent": !changeOnScroll && scrollBgColor === "transparent",
-        "bg-black":
-          (changeOnScroll && scrollBgColor === "black") ||
-          (!changeOnScroll && scrollBgColor === "transparent"),
+      className={classNames('fixed w-full top-0 z-50 transition duration-300', {
+        'bg-transparent': !changeOnScroll && scrollBgColor === 'transparent',
+        'bg-black':
+          (changeOnScroll && scrollBgColor === 'black') ||
+          (!changeOnScroll && scrollBgColor === 'transparent'),
       })}
     >
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center">
           <img
-            onClick={() => navigate("/")}
+            onClick={() => navigate('/')}
             src="/logo.png"
             alt="Netflix Logo"
             className="h-8 mr-6 "
@@ -128,7 +128,7 @@ const Header = ({ changeOnScroll }) => {
             />
             {isAccountOpen && (
               <div className="flex mt-2 justify-center items-center bg-slate-700 p-2 mx-auto">
-                <SignOutButton signOutCallback={"/sign-up"}>
+                <SignOutButton signOutCallback="/sign-up">
                   SignOut
                 </SignOutButton>
               </div>
@@ -137,7 +137,7 @@ const Header = ({ changeOnScroll }) => {
         </div>
         <div className="md:hidden flex">
           <button
-            onClick={() => navigate("/search")}
+            onClick={() => navigate('/search')}
             className="text-white hover:text-gray-300"
           >
             <AiOutlineSearch className="h-6 w-6" />
@@ -148,7 +148,7 @@ const Header = ({ changeOnScroll }) => {
         </div>
       </div>
     </header>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header

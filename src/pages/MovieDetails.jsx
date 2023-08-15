@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { FaTwitter, FaFacebook, FaInstagram } from "react-icons/fa";
-import Header from "../components/Header";
-import { useUser } from "@clerk/clerk-react";
-import Slider from "react-slick";
-import Loading from "../components/Loading";
-import RecommendationCard from "../components/RecommendationCard";
+import { useUser } from '@clerk/clerk-react'
+import React, { useState, useEffect } from 'react'
+import { FaTwitter, FaFacebook, FaInstagram } from 'react-icons/fa'
+import { useParams } from 'react-router-dom'
+import Slider from 'react-slick'
+import Header from '../components/Header'
+import Loading from '../components/Loading'
+import RecommendationCard from '../components/RecommendationCard'
 
 const sliderSettings = {
   dots: true,
@@ -27,48 +27,47 @@ const sliderSettings = {
       },
     },
   ],
-};
+}
 
 const MovieDetails = () => {
-  const { id } = useParams();
-  const [movieDetails, setMovieDetails] = useState(null);
-  const [showFullOverview, setShowFullOverview] = useState(false);
-  const [recommendations, setRecommendations] = useState([]);
-  const [casts, setCasts] = useState([]);
-  const { isLoaded } = useUser();
-  const [shareUrl, setShareUrl] = useState("");
-  const navigate = useNavigate();
+  const { id } = useParams()
+  const [movieDetails, setMovieDetails] = useState(null)
+  const [showFullOverview, setShowFullOverview] = useState(false)
+  const [recommendations, setRecommendations] = useState([])
+  const [casts, setCasts] = useState([])
+  const { isLoaded } = useUser()
+  const [shareUrl, setShareUrl] = useState('')
 
   useEffect(() => {
     const fetchData = async (url, setDataCallback) => {
-      const response = await fetch(url);
-      const data = await response.json();
-      setDataCallback(data);
-    };
+      const response = await fetch(url)
+      const data = await response.json()
+      setDataCallback(data)
+    }
 
     fetchData(
       `https://api.themoviedb.org/3/movie/${id}?api_key=bb2818a2abb39fbdf6da79343e5e376b`,
       setMovieDetails
-    );
+    )
     fetchData(
       `https://api.themoviedb.org/3/movie/${id}/recommendations?api_key=bb2818a2abb39fbdf6da79343e5e376b`,
       (data) => setRecommendations(data.results.slice(0, 10))
-    );
+    )
     fetchData(
       `https://api.themoviedb.org/3/movie/${id}/casts?api_key=bb2818a2abb39fbdf6da79343e5e376b`,
       (data) => setCasts(data.cast)
-    );
-    setShareUrl(window.location.href);
-  }, [id]);
+    )
+    setShareUrl(window.location.href)
+  }, [id])
 
   if (!movieDetails || !isLoaded) {
-    return <Loading />;
+    return <Loading />
   }
 
   const overview = showFullOverview
     ? movieDetails.overview
     : movieDetails.overview.slice(0, 150) +
-      (movieDetails.overview.length > 150 ? "..." : "");
+      (movieDetails.overview.length > 150 ? '...' : '')
   return (
     <div>
       <Header changeOnScroll={false} />
@@ -91,7 +90,7 @@ const MovieDetails = () => {
                 onClick={() => setShowFullOverview(!showFullOverview)}
                 className="text-red-500 hover:underline focus:outline-none"
               >
-                {showFullOverview ? "Read Less" : "Read More"}
+                {showFullOverview ? 'Read Less' : 'Read More'}
               </button>
             )}
             <button
@@ -107,7 +106,7 @@ const MovieDetails = () => {
               Add To List
             </button>
             <p className="text-gray-600">
-              Letterboxd:{" "}
+              Letterboxd:{' '}
               <a
                 className="text-red-500 hover:underline"
                 href={`https://letterboxd.com/tmdb/${id}`}
@@ -120,8 +119,8 @@ const MovieDetails = () => {
             <p>Release Date: {movieDetails.release_date}</p>
             <p>Runtime: {movieDetails.runtime} minutes</p>
             <p>
-              Genres:{" "}
-              {movieDetails.genres.map((genre) => genre.name).join(", ")}
+              Genres:{' '}
+              {movieDetails.genres.map((genre) => genre.name).join(', ')}
             </p>
             <div className="flex items-center space-x-2">
               <p className="text-gray-600">Share:</p>
@@ -181,7 +180,7 @@ const MovieDetails = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default MovieDetails;
+export default MovieDetails

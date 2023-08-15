@@ -1,17 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { useUser } from "@clerk/clerk-react";
-import {
-  collection,
-  getDocs,
-  where,
-  query,
-  deleteDoc,
-  doc,
-} from "firebase/firestore";
-import { db } from "../services/firebase";
-import Header from "../components/Header";
-import Loading from "../components/Loading";
-import { useNavigate } from "react-router-dom";
+import { useUser } from '@clerk/clerk-react'
+import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore'
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import Header from '../components/Header'
+import Loading from '../components/Loading'
+import { db } from '../services/firebase'
 
 const WatchListItem = ({ item, removeFromWatchlist }) => (
   <li className="flex mb-4" key={item.id}>
@@ -23,7 +16,7 @@ const WatchListItem = ({ item, removeFromWatchlist }) => (
     <div className="flex flex-col">
       <p className="text-white text-lg font-semibold">{item.title}</p>
       <p className="text-gray-400 text-sm">
-        {item.isTvShow ? "(TV Show)" : "(Movie)"}
+        {item.isTvShow ? '(TV Show)' : '(Movie)'}
       </p>
       <div className="mt-2">
         <button
@@ -45,53 +38,52 @@ const WatchListItem = ({ item, removeFromWatchlist }) => (
       </div>
     </div>
   </li>
-);
+)
 
 const WatchList = () => {
-  const { user, isLoaded, isSignedIn } = useUser();
-  const [watchlistItems, setWatchlistItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const { user, isLoaded } = useUser()
+  const [watchlistItems, setWatchlistItems] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchWatchlist = async () => {
       if (user) {
-        const watchlistRef = collection(db, `watchlist/${user.id}/items`);
-        const querySnapshot = await getDocs(watchlistRef);
+        const watchlistRef = collection(db, `watchlist/${user.id}/items`)
+        const querySnapshot = await getDocs(watchlistRef)
 
-        const items = [];
+        const items = []
         querySnapshot.forEach((doc) => {
-          items.push({ id: doc.id, ...doc.data() });
-        });
+          items.push({ id: doc.id, ...doc.data() })
+        })
 
-        setWatchlistItems(items);
-        setLoading(false);
+        setWatchlistItems(items)
+        setLoading(false)
       }
-    };
+    }
 
-    fetchWatchlist();
-  }, [user]);
+    fetchWatchlist()
+  }, [user])
 
   const removeFromWatchlist = async (itemId) => {
     try {
-      setLoading(true);
-      await deleteDoc(doc(db, `watchlist/${user.id}/items`, itemId));
+      setLoading(true)
+      await deleteDoc(doc(db, `watchlist/${user.id}/items`, itemId))
       setWatchlistItems((prevItems) =>
         prevItems.filter((item) => item.id !== itemId)
-      );
-      setLoading(false);
+      )
+      setLoading(false)
     } catch (error) {
-      console.error("Error removing item:", error);
+      console.error('Error removing item:', error)
     }
-  };
+  }
 
   const renderWatchlist = (isTvShow) => {
     const filteredItems = watchlistItems.filter(
       (item) => item.isTvShow === isTvShow
-    );
+    )
 
     if (filteredItems.length === 0) {
-      return <p className="text-white">Watch List Is Empty...</p>;
+      return <p className="text-white">Watch List Is Empty...</p>
     }
 
     return (
@@ -104,11 +96,11 @@ const WatchList = () => {
           />
         ))}
       </ul>
-    );
-  };
+    )
+  }
 
   if (!isLoaded) {
-    return <Loading />;
+    return <Loading />
   }
 
   return (
@@ -130,7 +122,7 @@ const WatchList = () => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default WatchList;
+export default WatchList
