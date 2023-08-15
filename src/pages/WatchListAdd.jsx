@@ -1,63 +1,63 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useLocation } from "react-router-dom";
-import axios from "axios";
-import { useUser } from "@clerk/clerk-react";
-import { doc, setDoc } from "firebase/firestore";
-import { db } from "../services/firebase";
-import Header from "../components/Header";
-import Loading from "../components/Loading";
+import { useUser } from '@clerk/clerk-react'
+import axios from 'axios'
+import { doc, setDoc } from 'firebase/firestore'
+import React, { useState, useEffect } from 'react'
+import { useParams, useLocation } from 'react-router-dom'
+import Header from '../components/Header'
+import Loading from '../components/Loading'
+import { db } from '../services/firebase'
 
 const WatchListAdd = () => {
-  const { id } = useParams();
-  const location = useLocation();
-  const isTvShowParam = new URLSearchParams(location.search).get("tv");
-  const [details, setDetails] = useState({});
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const { user, isLoaded } = useUser();
+  const { id } = useParams()
+  const location = useLocation()
+  const isTvShowParam = new URLSearchParams(location.search).get('tv')
+  const [details, setDetails] = useState({})
+  const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(false)
+  const { user, isLoaded } = useUser()
 
   useEffect(() => {
     const fetchDetails = async () => {
       try {
         const response = await axios.get(
           `https://api.themoviedb.org/3/${
-            isTvShowParam === "true" ? "tv" : "movie"
+            isTvShowParam === 'true' ? 'tv' : 'movie'
           }/${id}?api_key=bb2818a2abb39fbdf6da79343e5e376b`
-        );
-        setDetails(response.data);
+        )
+        setDetails(response.data)
       } catch (error) {
-        console.error("Error fetching details:", error);
+        console.error('Error fetching details:', error)
       }
-    };
+    }
 
-    fetchDetails();
-  }, [id, isTvShowParam]);
+    fetchDetails()
+  }, [id, isTvShowParam])
 
   const addToWatchList = async () => {
     if (user) {
       const data = {
-        id: id,
+        id,
         title: details.title || details.name,
         poster: details.poster_path,
-        isTvShow: isTvShowParam === "true",
-      };
-      setLoading(true);
+        isTvShow: isTvShowParam === 'true',
+      }
+      setLoading(true)
       try {
-        await setDoc(doc(db, `watchlist/${user.id}/items`, id), data);
+        await setDoc(doc(db, `watchlist/${user.id}/items`, id), data)
         setMessage(
-          `Added The ${isTvShowParam === "true" ? "TV Show" : "Movie"} "${
+          `Added The ${isTvShowParam === 'true' ? 'TV Show' : 'Movie'} "${
             details.title || details.name
           }" to watch list`
-        );
+        )
       } catch (error) {
-        console.error("Error adding to watch list:", error);
+        console.error('Error adding to watch list:', error)
       }
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   if (!isLoaded) {
-    return <Loading />;
+    return <Loading />
   }
 
   return (
@@ -95,7 +95,7 @@ const WatchListAdd = () => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default WatchListAdd;
+export default WatchListAdd

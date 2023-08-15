@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import MovieRow from "../components/MovieRow";
-import Header from "../components/Header";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import { useUser } from "@clerk/clerk-react";
-import RecommendationCard from "../components/RecommendationCard";
-import Loading from "../components/Loading";
+import React, { useState, useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import Slider from 'react-slick'
+import 'slick-carousel/slick/slick-theme.css'
+import 'slick-carousel/slick/slick.css'
+import Header from '../components/Header'
+import Loading from '../components/Loading'
+import RecommendationCard from '../components/RecommendationCard'
 
 const sliderSettings = {
   dots: true,
@@ -29,96 +27,97 @@ const sliderSettings = {
       },
     },
   ],
-};
+}
 
 const TvDetails = () => {
-  const [tvDetails, setTvDetails] = useState(null);
+  const [tvDetails, setTvDetails] = useState(null)
+  const [showFullOverview, setShowFullOverview] = useState(false)
   const [allEpisodesVisibleBySeason, setAllEpisodesVisibleBySeason] = useState(
     {}
-  );
-  const [selectedSeasonNumber, setSelectedSeasonNumber] = useState(1);
-  const [recommendations, setRecommendations] = useState([]);
-  const [episodes, setEpisodes] = useState([]);
-  const [credits, setCredits] = useState([]);
-  const navigate = useNavigate();
-  const { id } = useParams();
+  )
+  const [selectedSeasonNumber, setSelectedSeasonNumber] = useState(1)
+  const [recommendations, setRecommendations] = useState([])
+  const [episodes, setEpisodes] = useState([])
+  const [credits, setCredits] = useState([])
+  const navigate = useNavigate()
+  const { id } = useParams()
 
   useEffect(() => {
     const fetchTvDetails = async () => {
       const response = await fetch(
         `https://api.themoviedb.org/3/tv/${id}?api_key=bb2818a2abb39fbdf6da79343e5e376b`
-      );
-      const data = await response.json();
-      setTvDetails(data);
-    };
-    fetchTvDetails();
-  }, [id]);
+      )
+      const data = await response.json()
+      setTvDetails(data)
+    }
+    fetchTvDetails()
+  }, [id])
 
   useEffect(() => {
     const fetchRecommendations = async () => {
       const response = await fetch(
         `https://api.themoviedb.org/3/tv/${id}/recommendations?api_key=bb2818a2abb39fbdf6da79343e5e376b`
-      );
-      const data = await response.json();
-      setRecommendations(data.results.slice(0, 10));
-    };
-    fetchRecommendations();
-  }, [id]);
+      )
+      const data = await response.json()
+      setRecommendations(data.results.slice(0, 10))
+    }
+    fetchRecommendations()
+  }, [id])
 
   useEffect(() => {
     const fetchEpisodes = async () => {
       const response = await fetch(
         `https://api.themoviedb.org/3/tv/${id}/season/${selectedSeasonNumber}?api_key=bb2818a2abb39fbdf6da79343e5e376b`
-      );
-      const data = await response.json();
+      )
+      const data = await response.json()
       const filteredEpisodes = data.episodes.filter(
         (episode) => episode.season_number !== 0
-      );
-      setEpisodes(filteredEpisodes);
-    };
-    fetchEpisodes();
-  }, [id, selectedSeasonNumber]);
+      )
+      setEpisodes(filteredEpisodes)
+    }
+    fetchEpisodes()
+  }, [id, selectedSeasonNumber])
 
   useEffect(() => {
     const fetchCredits = async () => {
       const response = await fetch(
         `https://api.themoviedb.org/3/tv/${id}/credits?api_key=bb2818a2abb39fbdf6da79343e5e376b`
-      );
-      const data = await response.json();
-      setCredits(data.cast);
-    };
-    fetchCredits();
-  }, [id]);
+      )
+      const data = await response.json()
+      setCredits(data.cast)
+    }
+    fetchCredits()
+  }, [id])
 
   const shareOnTwitter = () => {
-    const shareUrl = `https://twitter.com/intent/tweet?url=${window.location.href}`;
-    window.open(shareUrl, "_blank");
-  };
+    const shareUrl = `https://twitter.com/intent/tweet?url=${window.location.href}`
+    window.open(shareUrl, '_blank')
+  }
 
   const shareOnFacebook = () => {
-    const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`;
-    window.open(shareUrl, "_blank");
-  };
+    const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`
+    window.open(shareUrl, '_blank')
+  }
 
   const watch = (season, episode) => {
-    navigate(`/watch/tv/${id}/${season}/${episode}`);
-  };
+    navigate(`/watch/tv/${id}/${season}/${episode}`)
+  }
 
   const addToWatchList = () => {
-    navigate(`/list/add/${id}?tv=true`);
-  };
+    navigate(`/list/add/${id}?tv=true`)
+  }
 
   const toggleEpisodesVisibility = (seasonNumber) => {
     setAllEpisodesVisibleBySeason((prevState) => ({
       ...prevState,
       [seasonNumber]: !prevState[seasonNumber],
-    }));
-  };
+    }))
+  }
 
   const renderEpisodes = (seasonNumber) => {
     const displayedEpisodes = allEpisodesVisibleBySeason[seasonNumber]
       ? episodes
-      : episodes.slice(0, 10);
+      : episodes.slice(0, 10)
     return displayedEpisodes.map((episode) => (
       <button
         key={episode.id}
@@ -127,12 +126,17 @@ const TvDetails = () => {
       >
         Episode {episode.episode_number}: {episode.name}
       </button>
-    ));
-  };
+    ))
+  }
 
   if (!tvDetails) {
-    return <Loading />;
+    return <Loading />
   }
+
+  const overview = showFullOverview
+    ? tvDetails.overview
+    : tvDetails.overview.slice(0, 150) +
+      (tvDetails.overview.length > 150 ? '...' : '')
 
   return (
     <div>
@@ -148,7 +152,7 @@ const TvDetails = () => {
           </div>
           <div className="col-span-2 space-y-4 md:mt-20">
             <h1 className="text-2xl font-bold">{tvDetails.name}</h1>
-            <p className="text-gray-600">{tvDetails.overview}</p>
+            <p className="text-gray-600">{overview}</p>
             <button
               onClick={() => setShowFullOverview(!showFullOverview)}
               className="text-red-500 hover:underline focus:outline-none"
@@ -200,8 +204,8 @@ const TvDetails = () => {
                   className="text-red-500 hover:underline focus:outline-none"
                 >
                   {allEpisodesVisibleBySeason[selectedSeasonNumber]
-                    ? "Show Less Episodes"
-                    : "Show All Episodes"}
+                    ? 'Show Less Episodes'
+                    : 'Show All Episodes'}
                 </button>
               </div>
               <div className="mt-2 space-y-2">
@@ -228,7 +232,6 @@ const TvDetails = () => {
                       <img
                         src={`https://image.tmdb.org/t/p/w500${credit.profile_path}`}
                         alt={credit.name}
-                        onClick={() => openWikipediaPage(credit.original_name)}
                         className="w-full h-auto rounded-lg cursor-pointer"
                       />
                       <p className="mt-2">
@@ -243,7 +246,7 @@ const TvDetails = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default TvDetails;
+export default TvDetails

@@ -1,11 +1,13 @@
+import React from 'react'
+
 const RecommendationCard = ({ movie }) => {
   const onClick = (id) => {
     if (movie.first_air_date) {
-      window.location.href = `/tv/${id}`;
+      window.location.href = `/tv/${id}`
     } else {
-      window.location.href = `/movie/${id}`;
+      window.location.href = `/movie/${id}`
     }
-  };
+  }
   return (
     <div
       onClick={() => onClick(movie.id)}
@@ -21,7 +23,7 @@ const RecommendationCard = ({ movie }) => {
         <p className="text-gray-600">{movie.overview.slice(0, 100)}...</p>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default RecommendationCard;
+export default RecommendationCard

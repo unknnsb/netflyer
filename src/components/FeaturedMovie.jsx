@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 
 const FeaturedMovie = ({
   item: {
@@ -12,10 +12,10 @@ const FeaturedMovie = ({
     id,
   },
 }) => {
-  const firstDate = new Date(first_air_date);
-  const genresNames = genres.map(({ name }) => name);
+  const firstDate = new Date(first_air_date)
+  const genresNames = genres.map(({ name }) => name)
   const description =
-    overview.length > 180 ? overview.substring(0, 180) + "..." : overview;
+    overview.length > 180 ? overview.slice(0, 180) + '...' : overview
 
   return (
     <section
@@ -31,12 +31,12 @@ const FeaturedMovie = ({
           </span>
           <div className="featured--info text-lg font-bold mt-3">
             <span className="featured--points text-green-500">
-              {vote_average} rating -{" "}
+              {vote_average} rating -{' '}
             </span>
             <span className="featured--year">{firstDate.getFullYear()} - </span>
             <span className="featured--seasons">
               {number_of_seasons} season
-              {number_of_seasons !== 1 ? "s" : ""}
+              {number_of_seasons !== 1 ? 's' : ''}
             </span>
           </div>
           <div className="featured--description text-lg text-gray-500 mt-3 max-w-2xl">
@@ -57,12 +57,12 @@ const FeaturedMovie = ({
             </a>
           </div>
           <span className="featured--genres text-lg text-gray-500 mt-3">
-            Genres: <strong> {genresNames.join(", ")} </strong>
+            Genres: <strong> {genresNames.join(', ')} </strong>
           </span>
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default FeaturedMovie;
+export default FeaturedMovie
