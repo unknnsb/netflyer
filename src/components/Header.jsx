@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import classNames from "classnames";
-import { useUser } from "@clerk/clerk-react";
+import { SignOutButton, useUser } from "@clerk/clerk-react";
 import Loading from "./Loading";
 import { AiOutlineSearch } from "react-icons/ai";
 import { BsListCheck } from "react-icons/bs";
@@ -10,8 +10,13 @@ const Header = ({ changeOnScroll }) => {
   const [scrollBgColor, setScrollBgColor] = useState("transparent");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [isAccountOpen, setIsAccountOpen] = useState(false);
   const { user, isLoaded } = useUser();
   const navigate = useNavigate();
+
+  const handleOpenAccount = () => {
+    setIsAccountOpen(!isAccountOpen);
+  };
 
   const handleScroll = () => {
     if (changeOnScroll) {
@@ -66,7 +71,9 @@ const Header = ({ changeOnScroll }) => {
     <header
       className={classNames("fixed w-full top-0 z-50 transition duration-300", {
         "bg-transparent": !changeOnScroll && scrollBgColor === "transparent",
-        "bg-black": changeOnScroll || scrollBgColor === "black",
+        "bg-black":
+          (changeOnScroll && scrollBgColor === "black") ||
+          (!changeOnScroll && scrollBgColor === "transparent"),
       })}
     >
       <div className="flex items-center justify-between px-6 py-4">
@@ -112,12 +119,20 @@ const Header = ({ changeOnScroll }) => {
           >
             Watch List
           </Link>
-          <div className="flex items-center">
+          <div className="flex items-center flex-col justify-center">
             <img
               src={`${user.profileImageUrl}`}
               alt={`${user.username} User Profile`}
               className="h-8 rounded-full"
+              onClick={() => handleOpenAccount()}
             />
+            {isAccountOpen && (
+              <div className="flex mt-2 justify-center items-center bg-slate-700 p-2 mx-auto">
+                <SignOutButton signOutCallback={"/sign-up"}>
+                  SignOut
+                </SignOutButton>
+              </div>
+            )}
           </div>
         </div>
         <div className="md:hidden flex">

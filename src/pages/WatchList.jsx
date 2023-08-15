@@ -8,9 +8,10 @@ import {
   deleteDoc,
   doc,
 } from "firebase/firestore";
-import { db } from "../firebase";
+import { db } from "../services/firebase";
 import Header from "../components/Header";
 import Loading from "../components/Loading";
+import { useNavigate } from "react-router-dom";
 
 const WatchListItem = ({ item, removeFromWatchlist }) => (
   <li className="flex mb-4" key={item.id}>
@@ -47,9 +48,14 @@ const WatchListItem = ({ item, removeFromWatchlist }) => (
 );
 
 const WatchList = () => {
-  const { user, isLoaded } = useUser();
+  const { user, isLoaded, isSignedIn } = useUser();
   const [watchlistItems, setWatchlistItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  if (!isSignedIn) {
+    navigate("/sign-in");
+  }
 
   useEffect(() => {
     const fetchWatchlist = async () => {

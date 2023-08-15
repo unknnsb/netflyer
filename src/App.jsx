@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { RedirectToSignIn, useUser } from "@clerk/clerk-react";
 import "./styles/App.css";
-import Tmdb from "./Tmdb";
+import Tmdb from "./services/Tmdb";
 import MovieRow from "./components/MovieRow";
 import FeaturedMovie from "./components/FeaturedMovie";
 import Header from "./components/Header";
+import Loading from "./components/Loading";
 
 export default () => {
   const [movieList, setMovieList] = useState([]);
@@ -29,14 +30,7 @@ export default () => {
   }, []);
 
   if (movieList.length <= 0 || !isLoaded) {
-    return (
-      <div className="loading">
-        <img
-          src="https://cdn.lowgif.com/small/0534e2a412eeb281-the-counterintuitive-tech-behind-netflix-s-worldwide.gif"
-          alt="loading"
-        ></img>
-      </div>
-    );
+    return <Loading />;
   }
 
   if (!isLoaded || !isSignedIn) {

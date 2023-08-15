@@ -3,7 +3,7 @@ import { useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 import { useUser } from "@clerk/clerk-react";
 import { doc, setDoc } from "firebase/firestore";
-import { db } from "../firebase";
+import { db } from "../services/firebase";
 import Header from "../components/Header";
 import Loading from "../components/Loading";
 
