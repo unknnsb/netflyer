@@ -53,10 +53,6 @@ const WatchList = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  if (!isSignedIn) {
-    navigate("/sign-in");
-  }
-
   useEffect(() => {
     const fetchWatchlist = async () => {
       if (user) {

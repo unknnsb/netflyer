@@ -35,13 +35,9 @@ const MovieDetails = () => {
   const [showFullOverview, setShowFullOverview] = useState(false);
   const [recommendations, setRecommendations] = useState([]);
   const [casts, setCasts] = useState([]);
-  const { isLoaded, isSignedIn } = useUser();
+  const { isLoaded } = useUser();
   const [shareUrl, setShareUrl] = useState("");
   const navigate = useNavigate();
-
-  if (!isSignedIn) {
-    navigate("/sign-in");
-  }
 
   useEffect(() => {
     const fetchData = async (url, setDataCallback) => {
