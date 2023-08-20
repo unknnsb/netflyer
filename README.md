@@ -29,17 +29,11 @@ This repository houses the code for our exciting Movie and Series Streaming App,
 
 ## Contribution
 
-We welcome contributions from everyone who is passionate about enhancing our app. Whether you're a developer, designer, or simply a movie buff, your input is valuable. To contribute, follow these simple steps:
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
 
-1. Fork this repository to your own GitHub account.
-2. Create a new branch with a descriptive name for your feature or bug fix.
-3. Make your changes, whether it's adding new features, fixing bugs, or improving existing code.
-4. Test your changes thoroughly to ensure they work as intended.
-5. Commit your changes and push them to your forked repository.
-6. Submit a pull request detailing your changes and explaining the benefits they bring.
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
 
-Thank you for considering contributing to our project! Your efforts help us create a better experience for all our users.
-
-For any questions or assistance, please open an issue or reach out to our team.
-
-Let's make entertainment more enjoyable together!
+<!-- ALL-CONTRIBUTORS-LIST:END -->
