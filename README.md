@@ -27,7 +27,7 @@ This repository houses the code for our exciting Movie and Series Streaming App,
 - [ ] Adding user ratings
 - [ ] Adding user watch history
 
-## Contribution
+## Contributors
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
