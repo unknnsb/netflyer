@@ -1,4 +1,7 @@
 ## Netflyer
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Welcome to the Movie and Series/anime Streaming App!
 
@@ -27,19 +30,27 @@ This repository houses the code for our exciting Movie and Series Streaming App,
 - [ ] Adding user ratings
 - [ ] Adding user watch history
 
-## Contribution
+## Contributors
 
-We welcome contributions from everyone who is passionate about enhancing our app. Whether you're a developer, designer, or simply a movie buff, your input is valuable. To contribute, follow these simple steps:
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="http://itznesbro.vercel.app"><img src="https://avatars.githubusercontent.com/u/76590320?v=4?s=100" width="100px;" alt="Nesbeer"/><br /><sub><b>Nesbeer</b></sub></a><br /><a href="https://github.com/Netflyer-Web/netflyer/commits?author=ItzNesbroDev" title="Code">💻</a></td>
+    </tr>
+  </tbody>
+</table>
 
-1. Fork this repository to your own GitHub account.
-2. Create a new branch with a descriptive name for your feature or bug fix.
-3. Make your changes, whether it's adding new features, fixing bugs, or improving existing code.
-4. Test your changes thoroughly to ensure they work as intended.
-5. Commit your changes and push them to your forked repository.
-6. Submit a pull request detailing your changes and explaining the benefits they bring.
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
 
-Thank you for considering contributing to our project! Your efforts help us create a better experience for all our users.
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
 
-For any questions or assistance, please open an issue or reach out to our team.
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
 
-Let's make entertainment more enjoyable together!
+<!-- ALL-CONTRIBUTORS-LIST:END -->
