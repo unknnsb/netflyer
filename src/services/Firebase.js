@@ -1,13 +1,9 @@
 import { initializeApp } from 'firebase/app'
+import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 
-const apiKey = import.meta.env.VITE_FIREBASE_APIKEY
-if (!apiKey) {
-  throw new Error('Missing Firebase Api Key')
-}
-
 const firebaseConfig = {
-  apiKey,
+  apiKey: 'AIzaSyAQ7eRHwZhGj-yXbA3258KQoAwGs3ygRK0',
   authDomain: 'netflyer-5aac5.firebaseapp.com',
   projectId: 'netflyer-5aac5',
   storageBucket: 'netflyer-5aac5.appspot.com',
@@ -17,4 +13,5 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig)
+export const auth = getAuth()
 export const db = getFirestore(app)

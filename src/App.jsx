@@ -1,56 +1,60 @@
-import { RedirectToSignIn, useUser } from '@clerk/clerk-react'
+import { onAuthStateChanged, signOut } from 'firebase/auth'
+import { getDocs, collection, doc, getDoc } from 'firebase/firestore'
 import React, { useEffect, useState } from 'react'
-import FeaturedMovie from './components/FeaturedMovie'
-import Header from './components/Header'
+import { useNavigate } from 'react-router-dom'
 import Loading from './components/Loading'
-import MovieRow from './components/MovieRow'
-import Tmdb from './services/Tmdb'
-import './styles/App.css'
+import { auth, db } from './services/Firebase'
 
-export default function App() {
-  const [movieList, setMovieList] = useState([])
-  const [featuredData, setFeaturedData] = useState(null)
-  const { isLoaded, isSignedIn } = useUser()
+const App = () => {
+  const [username, setUsername] = useState('')
+  const [avatar, setAvatar] = useState('')
+  const [loading, setLoading] = useState(true)
+  const navigate = useNavigate()
 
-  useEffect(() => {
-    const loadAll = async () => {
-      const list = await Tmdb.getHomeList()
-      setMovieList(list)
-
-      const originals = list.filter(({ slug }) => slug === 'originals')
-      const randonChosen = Math.floor(
-        Math.random() * (originals[0].items.results.length - 1)
-      )
-      const chosen = originals[0].items.results[randonChosen]
-      const chosenInfo = await Tmdb.getMovieInfo(chosen.id, 'tv')
-      setFeaturedData(chosenInfo)
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      navigate('/signup')
+    } else {
+      const userRef = doc(db, 'users', user.uid)
+      getDoc(userRef)
+        .then((docSnapshot) => {
+          if (docSnapshot.exists()) {
+            const userData = docSnapshot.data()
+            setUsername(userData.username)
+            setAvatar(userData.avatar)
+            setLoading(false)
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching account data:', error)
+          alert('Error fetching account data:', error)
+        })
     }
+  })
 
-    loadAll()
-  }, [])
-
-  if (movieList.length <= 0 || !isLoaded) {
-    return <Loading />
-  }
-
-  if (!isLoaded || !isSignedIn) {
-    return <RedirectToSignIn />
+  const handleLogOut = () => {
+    signOut(auth).then(() => {
+      navigate('/login')
+    })
   }
 
   return (
-    <div className="page">
-      <Header changeOnScroll={true} />
-
-      {featuredData && <FeaturedMovie item={featuredData} />}
-
-      <section className="mt-[-180px]">
-        {movieList.map((item) => (
-          <MovieRow key={item.title} title={item.title} items={item.items} />
-        ))}
-      </section>
-      <footer className="mt-10 text-center text-gray-400 text-sm">
-        Copyright © 2023 Netflyer
-      </footer>
-    </div>
+    <>
+      {loading ? (
+        <Loading />
+      ) : (
+        <div className="page">
+          <footer className="mt-10 text-center text-gray-400 text-sm">
+            Copyright © 2023 Netflyer
+          </footer>
+          <h1>Examples</h1>
+          {username}
+          <img src={avatar} alt="avatar" />
+          <button onClick={handleLogOut}>Logout</button>
+        </div>
+      )}
+    </>
   )
 }
+
+export default App
