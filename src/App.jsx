@@ -2,6 +2,7 @@ import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { getDocs, collection, doc, getDoc } from 'firebase/firestore'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import BottomBar from './components/BottomBar'
 import Loading from './components/Loading'
 import { auth, db } from './services/Firebase'
 
@@ -51,6 +52,7 @@ const App = () => {
           {username}
           <img src={avatar} alt="avatar" />
           <button onClick={handleLogOut}>Logout</button>
+          <BottomBar />
         </div>
       )}
     </>

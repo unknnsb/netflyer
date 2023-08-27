@@ -74,8 +74,8 @@ const SignUp = () => {
       {loading ? (
         <Loading />
       ) : (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900">
-          <h1 className="text-white text-4xl font-bold mb-6">SignUp</h1>
+        <div className="flex flex-col items-center justify-center min-h-screen bg-[#202020]">
+          <h1 className="text-white text-4xl font-bold mb-6 mt-2">SignUp</h1>
           <form className="w-full max-w-md">
             <label
               htmlFor="username"
@@ -89,7 +89,7 @@ const SignUp = () => {
               placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-2 rounded bg-gray-800 text-white mb-4"
+              className="w-full px-4 py-2 rounded bg-[#1e1c1c] text-white mb-4"
             />
 
             <label
@@ -103,7 +103,7 @@ const SignUp = () => {
               accept="image/*"
               id="image"
               onChange={onFileChange}
-              className="w-full px-4 py-2 rounded bg-gray-800 text-white mb-4"
+              className="w-full px-4 py-2 rounded bg-[#1e1c1c] text-white mb-4"
             />
             <img
               src={image}
@@ -126,7 +126,7 @@ const SignUp = () => {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 rounded bg-gray-800 text-white mb-4"
+              className="w-full px-4 py-2 rounded bg-[#1e1c1c] text-white mb-4"
             />
 
             <label
@@ -141,7 +141,7 @@ const SignUp = () => {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 rounded bg-gray-800 text-white mb-6"
+              className="w-full px-4 py-2 rounded bg-[#1e1c1c] text-white mb-6"
             />
 
             <button
