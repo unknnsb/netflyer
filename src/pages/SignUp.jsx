@@ -74,7 +74,7 @@ const SignUp = () => {
       {loading ? (
         <Loading />
       ) : (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-[#202020]">
+        <div className="p-4 flex flex-col items-center justify-center min-h-screen bg-[#202020]">
           <h1 className="text-white text-4xl font-bold mb-6 mt-2">SignUp</h1>
           <form className="w-full max-w-md">
             <label
