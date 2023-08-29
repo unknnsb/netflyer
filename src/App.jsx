@@ -1,7 +1,6 @@
 import BottomBar from "./components/BottomBar";
 import FeaturedMovie from "./components/FeaturedMovie";
 import Loading from "./components/Loading";
-import MovieRow from "./components/MovieRow";
 import { auth, db } from "./services/Firebase";
 import { API_KEY, URL, endpoints } from "./services/Tmdb";
 import axios from "axios";
@@ -9,17 +8,17 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import MovieRow from "./components/MovieRow";
 
 const App = () => {
   const [username, setUsername] = useState("");
   const [avatar, setAvatar] = useState("");
   const [loading, setLoading] = useState(true);
-  const [originals, setOriginals] = useState([]);
-  const [trending, setTrending] = useState([]);
+  const [trending_tv, setTrendingTv] = useState([]);
+  const [trending_movies, setTrendingMovies] = useState([]);
   const [nowPlaying, setNowPlaying] = useState([]);
   const [popular, setPopular] = useState([]);
-  const [topRated, setTopRated] = useState([]);
-  const [upcoming, setUpcoming] = useState([]);
+  const [airingToday, setAiringToday] = useState([]);
 
   const navigate = useNavigate();
 
@@ -52,26 +51,12 @@ const App = () => {
 
   useEffect(() => {
     axios
-      .get(`${URL}${endpoints.originals}`, {
+      .get(`${URL}${endpoints.trending_tv}`, {
         params: {
           api_key: API_KEY,
         },
       })
-      .then((res) => setOriginals(res.data.results));
-    axios
-      .get(`${URL}${endpoints.trending}`, {
-        params: {
-          api_key: API_KEY,
-        },
-      })
-      .then((res) => setTrending(res.data.results));
-    axios
-      .get(`${URL}${endpoints.now_playing}`, {
-        params: {
-          api_key: API_KEY,
-        },
-      })
-      .then((res) => setNowPlaying(res.data.results));
+      .then((res) => setTrendingTv(res.data.results));
     axios
       .get(`${URL}${endpoints.popular}`, {
         params: {
@@ -80,19 +65,19 @@ const App = () => {
       })
       .then((res) => setPopular(res.data.results));
     axios
-      .get(`${URL}${endpoints.top_rated}`, {
+      .get(`${URL}${endpoints.trending_movies}`, {
         params: {
           api_key: API_KEY,
         },
       })
-      .then((res) => setTopRated(res.data.results));
+      .then((res) => setTrendingMovies(res.data.results));
     axios
-      .get(`${URL}${endpoints.upcoming}`, {
+      .get(`${URL}${endpoints.airing_today}`, {
         params: {
           api_key: API_KEY,
         },
       })
-      .then((res) => setUpcoming(res.data.results));
+      .then((res) => setAiringToday(res.data.results));
   }, []);
 
   return (
@@ -102,17 +87,9 @@ const App = () => {
       ) : (
         <div className="page">
           <FeaturedMovie />
-          <main className="px-4">
-            <section className="mb-16">
-              <MovieRow title="Top Trending" images={trending} />
-            </section>
-            <section className="mb-16">
-              <MovieRow title="All-Time Trending TV Series" images={popular} />
-            </section>
-            <section className="mb-16">
-              <MovieRow title="Latest TV Series" images={nowPlaying} />
-            </section>
-          </main>
+          <MovieRow title="Tv Shows Trending Week" movies={trending_tv} />
+          <MovieRow title="Movies Trending Week" movies={trending_movies} />
+          <MovieRow title="Popular" movies={popular} />
           <BottomBar />
         </div>
       )}

@@ -14,18 +14,13 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "axios": "^1.4.0",
-    "classnames": "^2.3.2",
     "firebase": "^10.1.0",
     "framer-motion": "^10.16.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.10.1",
-    "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^6.14.2",
-    "react-swipeable-views": "^0.14.0",
-    "react-swipeable-views-utils": "^0.14.0",
-    "reactjs-bottom-navigation": "^2.0.5",
-    "twin.macro": "^3.4.0"
+    "reactjs-bottom-navigation": "^2.0.5"
   },
   "devDependencies": {
     "@eslint-kit/eslint-config-base": "^5.0.2",
@@ -43,8 +38,6 @@
     "eslint-plugin-react-refresh": "^0.4.3",
     "postcss": "^8.4.27",
     "prettier": "2.3.0",
-    "sharp": "^0.32.4",
-    "svgo": "^3.0.2",
     "tailwindcss": "^3.3.3",
     "vite": "^4.4.5",
     "vite-plugin-image-optimizer": "^1.1.6"

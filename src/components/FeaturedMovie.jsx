@@ -29,14 +29,14 @@ const FeaturedMovie = () => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5 }}
-          className="relative bg-gradient-to-t from-202020 to-transparent"
+          className="relative bg-gradient-to-t from-dark"
         >
           <img
             src={`https://image.tmdb.org/t/p/original/${featuredMovie.backdrop_path}`}
             alt={featuredMovie.title}
-            className="object-cover h-96 sm:h-screen w-full"
+            className="object-cover h-[500px] md:h-screen w-full"
           />
-          <div className="absolute z-20 bottom-0 p-4 sm:p-8 text-center bg-gradient-to-t from-black to-transparent w-full">
+          <div className="absolute z-20 bottom-0 p-4 sm:p-8 text-center bg-gradient-to-t from-dark w-full">
             <h1 className="text-2xl sm:text-4xl font-bold mb-2 text-white">{featuredMovie.title}</h1>
             <div className="flex justify-center items-center space-x-4">
               <button className="p-2 bg-red-600 rounded-lg text-white">
