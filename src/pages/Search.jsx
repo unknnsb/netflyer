@@ -33,6 +33,14 @@ const Search = () => {
     })
       .then((res) => setResults(res.data.results))
   }, [query])
+
+  const handleClick = (id, tvShow) => {
+    if (tvShow) {
+      window.location.href = `/info/tv/${id}`
+    } else {
+      window.location.href = `/info/movie/${id}`
+    }
+  }
   return (
     <>
       {loading ? (
@@ -46,7 +54,13 @@ const Search = () => {
             <input value={query} onChange={(e) => setQuery(e.target.value)} className='bg-[#444343] mt-2 p-2 rounded-lg outline-none border-none w-full text-gray-100' placeholder='What do you want to search?' />
             <div>
               {results.map(result => (
-                <div key={result.id} className="flex items-center gap-1 text-white mt-4 text-sm border-zinc-600 border-b p-1">
+                <div onClick={() => {
+                  if (result.first_air_date) {
+                    handleClick(result.id, true)
+                  } else {
+                    handleClick(result.id, false)
+                  }
+                }} key={result.id} className="hover:opacity-20 transition-opacity duration-100 flex items-center gap-1 text-white mt-4 text-sm border-zinc-600 border-b p-1">
                   <FaSearch />
                   <h2>{result.title || result.name}</h2>
                 </div>

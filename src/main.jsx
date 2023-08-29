@@ -2,9 +2,9 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import App from './App'
-// import MovieDetails from './pages/MovieDetails'
 import SignUp from './pages/SignUp'
 import Login from './pages/Login'
+import Info from './pages/Info'
 // import TvDetails from './pages/TvDetails'
 // import WatchList from './pages/WatchList'
 // import WatchMovie from './pages/WatchMovie'
@@ -16,6 +16,7 @@ import Search from './pages/Search'
 const routes = [
   { path: '/', element: <App /> },
   { path: '/search', element: <Search /> },
+  { path: '/info/:type/:id', element: <Info /> },
   // { path: '/movie/:id', element: <MovieDetails /> },
   // { path: '/tv/:id', element: <TvDetails /> },
   // { path: '/watch/movie/:id', element: <WatchMovie /> },
@@ -30,8 +31,8 @@ const router = createBrowserRouter(routes)
 // Render the app
 ReactDOM.createRoot(document.querySelector('#root')).render(
   <>
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+    <React.StrictMode>
+      <RouterProvider router={router} />
+    </React.StrictMode>
   </>
 )
