@@ -134,7 +134,9 @@ const Info = () => {
               <p className='text-center text-[14px] mt-2 text-gray-400'>My List</p>
             </button>
           </div>
+          <div className="absolute top-[520px] ml-2">
           <MovieRow title="RELATED" movies={recommendation} />
+            </div>
         </div >
       )}
     </>
