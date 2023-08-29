@@ -7,4 +7,5 @@ export const endpoints = {
   trending: "/trending/all/week",
   airing_today: "/tv/airing_today?language=en-US",
   popular: "/movie/popular",
+  search: "/search/multi"
 };

@@ -3,7 +3,7 @@ import { FaHome, FaSearch, FaSwatchbook } from 'react-icons/fa'
 import { MdMonitor, MdMovie } from "react-icons/md"
 import { BottomNavigation } from 'reactjs-bottom-navigation'
 
-const BottomBar = () => {
+const BottomBar = ({ selected }) => {
   const bottomNavItems = [
     {
       title: 'Home',
@@ -40,7 +40,7 @@ const BottomBar = () => {
     <div>
       <BottomNavigation
         items={bottomNavItems}
-        selected={0}
+        selected={selected}
         activeBgColor="#202020"
         activeTextColor="white"
       />

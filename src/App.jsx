@@ -90,7 +90,7 @@ const App = () => {
           <MovieRow title="Tv Shows Trending Week" movies={trending_tv} />
           <MovieRow title="Movies Trending Week" movies={trending_movies} />
           <MovieRow title="Popular" movies={popular} />
-          <BottomBar />
+          <BottomBar selected={0} />
         </div>
       )}
     </>
