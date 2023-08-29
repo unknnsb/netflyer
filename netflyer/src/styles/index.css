@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background: #202020;
+}
+
+.bottom-nav {
+  background: #202020;
+  border-top: 1px solid #594f52;
+}
+
+.bottom-nav-item {
+  color: gray;
+}
