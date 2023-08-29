@@ -1,87 +1,98 @@
-import { onAuthStateChanged, signOut } from 'firebase/auth'
-import { getDocs, collection, doc, getDoc } from 'firebase/firestore'
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
-import Slider from './components/Slider'
-import Loading from './components/Loading'
-import { auth, db } from './services/Firebase'
-import BottomBar from './components/BottomBar'
-import FeaturedMovie from './components/FeaturedMovie'
+import BottomBar from "./components/BottomBar";
+import FeaturedMovie from "./components/FeaturedMovie";
+import Loading from "./components/Loading";
+import MovieRow from "./components/MovieRow";
+import { auth, db } from "./services/Firebase";
+import { API_KEY, URL, endpoints } from "./services/Tmdb";
+import axios from "axios";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const App = () => {
-  const [username, setUsername] = useState('')
-  const [avatar, setAvatar] = useState('')
-  const [loading, setLoading] = useState(true)
-  const [topTrendingMovies, setTopTrendingMovies] = useState([]);
-  const [allTimeTrendingTV, setAllTimeTrendingTV] = useState([]);
-  const [latestTVSeries, setLatestTVSeries] = useState([]);
-  const navigate = useNavigate()
-  const API_KEY = 'bb2818a2abb39fbdf6da79343e5e376b'
+  const [username, setUsername] = useState("");
+  const [avatar, setAvatar] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [originals, setOriginals] = useState([]);
+  const [trending, setTrending] = useState([]);
+  const [nowPlaying, setNowPlaying] = useState([]);
+  const [popular, setPopular] = useState([]);
+  const [topRated, setTopRated] = useState([]);
+  const [upcoming, setUpcoming] = useState([]);
+
+  const navigate = useNavigate();
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
-      navigate('/signup')
+      navigate("/signup");
     } else {
-      const userRef = doc(db, 'users', user.uid)
+      const userRef = doc(db, "users", user.uid);
       getDoc(userRef)
         .then((docSnapshot) => {
           if (docSnapshot.exists()) {
-            const userData = docSnapshot.data()
-            setUsername(userData.username)
-            setAvatar(userData.avatar)
-            setLoading(false)
+            const userData = docSnapshot.data();
+            setUsername(userData.username);
+            setAvatar(userData.avatar);
+            setLoading(false);
           }
         })
         .catch((error) => {
-          console.error('Error fetching account data:', error)
-          alert('Error fetching account data:', error)
-        })
+          console.error("Error fetching account data:", error);
+          alert("Error fetching account data:", error);
+        });
     }
-  })
+  });
 
   const handleLogOut = () => {
     signOut(auth).then(() => {
-      navigate('/login')
-    })
-  }
+      navigate("/login");
+    });
+  };
 
   useEffect(() => {
-    // Fetch top trending movies of the week
     axios
-      .get(
-        `https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}`
-      )
-      .then((response) => {
-        setTopTrendingMovies(response.data.results);
+      .get(`${URL}${endpoints.originals}`, {
+        params: {
+          api_key: API_KEY,
+        },
       })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-
-    // Fetch all-time trending TV series
+      .then((res) => setOriginals(res.data.results));
     axios
-      .get(
-        `https://api.themoviedb.org/3/trending/tv/day?api_key=${API_KEY}`
-      )
-      .then((response) => {
-        setAllTimeTrendingTV(response.data.results);
+      .get(`${URL}${endpoints.trending}`, {
+        params: {
+          api_key: API_KEY,
+        },
       })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-
-    // Fetch latest TV series
+      .then((res) => setTrending(res.data.results));
     axios
-      .get(
-        `https://api.themoviedb.org/3/tv/latest?api_key=${API_KEY}`
-      )
-      .then((response) => {
-        setLatestTVSeries([response.data]);
+      .get(`${URL}${endpoints.now_playing}`, {
+        params: {
+          api_key: API_KEY,
+        },
       })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
+      .then((res) => setNowPlaying(res.data.results));
+    axios
+      .get(`${URL}${endpoints.popular}`, {
+        params: {
+          api_key: API_KEY,
+        },
+      })
+      .then((res) => setPopular(res.data.results));
+    axios
+      .get(`${URL}${endpoints.top_rated}`, {
+        params: {
+          api_key: API_KEY,
+        },
+      })
+      .then((res) => setTopRated(res.data.results));
+    axios
+      .get(`${URL}${endpoints.upcoming}`, {
+        params: {
+          api_key: API_KEY,
+        },
+      })
+      .then((res) => setUpcoming(res.data.results));
   }, []);
 
   return (
@@ -93,20 +104,20 @@ const App = () => {
           <FeaturedMovie />
           <main className="px-4">
             <section className="mb-16">
-              <Slider title="Top Trending Movies of the Week" slides={topTrendingMovies.map(movie => `https://image.tmdb.org/t/p/original/${movie.backdrop_path}`)} />
+              <MovieRow title="Top Trending" images={trending} />
             </section>
             <section className="mb-16">
-              <Slider title="All-Time Trending TV Series" slides={allTimeTrendingTV.map(series => `https://image.tmdb.org/t/p/original/${series.backdrop_path}`)} />
+              <MovieRow title="All-Time Trending TV Series" images={popular} />
             </section>
             <section className="mb-16">
-              <Slider title="Latest TV Series" slides={latestTVSeries.map(series => `https://image.tmdb.org/t/p/original/${series.backdrop_path}`)} />
+              <MovieRow title="Latest TV Series" images={nowPlaying} />
             </section>
           </main>
           <BottomBar />
         </div>
       )}
     </>
-  )
-}
+  );
+};
 
-export default App
+export default App;
