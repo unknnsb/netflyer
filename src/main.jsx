@@ -18,7 +18,7 @@ const routes = [
   { path: '/', element: <App /> },
   { path: '/search', element: <Search /> },
   { path: '/info/:type/:id', element: <Info /> },
-  { path: '/watch/:id', element: <Watch /> },
+  { path: '/watch/:type/:id/:season?/:episode?', element: <Watch /> },
   // { path: '/movie/:id', element: <MovieDetails /> },
   // { path: '/tv/:id', element: <TvDetails /> },
   // { path: '/watch/movie/:id', element: <WatchMovie /> },
