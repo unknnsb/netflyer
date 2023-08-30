@@ -9,23 +9,6 @@ import MovieRow from '../components/MovieRow';
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from '../services/Firebase'
 
-const Cast = ({ movies }) => {
-  return (
-    <div className='mt-3 p-2 text-white'>
-      <h2 className="font-bold mb-2 text-xl">
-        CAST
-      </h2>
-      <div className="flex flex-no-wrap overflow-x-scroll scrolling-touch items-start mb-8">
-        {movies.map((movie, index) => (
-          <div key={index} className="flex-none w-2/3 md:w-1/3 mr-4 md:pb-4">
-            <img src={`https://image.tmdb.org/t/p/w185${movie.profile_path}`} className="shadow-lg w-20 rounded-xl" alt={movie.title} />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 const Info = () => {
   const { type, id } = useParams();
   const [result, setResult] = useState([]);
@@ -114,7 +97,7 @@ const Info = () => {
             <h2 className='flex items-center text-[10px] mt-2 font-bold gap-1'>{type == "tv" ? result.number_of_seasons + " Seasons - " + result.number_of_episodes + " Episodes" : <><FaStar className='text-sm' /> {result.vote_average} - {formatDate(result.release_date)}</>}</h2>
           </div>
           <button className='absolute top-80 flex items-center justify-center mt-4 bg-red-500 gap-1 rounded-lg text-center ml-5 text-white w-[90%] p-2 border-none outline-none'><FaPlay /> Play</button>
-          <p className='absolute ml-2 top-96 text-sm p-2 text-gray-300'>
+          <p className='relative ml-2 top-96 text-sm p-2 text-gray-300'>
             {expanded || result.overview.length <= 120
               ? result.overview
               : result.overview.slice(0, 120) + '...'}
@@ -124,7 +107,7 @@ const Info = () => {
               </span>
             )}
           </p>
-          <div className='absolute flex gap-5 top-[420px] text-white p-2 ml-2 mt-8'>
+          <div className='absolute flex gap-5 top-[440px] text-white p-2 ml-2 mt-8'>
             <button className='flex items-center flex-col'>
               <RxVideo className='text-2xl' />
               <p className='text-center text-[14px] mt-2 text-gray-300'>Trailer</p>
@@ -135,8 +118,11 @@ const Info = () => {
             </button>
           </div>
           <div className="absolute top-[520px] ml-2">
-          <MovieRow title="RELATED" movies={recommendation} />
-            </div>
+            <MovieRow title="CAST" movies={cast} profile={true} />
+          </div>
+          <div className="absolute top-[920px] ml-2">
+            <MovieRow title="RELATED" movies={recommendation} />
+          </div>
         </div >
       )}
     </>
