@@ -74,6 +74,10 @@ const Info = () => {
     setExpanded(!expanded);
   };
 
+  const onClick = (id) => {
+    navigate(`/watch/${id}`)
+  }
+
   return (
     <>
       {loading ? (
@@ -96,7 +100,7 @@ const Info = () => {
             <h1 className="text-2xl font-bold">{type == "tv" ? result.name : result.title}</h1>
             <h2 className='flex items-center text-[10px] mt-2 font-bold gap-1'>{type == "tv" ? result.number_of_seasons + " Seasons - " + result.number_of_episodes + " Episodes" : <><FaStar className='text-sm' /> {result.vote_average} - {formatDate(result.release_date)}</>}</h2>
           </div>
-          <button className='absolute top-80 flex items-center justify-center mt-4 bg-red-500 gap-1 rounded-lg text-center ml-5 text-white w-[90%] p-2 border-none outline-none'><FaPlay /> Play</button>
+          <button onClick={onClick(result.id)} className='absolute top-80 flex items-center justify-center mt-4 bg-red-500 gap-1 rounded-lg text-center ml-5 text-white w-[90%] p-2 border-none outline-none'><FaPlay /> Play</button>
           <p className='relative ml-2 top-96 text-sm p-2 text-gray-300'>
             {expanded || result.overview.length <= 120
               ? result.overview
@@ -118,9 +122,6 @@ const Info = () => {
             </button>
           </div>
           <div className="absolute top-[520px] ml-2">
-            <MovieRow title="CAST" movies={cast} profile={true} />
-          </div>
-          <div className="absolute top-[920px] ml-2">
             <MovieRow title="RELATED" movies={recommendation} />
           </div>
         </div >

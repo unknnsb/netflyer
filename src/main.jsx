@@ -11,12 +11,14 @@ import Info from './pages/Info'
 // import WatchTv from './pages/WatchTv'
 import './styles/index.css'
 import Search from './pages/Search'
+import Watch from './pages/Watch'
 
 // Define routes
 const routes = [
   { path: '/', element: <App /> },
   { path: '/search', element: <Search /> },
   { path: '/info/:type/:id', element: <Info /> },
+  { path: '/watch/:id', element: <Watch /> },
   // { path: '/movie/:id', element: <MovieDetails /> },
   // { path: '/tv/:id', element: <TvDetails /> },
   // { path: '/watch/movie/:id', element: <WatchMovie /> },

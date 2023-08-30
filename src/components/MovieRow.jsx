@@ -9,7 +9,7 @@ const MovieRow = ({ title, movies, profile = false }) => {
       <h2 className="font-bold mb-2 text-xl">
         {title}
       </h2>
-      <div className="flex flex-no-wrap overflow-x-auto scrolling-touch items-start mb-8">
+      <div className="flex flex-no-wrap overscroll-auto overflow-x-auto scrolling-touch items-start mb-8">
         {movies.map((movie, index) => (
           <div key={index} onClick={() => {
             if (movie.first_air_date) {
