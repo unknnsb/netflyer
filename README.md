@@ -16,7 +16,6 @@ This repository houses the code for our exciting Movie and Series Streaming App,
 - [x] Implemented series season and episode selector
 - [x] Enhanced search bar functionality
 - [x] Added watch list feature
-- [x] Added user reviews and ratings
 - [x] Added recommended movies and series
 - [x] Adding social media sharing feature
 
