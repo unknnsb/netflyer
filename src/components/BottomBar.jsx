@@ -1,6 +1,6 @@
 import React from 'react'
 import { FaHome, FaSearch, FaSwatchbook } from 'react-icons/fa'
-import { MdMonitor, MdMovie } from "react-icons/md"
+import { MdMonitor, MdMovie, MdSettings } from "react-icons/md"
 import { BottomNavigation } from 'reactjs-bottom-navigation'
 
 const BottomBar = ({ selected }) => {
@@ -30,10 +30,10 @@ const BottomBar = ({ selected }) => {
       activeIcon: <FaSearch color="#fff" />,
     },
     {
-      title: 'Watchlist',
-      onClick: ({ id }) => (window.location.href = '/list'),
-      icon: <FaSwatchbook />,
-      activeIcon: <FaSwatchbook color="#fff" />,
+      title: 'Settings',
+      onClick: ({ id }) => (window.location.href = '/settings'),
+      icon: <MdSettings />,
+      activeIcon: <MdSettings color="#fff" />,
     },
   ]
   return (

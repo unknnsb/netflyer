@@ -14,6 +14,7 @@ import './styles/index.css'
 import Search from './pages/Search'
 import Watch from './pages/Watch'
 import Trailer from './pages/Trailer'
+import Settings from './pages/Settings'
 
 // Define routes
 const routes = [
@@ -22,6 +23,7 @@ const routes = [
   { path: '/info/:type/:id', element: <Info /> },
   { path: '/watch/:type/:id/:season?/:episode?', element: <Watch /> },
   { path: '/watch/trailer/:type/:id', element: <Trailer /> },
+  // { path: '/settings', element: <Settings /> },
   // { path: '/movie/:id', element: <MovieDetails /> },
   // { path: '/tv/:id', element: <TvDetails /> },
   // { path: '/watch/movie/:id', element: <WatchMovie /> },

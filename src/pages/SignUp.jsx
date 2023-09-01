@@ -17,8 +17,6 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(true);
-  const [progressPercent, setProgressPercent] = useState(0);
-  const [uploading, setUploading] = useState(true);
   const navigate = useNavigate();
 
   const onFileChange = (e) => {
@@ -26,26 +24,19 @@ const SignUp = () => {
     if (selectedFile && username) {
       const storageRef = ref(
         storage,
-        `avatars/${username.toLocaleLowerCase()}_profile`
+        `avatars/${username.toLowerCase()}_profile.jpg`
       );
+      document.querySelector("#uploading").innerText = 'Uploading....'
       const uploadTask = uploadBytesResumable(storageRef, selectedFile);
-      setUploading(true);
       uploadTask.on(
         "state_changed",
-        (snapshot) => {
-          const progress = Math.round(
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          );
-          setProgressPercent(progress);
-          setUploading(false);
-        },
-        (error) => {
-          alert(error);
-        },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             setImage(downloadURL);
-            setUploading(false);
+            document.querySelector("#uploading").innerText = 'Uploaded'
+            setInterval(() => {
+              document.querySelector("#uploading").remove()
+            }, 3000)
           });
         }
       );
@@ -120,26 +111,12 @@ const SignUp = () => {
               className="w-full px-4 py-2 rounded bg-[#1e1c1c] text-white mb-4"
             />
             <div className="w-24 h-24 text-white rounded-full border-2 border-white mb-4 mx-auto">
-              {uploading ? (
-                <div className="relative w-full h-full">
-                  <div
-                    className="absolute inset-0 flex items-center justify-center"
-                    style={{ zIndex: 1 }}
-                  >
-                    {progressPercent}%
-                  </div>
-                  <div
-                    className="h-full bg-red-500 rounded-full"
-                    style={{ width: `${progressPercent}%` }}
-                  ></div>
-                </div>
-              ) : (
-                <img
-                  src={image}
-                  alt="Avatar"
-                  className="w-full h-full rounded-full"
-                />
-              )}
+              <img
+                src={image}
+                alt="Avatar"
+                className="w-full h-full rounded-full"
+              />
+              <p className="text-center mt-2 font-medium" id="uploading"></p>
             </div>
             <label
               htmlFor="email"
