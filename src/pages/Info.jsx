@@ -32,34 +32,32 @@ const Info = () => {
   }, [])
 
   useEffect(() => {
-    setLoading(true)
-    const mediaType = type == "tv" ? "tv" : "movie"
-    axios.get(`${URL}/${mediaType}/${id}`, {
-      params: { api_key: API_KEY }
-    })
-      .then((res) => {
-        setResult(res.data)
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
-    axios.get(`${URL}/${mediaType}/${id}/credits`, {
-      params: {
-        api_key: API_KEY
-      }
-    })
-      .then((res) => setCast(res.data.cast))
-    axios.get(`${URL}/${mediaType}/${id}/recommendations`, {
-      params: {
-        api_key: API_KEY
-      }
-    })
-      .then((res) => {
-        setRecommendation(res.data.results)
-      })
+    const fetchData = async () => {
+      try {
+        const mediaType = type === "tv" ? "tv" : "movie";
+        const [res1, res2, res3] = await Promise.all([
+          axios.get(`${URL}/${mediaType}/${id}`, {
+            params: { api_key: API_KEY },
+          }),
+          axios.get(`${URL}/${mediaType}/${id}/credits`, {
+            params: { api_key: API_KEY },
+          }),
+          axios.get(`${URL}/${mediaType}/${id}/recommendations`, {
+            params: { api_key: API_KEY },
+          }),
+        ]);
 
-    setLoading(false)
-  }, [id, type, loading]);
+        setResult(res1.data);
+        setCast(res2.data.cast);
+        setRecommendation(res3.data.results);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [id, type]);
 
   useEffect(() => {
     if (type === 'tv') {
@@ -103,10 +101,6 @@ const Info = () => {
     setExpanded(!expanded);
   };
 
-  const toggleRelated = () => {
-    setRelated(!showRelated)
-  }
-
   const watchMovie = (id) => {
     navigate(`/watch/movie/${id}`)
   }
@@ -115,9 +109,7 @@ const Info = () => {
   }
   return (
     <div className="relative">
-      {loading ? (
-        <Loading />
-      ) : (
+      {loading ? (<Loading />) : (
         <div>
           {/* Background */}
           <div className="absolute inset-0 h-72 bg-cover bg-center w-full" style={{ backgroundImage: `linear-gradient(to top, #202020, transparent), url(https://image.tmdb.org/t/p/original${result.backdrop_path})` }}></div>
@@ -129,15 +121,35 @@ const Info = () => {
 
           {/* Title and Info */}
           <div className="absolute top-64 left-0 p-4 text-white">
-            <h1 className={type == "tv" ? result.name.length > 30 ? "text-[20px] font-bold" : "text-2xl font-bold" : result.title.length > 30 ? "text-[20px] font-bold" : "text-2xl font-bold"}>{type === "tv" ? result.name : result.title}</h1>
-            <h2 className='flex items-center text-[10px] mt-2 font-bold gap-1'>
-              {type === "tv" ? `${result.number_of_seasons} Seasons - ${result.number_of_episodes} Episodes` :
-                <>
-                  <FaStar className='text-sm' /> {result.vote_average} - {formatDate(result.release_date)}
-                </>
-              }
-            </h2>
+            {type === "tv" ? (
+              <>
+                {result.name && (
+                  <h1 className={result.name.length > 30 ? "text-[20px] font-bold" : "text-2xl font-bold"}>{result.name}</h1>
+                )}
+                {result.first_air_date && (
+                  <h2 className='flex items-center text-[10px] mt-2 font-bold gap-1'>
+                    {`${result.number_of_seasons} Seasons - ${result.number_of_episodes} Episodes`}
+                  </h2>
+                )}
+                {/* Add other TV-specific properties similarly */}
+              </>
+            ) : (
+              <>
+                {result.title && (
+                  <h1 className={result.title.length > 30 ? "text-[20px] font-bold" : "text-2xl font-bold"}>{result.title}</h1>
+                )}
+                {result.release_date && (
+                  <h2 className='flex items-center text-[10px] mt-2 font-bold gap-1'>
+                    <>
+                      <FaStar className='text-sm' /> {result.vote_average} - {formatDate(result.release_date)}
+                    </>
+                  </h2>
+                )}
+                {/* Add other movie-specific properties similarly */}
+              </>
+            )}
           </div>
+
 
           {/* Play Button */}
           <button onClick={() => type == "movie" ? watchMovie(result.id) : watchTvShow(id, 1, 1)} className='absolute top-80 flex items-center justify-center mt-4 bg-red-500 gap-1 rounded-lg text-center ml-5 text-white w-[90%] p-2 border-none outline-none'>
@@ -145,14 +157,16 @@ const Info = () => {
           </button>
 
           {/* Overview */}
-          <p className='relative ml-2 top-96 text-sm p-2 text-gray-300'>
-            {expanded || result.overview.length <= 120 ? result.overview : `${result.overview.slice(0, 120)}...`}
-            {result.overview.length > 120 && (
-              <span className="cursor-pointer text-blue-500 ml-1" onClick={toggleOverview}>
-                {expanded ? 'Read less' : 'Read more'}
-              </span>
-            )}
-          </p>
+          {result.overview && (
+            <p className='relative ml-2 top-96 text-sm p-2 text-gray-300'>
+              {expanded || result.overview.length <= 120 ? result.overview : `${result.overview.slice(0, 120)}...`}
+              {result.overview.length > 120 && (
+                <span className="cursor-pointer text-blue-500 ml-1" onClick={toggleOverview}>
+                  {expanded ? 'Read less' : 'Read more'}
+                </span>
+              )}
+            </p>
+          )}
 
           {/* Buttons */}
           <div className='absolute flex gap-5 top-[440px] text-white p-2 ml-2 mt-8'>
