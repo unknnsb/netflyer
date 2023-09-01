@@ -110,6 +110,13 @@ const Info = () => {
   const trailer = (type, id) => {
     navigate(`/watch/trailer/${type}/${id}`)
   }
+
+  if (type == "tv" && result.name) {
+    document.title = `Netflyer - ${result.name}`
+  } else if (type == "movie" && result.title) {
+    document.title = `Netflyer - ${result.title}`
+  }
+
   return (
     <div className="relative">
       {loading ? (<Loading />) : (
