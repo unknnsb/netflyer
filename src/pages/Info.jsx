@@ -107,6 +107,9 @@ const Info = () => {
   const watchTvShow = (id, season, episode) => {
     navigate(`/watch/tv/${id}/${season}/${episode}`)
   }
+  const trailer = (type, id) => {
+    navigate(`/watch/trailer/${type}/${id}`)
+  }
   return (
     <div className="relative">
       {loading ? (<Loading />) : (
@@ -170,7 +173,13 @@ const Info = () => {
 
           {/* Buttons */}
           <div className='absolute flex gap-5 top-[440px] text-white p-2 ml-2 mt-8'>
-            <button className='flex items-center flex-col'>
+            <button onClick={() => {
+              if (type == "tv") {
+                trailer("tv", id)
+              } else {
+                trailer("movie", id)
+              }
+            }} className='flex items-center flex-col'>
               <RxVideo className='text-2xl' />
               <p className='text-center text-[14px] mt-2 text-gray-300'>Trailer</p>
             </button>

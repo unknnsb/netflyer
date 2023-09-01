@@ -13,6 +13,7 @@ import NotFound from './pages/NotFound'
 import './styles/index.css'
 import Search from './pages/Search'
 import Watch from './pages/Watch'
+import Trailer from './pages/Trailer'
 
 // Define routes
 const routes = [
@@ -20,6 +21,7 @@ const routes = [
   { path: '/search', element: <Search /> },
   { path: '/info/:type/:id', element: <Info /> },
   { path: '/watch/:type/:id/:season?/:episode?', element: <Watch /> },
+  { path: '/watch/trailer/:type/:id', element: <Trailer /> },
   // { path: '/movie/:id', element: <MovieDetails /> },
   // { path: '/tv/:id', element: <TvDetails /> },
   // { path: '/watch/movie/:id', element: <WatchMovie /> },
