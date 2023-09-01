@@ -201,9 +201,11 @@ const Info = () => {
                       onChange={(event) => setSelectedSeason(parseInt(event.target.value))}
                     >
                       {seasons.map((season) => (
-                        <option key={season.season_number} value={season.season_number}>
-                          {`Season ${season.season_number}`}
-                        </option>
+                        (season.season_number !== 0 && season.name !== "Specials") ? (
+                          <option key={season.season_number} value={season.season_number}>
+                            {`Season ${season.season_number}`}
+                          </option>
+                        ) : null
                       ))}
                     </select>
                   </div>
