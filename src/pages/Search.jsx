@@ -41,6 +41,13 @@ const Search = () => {
       window.location.href = `/info/movie/${id}`
     }
   }
+
+  const getDate = (date) => {
+    const dateObject = new Date(date);
+    const year = dateObject.getFullYear();
+    return year
+  }
+  
   return (
     <>
       {loading ? (
@@ -62,7 +69,7 @@ const Search = () => {
                   }
                 }} key={result.id} className="hover:opacity-20 transition-opacity duration-100 flex items-center gap-1 text-white mt-4 text-sm border-zinc-600 border-b p-1">
                   <FaSearch />
-                  <h2>{result.title || result.name}</h2>
+                  <h2>{result.title || result.name} ({getDate(result.release_date || result.first_air_date)})</h2>
                 </div>
               ))}
             </div>
