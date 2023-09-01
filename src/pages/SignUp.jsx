@@ -1,58 +1,86 @@
+import Loading from "../components/Loading";
+import { auth, db, storage } from "../services/Firebase";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
-} from 'firebase/auth'
-import { doc, setDoc } from 'firebase/firestore'
-import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import Loading from '../components/Loading'
-import { auth, db } from '../services/Firebase'
+} from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const SignUp = () => {
-  const [username, setUsername] = useState('')
-  const [image, setImage] = useState('https://ih0.redbubble.net/image.618427277.3222/flat,1000x1000,075,f.u1.jpg')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(true)
-  const navigate = useNavigate()
+  const [username, setUsername] = useState("");
+  const [image, setImage] = useState(
+    "https://ih0.redbubble.net/image.618427277.3222/flat,1000x1000,075,f.u1.jpg"
+  );
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [progressPercent, setProgressPercent] = useState(0);
+  const [uploading, setUploading] = useState(true);
+  const navigate = useNavigate();
 
   const onFileChange = (e) => {
-    const selectedFile = e.target.files[0]
-    if (selectedFile) {
-      const imageUrl = URL.createObjectURL(selectedFile)
-      setImage(imageUrl)
-      document.querySelector('#ava').remove()
+    const selectedFile = e.target.files[0];
+    if (selectedFile && username) {
+      const storageRef = ref(
+        storage,
+        `avatars/${username.toLocaleLowerCase()}_profile`
+      );
+      const uploadTask = uploadBytesResumable(storageRef, selectedFile);
+      setUploading(true);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+          setProgressPercent(progress);
+          setUploading(false);
+        },
+        (error) => {
+          alert(error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            setImage(downloadURL);
+            setUploading(false);
+          });
+        }
+      );
+    } else if (!username) {
+      alert("Please provide a username first.");
     }
-  }
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     createUserWithEmailAndPassword(auth, email, password)
       .then(async (userCred) => {
-        const user = userCred.user
-        const colRef = doc(db, 'users', user.uid)
+        const user = userCred.user;
+        const colRef = doc(db, "users", user.uid);
         setDoc(colRef, {
           username: username,
-          avatar: image,
         }).then(() => {
-          navigate('/')
-        })
+          navigate("/");
+        });
       })
       .catch((error) => {
-        alert(error.message)
-      })
-  }
+        alert(error.message);
+      });
+  };
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        navigate('/')
+        navigate("/");
       } else if (!user) {
-        setLoading(false)
+        setLoading(false);
       }
-    })
-  }, [])
+    });
+  }, []);
 
   return (
     <>
@@ -75,6 +103,7 @@ const SignUp = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="w-full px-4 py-2 rounded bg-[#1e1c1c] text-white mb-4"
+              required
             />
 
             <label
@@ -90,15 +119,28 @@ const SignUp = () => {
               onChange={onFileChange}
               className="w-full px-4 py-2 rounded bg-[#1e1c1c] text-white mb-4"
             />
-            <img
-              src={image}
-              alt="Avatar"
-              className="w-24 h-24 rounded-full border-2 border-white mb-4 mx-auto"
-            />
-            <p id="ava" className="text-center text-white">
-              Default Avatar
-            </p>
-
+            <div className="w-24 h-24 text-white rounded-full border-2 border-white mb-4 mx-auto">
+              {uploading ? (
+                <div className="relative w-full h-full">
+                  <div
+                    className="absolute inset-0 flex items-center justify-center"
+                    style={{ zIndex: 1 }}
+                  >
+                    {progressPercent}%
+                  </div>
+                  <div
+                    className="h-full bg-red-500 rounded-full"
+                    style={{ width: `${progressPercent}%` }}
+                  ></div>
+                </div>
+              ) : (
+                <img
+                  src={image}
+                  alt="Avatar"
+                  className="w-full h-full rounded-full"
+                />
+              )}
+            </div>
             <label
               htmlFor="email"
               className="block text-white font-semibold mb-1"
@@ -112,6 +154,7 @@ const SignUp = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 rounded bg-[#1e1c1c] text-white mb-4"
+              required
             />
 
             <label
@@ -127,6 +170,7 @@ const SignUp = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 rounded bg-[#1e1c1c] text-white mb-6"
+              required
             />
 
             <button
@@ -138,7 +182,7 @@ const SignUp = () => {
             </button>
           </form>
           <p className="text-white mt-4">
-            Already Have An Account?{' '}
+            Already Have An Account?{" "}
             <Link to="/login" className="text-blue-500">
               Login
             </Link>
@@ -146,7 +190,7 @@ const SignUp = () => {
         </div>
       )}
     </>
-  )
-}
+  );
+};
 
-export default SignUp
+export default SignUp;
