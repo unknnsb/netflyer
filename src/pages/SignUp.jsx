@@ -10,7 +10,7 @@ import { auth, db } from '../services/Firebase'
 
 const SignUp = () => {
   const [username, setUsername] = useState('')
-  const [image, setImage] = useState('')
+  const [image, setImage] = useState('https://ih0.redbubble.net/image.618427277.3222/flat,1000x1000,075,f.u1.jpg')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(true)
@@ -24,21 +24,6 @@ const SignUp = () => {
       document.querySelector('#ava').remove()
     }
   }
-
-  useEffect(() => {
-    const generateRandomPFP = async () => {
-      try {
-        const response = await fetch('https://randomuser.me/api/')
-        const data = await response.json()
-        const randomUser = data.results[0]
-        const pfpURL = randomUser.picture.large
-        setImage(pfpURL)
-      } catch (error) {
-        console.error('Error fetching random user data:', error)
-      }
-    }
-    generateRandomPFP()
-  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
