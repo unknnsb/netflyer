@@ -1,45 +1,40 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { ClerkProvider, SignIn, SignUp } from "@clerk/clerk-react";
-
-import App from "./App.jsx";
-import MovieDetails from "./pages/MovieDetails";
-import TvDetails from "./pages/TvDetails.jsx";
-import WatchMovie from "./pages/WatchMovie";
-import WatchTv from "./pages/WatchTv.jsx";
-import WatchListAdd from "./pages/WatchListAdd.jsx";
-import WatchList from "./pages/WatchList.jsx";
-import "./styles/index.css";
-import SearchPage from "./pages/Search.jsx";
-
-// Ensure that the Publishable Key is available
-const clerkPubKey = import.meta.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY;
-if (!clerkPubKey) {
-  throw new Error("Missing Publishable Key");
-}
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import App from './App'
+import SignUp from './pages/SignUp'
+import Login from './pages/Login'
+import Info from './pages/Info'
+// import TvDetails from './pages/TvDetails'
+// import WatchList from './pages/WatchList'
+// import WatchMovie from './pages/WatchMovie'
+// import WatchTv from './pages/WatchTv'
+import './styles/index.css'
+import Search from './pages/Search'
+import Watch from './pages/Watch'
 
 // Define routes
 const routes = [
-  { path: "/", element: <App /> },
-  { path: "/movie/:id", element: <MovieDetails /> },
-  { path: "/tv/:id", element: <TvDetails /> },
-  { path: "/watch/movie/:id", element: <WatchMovie /> },
-  { path: "/watch/tv/:id/:season/:episode", element: <WatchTv /> },
-  { path: "/list/add/:id", element: <WatchListAdd /> },
-  { path: "/list", element: <WatchList /> },
-  { path: "/search", element: <SearchPage /> },
-  { path: "/sign-in", element: <SignIn routing="path" path="/sign-in" /> },
-  { path: "/sign-up", element: <SignUp routing="path" path="/sign-up" /> },
-];
+  { path: '/', element: <App /> },
+  { path: '/search', element: <Search /> },
+  { path: '/info/:type/:id', element: <Info /> },
+  { path: '/watch/:type/:id/:season?/:episode?', element: <Watch /> },
+  // { path: '/movie/:id', element: <MovieDetails /> },
+  // { path: '/tv/:id', element: <TvDetails /> },
+  // { path: '/watch/movie/:id', element: <WatchMovie /> },
+  // { path: '/watch/tv/:id/:season/:episode', element: <WatchTv /> },
+  // { path: '/list', element: <WatchList /> },
+  { path: '/signup', element: <SignUp /> },
+  { path: '/login', element: <Login /> },
+]
 
-const router = createBrowserRouter(routes);
+const router = createBrowserRouter(routes)
 
 // Render the app
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <ClerkProvider publishableKey={clerkPubKey}>
+ReactDOM.createRoot(document.querySelector('#root')).render(
+  <>
+    <React.StrictMode>
       <RouterProvider router={router} />
-    </ClerkProvider>
-  </React.StrictMode>
-);
+    </React.StrictMode>
+  </>
+)

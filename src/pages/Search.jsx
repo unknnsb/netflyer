@@ -1,80 +1,78 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import Header from "../components/Header";
+import axios from 'axios'
+import { onAuthStateChanged } from 'firebase/auth'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import BottomBar from '../components/BottomBar'
+import Loading from '../components/Loading'
+import { auth } from '../services/Firebase'
+import { FaSearch } from "react-icons/fa"
+import { API_KEY, endpoints, URL } from '../services/Tmdb'
 
-const SearchPage = () => {
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
-  const navigate = useNavigate();
-
-  const apiKey = "bb2818a2abb39fbdf6da79343e5e376b";
-  const baseUrl = "https://api.themoviedb.org/3/search/multi"; // Fetch both movies and TV series
-
-  const fetchResults = async () => {
-    try {
-      const response = await fetch(
-        `${baseUrl}?api_key=${apiKey}&query=${query}`
-      );
-      const data = await response.json();
-      setResults(data.results);
-    } catch (error) {
-      console.error("Error fetching results:", error);
-    }
-  };
+const Search = () => {
+  const [query, setQuery] = useState('')
+  const [results, setResults] = useState([])
+  const [loading, setLoading] = useState(true)
+  const navigate = useNavigate()
 
   useEffect(() => {
-    if (query !== "") {
-      fetchResults();
-    }
-  }, [query]);
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        navigate("/")
+      } else {
+        setLoading(false)
+      }
+    })
+  }, [])
 
-  const onClick = (res) => {
-    if (res.first_air_date) {
-      navigate(`/tv/${res.id}`);
+  useEffect(() => {
+    axios.get(`${URL}${endpoints.search}`, {
+      params: {
+        query: query,
+        api_key: API_KEY
+      }
+    })
+      .then((res) => setResults(res.data.results))
+  }, [query])
+
+  const handleClick = (id, tvShow) => {
+    if (tvShow) {
+      window.location.href = `/info/tv/${id}`
     } else {
-      navigate(`/movie/${res.id}`);
+      window.location.href = `/info/movie/${id}`
     }
-  };
-
+  }
   return (
     <>
-      <Header />
-      <div className="min-h-screen bg-zinc-900 text-white p-8">
-        <div className="container mt-20 mx-auto">
-          <h1 className="text-3xl mb-4">Search Movies and TV Series</h1>
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search for movies and TV series..."
-            className="w-full p-2 rounded-md bg-zinc-800 text-white"
-          />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-            {results.map((item) => (
-              <div
-                onClick={() => onClick(item)}
-                key={item.id}
-                className="bg-zinc-800 p-4 rounded-md"
-              >
-                <img
-                  src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                  alt={`${item.title || item.name} Poster`}
-                  className="mb-2"
-                />
-                <h2 className="text-xl font-semibold">
-                  {item.title || item.name}
-                </h2>
-                <p className="text-gray-400">
-                  {item.release_date || item.first_air_date}
-                </p>
-                <p className="mt-2">{item.overview}</p>
-              </div>
-            ))}
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <div className='container p-3'>
+            <h1 className='text-2xl font-bold text-white'>
+              Search
+            </h1>
+            <input value={query} onChange={(e) => setQuery(e.target.value)} className='bg-[#444343] mt-2 p-2 rounded-lg outline-none border-none w-full text-gray-100' placeholder='What do you want to search?' />
+            <div>
+              {results.map(result => (
+                <div onClick={() => {
+                  if (result.first_air_date) {
+                    handleClick(result.id, true)
+                  } else {
+                    handleClick(result.id, false)
+                  }
+                }} key={result.id} className="hover:opacity-20 transition-opacity duration-100 flex items-center gap-1 text-white mt-4 text-sm border-zinc-600 border-b p-1">
+                  <FaSearch />
+                  <h2>{result.title || result.name}</h2>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </div>
+          <BottomBar selected={3} />
+        </>
+      )
+      }
     </>
-  );
-};
+  )
+}
 
-export default SearchPage;
+export default Search
