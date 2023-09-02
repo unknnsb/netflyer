@@ -1,11 +1,12 @@
 import Loading from "../components/Loading";
 import MovieRow from "../components/MovieRow";
-import { auth } from "../services/Firebase";
+import { auth, db } from "../services/Firebase";
 import { API_KEY, URL } from "../services/Tmdb";
 import axios from "axios";
 import { onAuthStateChanged } from "firebase/auth";
+import { deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { FaArrowLeft, FaPlay, FaPlus, FaStar } from "react-icons/fa";
+import { FaCheck, FaArrowLeft, FaPlay, FaPlus, FaStar } from "react-icons/fa";
 import { RxVideo } from "react-icons/rx";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
@@ -21,15 +22,50 @@ const Info = () => {
   const [selectedSeason, setSelectedSeason] = useState(1);
   const [showRelated, setRelated] = useState(false);
   const [episodeLoading, setEpisodeLoading] = useState(false);
+  const [addingToWatchList, setAddingToWatchList] = useState(false);
+  const [watchList, setWatchList] = useState(true);
   const navigate = useNavigate();
+  const [userUid, setUserUid] = useState();
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         navigate("/");
+      } else {
+        setUserUid(user.uid);
+        const docRef = doc(db, "watchlist", user.uid);
+        setAddingToWatchList(true);
+        getDoc(docRef).then((docSnapshot) => {
+          if (docSnapshot.exists()) {
+            setWatchList(true);
+          } else {
+            setWatchList(false);
+          }
+        });
+        setAddingToWatchList(false);
       }
     });
   }, []);
+
+  const addToWatchList = async () => {
+    setAddingToWatchList(true);
+    await setDoc(doc(db, "watchlist", userUid), {
+      id: id,
+      type: type,
+    }).then(() => {
+      setWatchlist(true)
+      setAddingToWatchList(false);
+    });
+  };
+  const removeFromWatchList = async () => {
+    setAddingToWatchList(true);
+    await deleteDoc(doc(db, "watchlist", userUid), {
+      id: id,
+      type: type,
+    }).then(() => {
+      setAddingToWatchList(false);
+    });
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -234,12 +270,67 @@ const Info = () => {
                 Trailer
               </p>
             </button>
-            <button className="flex items-center flex-col">
-              <FaPlus className="text-2xl" />
-              <p className="text-center text-[14px] mt-2 text-gray-400">
-                My List
-              </p>
-            </button>
+            {addingToWatchList ? (
+              <div
+                className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                role="status"
+              >
+                <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+                  Loading...
+                </span>
+              </div>
+            ) : (
+              <>
+                {watchList ? (
+                  <>
+                    {addingToWatchList ? (
+                      <div
+                        className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                        role="status"
+                      >
+                        <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+                          Loading...
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center flex-col">
+                        <FaCheck
+                          onClick={() => removeFromWatchList()}
+                          className="text-red-500 text-2xl"
+                        />
+
+                        <p className="text-center text-[14px] mt-2 text-gray-400">
+                          My List
+                        </p>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {addingToWatchList ? (
+                      <div
+                        className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                        role="status"
+                      >
+                        <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+                          Loading...
+                        </span>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => addToWatchList()}
+                        className="flex items-center flex-col"
+                      >
+                        <FaPlus className="text-2xl" />
+                        <p className="text-center text-[14px] mt-2 text-gray-400">
+                          My List
+                        </p>
+                      </button>
+                    )}
+                  </>
+                )}
+              </>
+            )}
           </div>
 
           {type === "movie" ? (
