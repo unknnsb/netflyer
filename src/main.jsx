@@ -10,7 +10,6 @@ import NotFound from "./pages/NotFound";
 import Search from "./pages/Search";
 import Settings from "./pages/Settings";
 import SignUp from "./pages/SignUp";
-import Trailer from "./pages/Trailer";
 import Watch from "./pages/Watch";
 
 import "./styles/index.css";
@@ -21,7 +20,6 @@ const routes = [
   { path: "/search", element: <Search /> },
   { path: "/info/:type/:id", element: <Info /> },
   { path: "/watch/:type/:id/:season?/:episode?", element: <Watch /> },
-  { path: "/watch/trailer/:type/:id", element: <Trailer /> },
   { path: "/settings", element: <Settings /> },
   { path: "/signup", element: <SignUp /> },
   { path: "/login", element: <Login /> },
