@@ -8,6 +8,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Filter from 'bad-words';
 
 const SignUp = () => {
   const [username, setUsername] = useState("");
@@ -18,6 +19,12 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  const checkForBadWords = (text) => {
+    const filter = new Filter();
+    return filter.isProfane(text);
+  };
+
 
   const onFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -48,19 +55,23 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(async (userCred) => {
-        const user = userCred.user;
-        const colRef = doc(db, "users", user.uid);
-        setDoc(colRef, {
-          username: username,
-        }).then(() => {
-          navigate("/");
+    if (checkForBadWords(username) || checkForBadWords(email)) {
+      alert('Your username or email contains inappropriate words. Please choose a different one.');
+    } else {
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(async (userCred) => {
+          const user = userCred.user;
+          const colRef = doc(db, "users", user.uid);
+          setDoc(colRef, {
+            username: username,
+          }).then(() => {
+            navigate("/");
+          });
+        })
+        .catch((error) => {
+          alert(error.message);
         });
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
+    }
   };
 
   useEffect(() => {
