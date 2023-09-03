@@ -4,7 +4,14 @@ import { auth, db } from "../services/Firebase";
 import { API_KEY, URL } from "../services/Tmdb";
 import axios from "axios";
 import { onAuthStateChanged } from "firebase/auth";
-import { deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  deleteDoc,
+  doc,
+  getDoc,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { FaCheck, FaArrowLeft, FaPlay, FaPlus, FaStar } from "react-icons/fa";
 import { RxVideo } from "react-icons/rx";
@@ -37,9 +44,12 @@ const Info = () => {
         setAddingToWatchList(true);
         getDoc(docRef).then((docSnapshot) => {
           if (docSnapshot.exists()) {
-            setWatchList(true);
-          } else {
-            setWatchList(false);
+            const data = docSnapshot.data();
+            if (data.id == id && data.type == type) {
+              setWatchList(true);
+            } else {
+              setWatchList(false);
+            }
           }
         });
         setAddingToWatchList(false);
@@ -53,7 +63,7 @@ const Info = () => {
       id: id,
       type: type,
     }).then(() => {
-      setWatchlist(true)
+      setWatchList(true);
       setAddingToWatchList(false);
     });
   };
@@ -338,8 +348,8 @@ const Info = () => {
               <MovieRow title="RELATED" movies={recommendation} />
             </div>
           ) : (
-            <div className={`flex flex-col relative top-[350px] ml-2`}>
-              <div className="tabs mt-2 w-full sm:w-80 md:w-60 lg:w-40 xl:w-30">
+            <div className={`flex flex-col relative top-[350px]`}>
+              <div className="tabs mt-2 w-full">
                 <h2
                   onClick={() => setRelated(false)}
                   className={`text-red-500 text-lg cursor-pointer mb-2 inline-block px-4 py-2 rounded-t-lg ${
@@ -364,7 +374,7 @@ const Info = () => {
                   <div className="season-select mb-4">
                     <select
                       id="season"
-                      className="ml-2 mr-2 p-2 bg-dark text-white border border-gray-600 rounded-md"
+                      className="p-2 bg-dark text-white border border-gray-600 rounded-md"
                       value={selectedSeason}
                       onChange={(event) =>
                         setSelectedSeason(parseInt(event.target.value))
@@ -409,7 +419,7 @@ const Info = () => {
                                   : `https://image.tmdb.org/t/p/w500${episode.still_path}`
                               }
                               alt={`Episode ${index + 1}: ${episode.name}`}
-                              className="w-[350px] h-[200px] rounded max-w-[400px]"
+                              className="w-[340px] h-[200px] rounded max-w-[400px]"
                             />
                             <div className="absolute top-1/2 left-[178px] transform -translate-x-1/2 -translate-y-1/2">
                               <span className="text-white text-4xl">
@@ -422,9 +432,7 @@ const Info = () => {
                               {`Episode ${index + 1}: ${episode.name}`}
                             </h2>
                             <p className="text-gray-400 text-sm mt-2 md:mt-1 max-h-20 overflow-hidden">
-                              {episode.overview.length > 150
-                                ? `${episode.overview.slice(0, 150)}...`
-                                : episode.overview}
+                              {episode.overview}
                             </p>
                             <p className="text-zinc-400 text-sm mt-2 md:mt-1">
                               {episode.runtime == null ? "Not Released" : ""}
