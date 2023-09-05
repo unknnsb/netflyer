@@ -8,6 +8,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Filter from 'bad-words';
 
 const SignUp = () => {
   const [username, setUsername] = useState("");
@@ -17,35 +18,32 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(true);
-  const [progressPercent, setProgressPercent] = useState(0);
-  const [uploading, setUploading] = useState(true);
   const navigate = useNavigate();
+
+  const checkForBadWords = (text) => {
+    const filter = new Filter();
+    return filter.isProfane(text);
+  };
+
 
   const onFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile && username) {
       const storageRef = ref(
         storage,
-        `avatars/${username.toLocaleLowerCase()}_profile`
+        `avatars/${username.toLowerCase()}_profile.jpg`
       );
+      document.querySelector("#uploading").innerText = 'Uploading....'
       const uploadTask = uploadBytesResumable(storageRef, selectedFile);
-      setUploading(true);
       uploadTask.on(
         "state_changed",
-        (snapshot) => {
-          const progress = Math.round(
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          );
-          setProgressPercent(progress);
-          setUploading(false);
-        },
-        (error) => {
-          alert(error);
-        },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             setImage(downloadURL);
-            setUploading(false);
+            document.querySelector("#uploading").innerText = 'Uploaded'
+            setInterval(() => {
+              document.querySelector("#uploading").remove()
+            }, 3000)
           });
         }
       );
@@ -57,19 +55,23 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(async (userCred) => {
-        const user = userCred.user;
-        const colRef = doc(db, "users", user.uid);
-        setDoc(colRef, {
-          username: username,
-        }).then(() => {
-          navigate("/");
+    if (checkForBadWords(username) || checkForBadWords(email)) {
+      alert('Your username or email contains inappropriate words. Please choose a different one.');
+    } else {
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(async (userCred) => {
+          const user = userCred.user;
+          const colRef = doc(db, "users", user.uid);
+          setDoc(colRef, {
+            username: username,
+          }).then(() => {
+            navigate("/");
+          });
+        })
+        .catch((error) => {
+          alert(error.message);
         });
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
+    }
   };
 
   useEffect(() => {
@@ -120,26 +122,12 @@ const SignUp = () => {
               className="w-full px-4 py-2 rounded bg-[#1e1c1c] text-white mb-4"
             />
             <div className="w-24 h-24 text-white rounded-full border-2 border-white mb-4 mx-auto">
-              {uploading ? (
-                <div className="relative w-full h-full">
-                  <div
-                    className="absolute inset-0 flex items-center justify-center"
-                    style={{ zIndex: 1 }}
-                  >
-                    {progressPercent}%
-                  </div>
-                  <div
-                    className="h-full bg-red-500 rounded-full"
-                    style={{ width: `${progressPercent}%` }}
-                  ></div>
-                </div>
-              ) : (
-                <img
-                  src={image}
-                  alt="Avatar"
-                  className="w-full h-full rounded-full"
-                />
-              )}
+              <img
+                src={image}
+                alt="Avatar"
+                className="w-full h-full rounded-full"
+              />
+              <p className="text-center mt-2 font-medium" id="uploading"></p>
             </div>
             <label
               htmlFor="email"
