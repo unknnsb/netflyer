@@ -1,79 +1,51 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { FaPlay, FaPlus, FaInfoCircle } from 'react-icons/fa';
-import { motion } from 'framer-motion';
-import Loading from './Loading';
+import { TMDB_API_KEY, TMDB_URL, endpoints } from "../services/Tmdb";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { FaPlay, FaInfoCircle, FaPlus } from "react-icons/fa";
 
-const FeaturedMovie = () => {
-  const [trendingMovies, setTrendingMovies] = useState([]);
-  const [loading, setLoading] = useState(true)
+const FeaturedMovies = () => {
+  const [featuredMovies, setFeaturedMovies] = useState([]);
 
   useEffect(() => {
-    // Fetch trending movie data from TMDB API
-    axios.get('https://api.themoviedb.org/3/trending/all/week?api_key=bb2818a2abb39fbdf6da79343e5e376b')
-      .then(response => {
-        setTrendingMovies(response.data.results);
-        setLoading(false)
+    axios
+      .get(`${TMDB_URL}${endpoints.trending}?api_key=${TMDB_API_KEY}`)
+      .then((response) => {
+        setFeaturedMovies(response.data.results);
       })
-      .catch(error => {
-        console.error('Error fetching data:', error);
+      .catch((error) => {
+        console.error("Error fetching data:", error);
       });
   }, []);
 
-  const randomIndex = Math.floor(Math.random() * trendingMovies.length);
-  const featuredMovie = trendingMovies[randomIndex];
-
-  const handleClick = (id, type) => {
-    window.location.href = `/info/${type}/${id}`
-  }
-
   return (
-    <>
-      {loading ? (
-        <Loading />
-      ) : (
-        <div className="relative">
-          {featuredMovie && (
-            <motion.div
-              key={featuredMovie.id}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5 }}
-              className="relative bg-gradient-to-t from-dark"
-            >
-              <img
-                src={`https://image.tmdb.org/t/p/original/${featuredMovie.backdrop_path}`}
-                alt={featuredMovie.title}
-                className="object-cover h-[500px] md:h-screen w-full"
-              />
-              <div className="absolute z-20 bottom-0 p-4 sm:p-8 text-center bg-gradient-to-t from-dark w-full">
-                <h1 className="text-2xl sm:text-4xl font-bold mb-2 text-white">{featuredMovie.title}</h1>
-                <div className="flex justify-center items-center space-x-4">
-                  <button className="p-2 bg-red-600 rounded-lg text-white">
-                    <FaPlay className="h-6 w-6" />
-                  </button>
-                  <button className="p-2 bg-gray-800 rounded-lg text-white">
-                    <FaPlus className="h-6 w-6" />
-                  </button>
-                  <button onClick={() => {
-                    if (featuredMovie.first_air_date) {
-                      handleClick(featuredMovie.id, 'tv')
-                    } else {
-                      handleClick(featuredMovie.id, 'movie')
-                    }
-                  }} className="p-2 bg-gray-800 rounded-lg text-white">
-                    <FaInfoCircle className="h-6 w-6" />
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          )}
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+      {featuredMovies.map((movie) => (
+        <div
+          key={movie.id}
+          className="relative group overflow-hidden rounded-lg shadow-md"
+        >
+          <img
+            src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+            alt={movie.title}
+            className="w-full h-auto transform scale-100 group-hover:scale-105 transition-transform duration-300"
+          />
+          <div className="absolute inset-0 flex justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="bg-black bg-opacity-80 p-4 text-white text-center">
+              <button className="text-2xl p-2 hover:bg-red-500 hover:text-white rounded-full mx-2">
+                <FaPlay />
+              </button>
+              <button className="text-2xl p-2 hover:bg-red-500 hover:text-white rounded-full mx-2">
+                <FaInfoCircle />
+              </button>
+              <button className="text-2xl p-2 hover:bg-red-500 hover:text-white rounded-full mx-2">
+                <FaPlus />
+              </button>
+            </div>
+          </div>
         </div>
-      )}
-    </>
+      ))}
+    </div>
   );
 };
 
-export default FeaturedMovie;
-
+export default FeaturedMovies;

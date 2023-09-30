@@ -1,14 +1,19 @@
 import Loading from "../components/Loading";
 import { auth, db, storage } from "../services/Firebase";
+import Filter from "bad-words";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import {
+  ref,
+  getDownloadURL,
+  uploadBytesResumable,
+  getMetadata,
+} from "firebase/storage";
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import Filter from 'bad-words';
+import { useNavigate, Link } from "react-router-dom";
 
 const SignUp = () => {
   const [username, setUsername] = useState("");
@@ -18,6 +23,8 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(true);
+  const [checkingAvatar, setCheckingAvatar] = useState(false);
+  const [avatarNotFound, setAvatarNotFound] = useState(false);
   const navigate = useNavigate();
 
   const checkForBadWords = (text) => {
@@ -25,28 +32,36 @@ const SignUp = () => {
     return filter.isProfane(text);
   };
 
+  const checkAvatarExists = async (username) => {
+    setCheckingAvatar(true);
+    const storageRef = ref(
+      storage,
+      `avatars/${username.toLowerCase()}_profile.jpg`
+    );
+    try {
+      await getMetadata(storageRef);
+      setCheckingAvatar(false);
+      return true; // Avatar exists
+    } catch (error) {
+      setCheckingAvatar(false);
+      return false; // Avatar doesn't exist
+    }
+  };
 
-  const onFileChange = (e) => {
+  const onFileChange = async (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile && username) {
       const storageRef = ref(
         storage,
         `avatars/${username.toLowerCase()}_profile.jpg`
       );
-      document.querySelector("#uploading").innerText = 'Uploading....'
-      const uploadTask = uploadBytesResumable(storageRef, selectedFile);
-      uploadTask.on(
-        "state_changed",
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setImage(downloadURL);
-            document.querySelector("#uploading").innerText = 'Uploaded'
-            setInterval(() => {
-              document.querySelector("#uploading").remove()
-            }, 3000)
-          });
-        }
-      );
+      try {
+        const snapshot = await uploadBytesResumable(storageRef, selectedFile);
+        const downloadURL = await getDownloadURL(snapshot.ref);
+        setImage(downloadURL);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      }
     } else if (!username) {
       alert("Please provide a username first.");
     }
@@ -56,33 +71,54 @@ const SignUp = () => {
     e.preventDefault();
 
     if (checkForBadWords(username) || checkForBadWords(email)) {
-      alert('Your username or email contains inappropriate words. Please choose a different one.');
+      alert(
+        "Your username or email contains inappropriate words. Please choose a different one."
+      );
     } else {
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(async (userCred) => {
-          const user = userCred.user;
-          const colRef = doc(db, "users", user.uid);
-          setDoc(colRef, {
-            username: username,
-          }).then(() => {
-            navigate("/");
-          });
-        })
-        .catch((error) => {
-          alert(error.message);
-        });
+      try {
+        const userCred = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        const user = userCred.user;
+        const colRef = doc(db, "users", user.uid);
+        await setDoc(colRef, { username: username });
+        navigate("/");
+      } catch (error) {
+        alert(error.message);
+      }
     }
   };
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         navigate("/");
-      } else if (!user) {
+      } else {
         setLoading(false);
       }
     });
+
+    return () => unsubscribe();
   }, []);
+
+  const handleUsernameBlur = async () => {
+    if (username) {
+      const avatarExists = await checkAvatarExists(username);
+      if (avatarExists) {
+        const storageRef = ref(
+          storage,
+          `avatars/${username.toLowerCase()}_profile.jpg`
+        );
+        const downloadURL = await getDownloadURL(storageRef);
+        setImage(downloadURL);
+        setAvatarNotFound(false);
+      } else {
+        setAvatarNotFound(true);
+      }
+    }
+  };
 
   return (
     <>
@@ -104,10 +140,16 @@ const SignUp = () => {
               placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              onBlur={handleUsernameBlur}
               className="w-full px-4 py-2 rounded bg-[#1e1c1c] text-white mb-4"
               required
             />
-
+            {checkingAvatar && (
+              <p className="text-white text-base mb-2">
+                Checking for the username in the database...
+              </p>
+            )}
+            {avatarNotFound && <p className="text-white text-base mb-2"></p>}
             <label
               htmlFor="image"
               className="block text-white font-semibold mb-1"
