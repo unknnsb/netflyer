@@ -2,10 +2,11 @@ import { TMDB_API_KEY } from "../services/Tmdb";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaPlay, FaInfoCircle, FaPlus } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
   const [randomMovie, setRandomMovie] = useState(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
     axios
       .get(
@@ -35,13 +36,22 @@ const HeroSection = () => {
           >
             <div className="text-white text-center p-8">
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-4">
-                {randomMovie.title||randomMovie.name}
+                {randomMovie.title || randomMovie.name}
               </h1>
               <div className="flex justify-center space-x-6 mt-4">
                 <button className="text-2xl p-2 hover:bg-red-500 hover:text-white rounded-full">
                   <FaPlay />
                 </button>
-                <button className="text-2xl p-2 hover:bg-red-500 hover:text-white rounded-full">
+                <button
+                  onClick={() => {
+                    if (randomMovie.first_air_date) {
+                      navigate(`/info/tv/${randomMovie.id}`);
+                    } else {
+                      navigate(`/info/movie/${randomMovie.id}`);
+                    }
+                  }}
+                  className="text-2xl p-2 hover:bg-red-500 hover:text-white rounded-full"
+                >
                   <FaInfoCircle />
                 </button>
                 <button className="text-2xl p-2 hover:bg-red-500 hover:text-white rounded-full">

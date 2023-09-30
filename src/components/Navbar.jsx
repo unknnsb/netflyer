@@ -2,7 +2,7 @@ import { auth } from "../services/Firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import React, { useState, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [scrolling, setScrolling] = useState(false);
@@ -59,22 +59,26 @@ const Navbar = () => {
   return (
     <nav
       className={`fixed top-0 w-full z-50 ${
-        scrolling ? "bg-dark" : "bg-transparent"
+        scrolling ? "bg-black/90" : "bg-transparent"
       } transition-all duration-300 ease-in-out`}
     >
       <div className="container mx-auto px-2 py-1 flex justify-between items-center">
         <div className="flex items-center space-x-4">
-          <img
-            src="/logo.png"
-            alt="Logo"
-            className="h-12 w-12 md:h-16 md:w-16 lg:h-20 lg:w-20 object-contain"
-          />
+          <Link to="/">
+            <img
+              src="/logo.png"
+              alt="Logo"
+              className="h-12 w-12 md:h-16 md:w-16 lg:h-20 lg:w-20 object-contain"
+            />
+          </Link>
         </div>
         <div className="flex items-center space-x-4">
           <button className="text-white">
             <FiSearch />
           </button>
-          <button className="text-white" onClick={handleWatchlist}>Watchlist</button>
+          <button className="text-white" onClick={handleWatchlist}>
+            Watchlist
+          </button>
           {loading ? (
             <div className="inline-block h-4 w-4 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[0.125em] motion-reduce:animate-spin-[1.5s]">
               <span className="absolute -m-px h-px w-px overflow-hidden whitespace-nowrap border-0 p-0 clip-[rect(0,0,0,0)] text-white">

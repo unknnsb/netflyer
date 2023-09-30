@@ -1,6 +1,8 @@
 import App from "./App";
+import InfoPage from "./pages/Info";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
+import Watch from "./pages/Watch";
 import "./styles/index.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
@@ -16,6 +18,11 @@ const routes = [
     path: "/login",
     element: <Login />,
   },
+  {
+    path: "/info/:type/:id",
+    element: <InfoPage />,
+  },
+  { path: "/watch/:type/:id/:season?/:episode?", element: <Watch /> },
 ];
 
 const router = createBrowserRouter(routes);
