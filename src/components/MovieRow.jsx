@@ -1,32 +1,44 @@
-import React from 'react';
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
-const MovieRow = ({ title, movies, profile = false }) => {
-  const handleClick = (id, type) => {
-    window.location.href = `/info/${type}/${id}`
-  }
+const MovieRow = ({ movies, header }) => {
+  const navigate = useNavigate();
   return (
-    <div className='mt-3 p-2 text-white'>
-      <h2 className="font-bold mb-2 text-xl">
-        {title}
-      </h2>
-      <div className="flex flex-no-wrap overscroll-auto overflow-x-auto scrolling-touch items-start mb-8">
-        {movies.map((movie, index) => (
-          <div key={index} onClick={() => {
-            if (movie.first_air_date) {
-              handleClick(movie.id, 'tv')
-            } else {
-              handleClick(movie.id, 'movie')
-            }
-          }} className="hover:scale-110 transform transition-transform duration-300 flex-none w-2/3 md:w-1/3 mr-4 md:pb-4">
-            <img
-              src={profile ? `https://image.tmdb.org/t/p/w500${movie.profile_path}` : `https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-              className="rounded-md shadow-lg h-50"
-              alt={movie.title} />
-          </div>
-        ))}
+    <div className="md:mt-2">
+      {header && (
+        <h2 className="text-2xl font-semibold text-white ml-3 mb-4">
+          {header}
+        </h2>
+      )}
+      <div className="overflow-x-auto">
+        <div className="flex gap-4 p-4 sm:p-0">
+          {movies.map((movie, index) => (
+            <div
+              key={index}
+              className="hover:transform hover:scale-110 transition-transform duration-300 ease-in-out ml-2 flex-none"
+            >
+              <div className="relative group">
+                <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg">
+                  <img
+                    src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                    alt={movie.title || movie.name}
+                    className="w-36 h-auto"
+                    onClick={() => {
+                      if (movie.first_air_date) {
+                        navigate(`/info/tv/${movie.id}`);
+                      } else {
+                        navigate(`/info/movie/${movie.id}`);
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
-}
+};
 
 export default MovieRow;

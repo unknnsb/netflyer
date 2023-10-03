@@ -10,19 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@emotion/core": "^11.0.0",
-    "@emotion/react": "^11.11.1",
-    "@emotion/styled": "^11.11.0",
     "axios": "^1.4.0",
-    "axios-progress-bar": "^1.2.0",
     "bad-words": "^3.0.4",
-    "firebase": "^10.1.0",
-    "framer-motion": "^10.16.1",
+    "firebase": "^10.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.10.1",
-    "react-router-dom": "^6.14.2",
-    "reactjs-bottom-navigation": "^2.0.5"
+    "react-router-dom": "^6.14.2"
   },
   "devDependencies": {
     "@eslint-kit/eslint-config-base": "^5.0.2",
