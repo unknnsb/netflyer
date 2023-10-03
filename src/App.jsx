@@ -61,7 +61,6 @@ const App = () => {
         <>
           <Navbar />
           <HeroSection />
-          {/* <FeaturedMovies /> */}
           <MovieRow movies={trendingMoviesData} header="Trending Movies" />
           <MovieRow movies={trendingTvData} header="Trending TV" />
           <MovieRow movies={popularData} header="Popular" />

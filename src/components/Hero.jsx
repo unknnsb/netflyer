@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 const HeroSection = () => {
   const [randomMovie, setRandomMovie] = useState(null);
   const navigate = useNavigate();
+
   useEffect(() => {
     axios
       .get(
@@ -39,7 +40,7 @@ const HeroSection = () => {
                 {randomMovie.title || randomMovie.name}
               </h1>
               <div className="flex justify-center space-x-6 mt-4">
-                <button className="text-2xl p-2 hover:bg-red-500 hover:text-white rounded-full">
+                <button className="text-2xl p-2 rounded-full hover:bg-red-500 hover:text-white transition-all duration-300">
                   <FaPlay />
                 </button>
                 <button
@@ -50,11 +51,11 @@ const HeroSection = () => {
                       navigate(`/info/movie/${randomMovie.id}`);
                     }
                   }}
-                  className="text-2xl p-2 hover:bg-red-500 hover:text-white rounded-full"
+                  className="text-2xl p-2 rounded-full hover:bg-red-500 hover:text-white transition-all duration-300"
                 >
                   <FaInfoCircle />
                 </button>
-                <button className="text-2xl p-2 hover:bg-red-500 hover:text-white rounded-full">
+                <button className="text-2xl p-2 rounded-full hover:bg-red-500 hover:text-white transition-all duration-300">
                   <FaPlus />
                 </button>
               </div>
