@@ -166,11 +166,21 @@ const InfoPage = () => {
                 {episodes.map((episode) => (
                   <div key={episode.id} className="text-center mb-6">
                     <img
-                      src={`https://image.tmdb.org/t/p/original/${episode.still_path}`}
+                      src={
+                        episode.still_path
+                          ? `https://image.tmdb.org/t/p/original/${episode.still_path}`
+                          : "https://placehold.co/600x400"
+                      }
                       alt={episode.name}
                       className="w-full h-auto rounded-lg"
+                      onClick={() => {
+                        navigate(
+                          `/watch/${type}/${id}/${selectedSeason}/${episode.episode_number}`
+                        );
+                      }}
                     />
                     <h3 className="text-lg mt-2 mb-2 overflow-hidden">
+                      {episode.episode_number}.{" "}
                       {episode.name.length > 30
                         ? `${episode.name.substring(0, 30)}...`
                         : episode.name}
