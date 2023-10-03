@@ -1,12 +1,9 @@
-import FeaturedMovies from "./components/FeaturedMovie";
 import HeroSection from "./components/Hero";
 import Loading from "./components/Loading";
 import MovieRow from "./components/MovieRow";
 import Navbar from "./components/Navbar";
-import { auth } from "./services/Firebase";
 import { TMDB_URL, TMDB_API_KEY, endpoints } from "./services/Tmdb";
 import axios from "axios";
-import { onAuthStateChanged } from "firebase/auth";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 

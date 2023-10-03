@@ -1,6 +1,7 @@
 import App from "./App";
 import InfoPage from "./pages/Info";
 import Login from "./pages/Login";
+import SearchPage from "./pages/Search";
 import SignUp from "./pages/SignUp";
 import Watch from "./pages/Watch";
 import "./styles/index.css";
@@ -17,6 +18,10 @@ const routes = [
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/search",
+    element: <SearchPage />,
   },
   {
     path: "/info/:type/:id",

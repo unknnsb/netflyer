@@ -73,7 +73,7 @@ const Navbar = () => {
           </Link>
         </div>
         <div className="flex items-center space-x-4">
-          <button className="text-white">
+          <button onClick={() => navigate("/search")} className="text-white">
             <FiSearch />
           </button>
           <button className="text-white" onClick={handleWatchlist}>
