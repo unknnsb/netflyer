@@ -169,7 +169,7 @@ const InfoPage = () => {
                       src={
                         episode.still_path
                           ? `https://image.tmdb.org/t/p/original/${episode.still_path}`
-                          : "https://placehold.co/600x400"
+                          : "/not-found.png"
                       }
                       alt={episode.name}
                       className="w-full h-auto rounded-lg"
@@ -229,7 +229,11 @@ const InfoPage = () => {
                   className="hover:transform hover:scale-110 transition-transform duration-300 ease-in-out text-center mb-6"
                 >
                   <img
-                    src={`https://image.tmdb.org/t/p/w500/${recommendation.poster_path}`}
+                    src={
+                      recommendation.poster_path
+                        ? `https://image.tmdb.org/t/p/w500/${recommendation.poster_path}`
+                        : "/not-found.png"
+                    }
                     alt={recommendation.title || recommendation.name}
                     className="w-full h-auto rounded-lg"
                   />
