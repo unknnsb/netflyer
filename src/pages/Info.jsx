@@ -12,6 +12,7 @@ const InfoPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [expandedOverview, setExpandedOverview] = useState({});
   const [recommendations, setRecommendations] = useState([]);
+  const [cast, setCast] = useState([]);
   const navigate = useNavigate();
 
   const toggleOverview = (episodeId) => {
@@ -32,6 +33,14 @@ const InfoPage = () => {
         }
         const data = await response.json();
         setDetails(data);
+
+        const castResponse = await fetch(
+          `${TMDB_URL}/${type}/${id}/credits?api_key=${TMDB_API_KEY}`
+        );
+        if (castResponse.ok) {
+          const castData = await castResponse.json();
+          setCast(castData.cast);
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -131,6 +140,43 @@ const InfoPage = () => {
             >
               Play
             </button>
+          </div>
+
+          <div className="mb-3">
+            <h2 className="text-2xl md:text-3xl font-semibold mb-2 text-white">
+              Cast
+            </h2>
+            <div className="flex overflow-x-auto">
+              {cast.map((actor) => (
+                <div key={actor.id} className="w-58 p-2">
+                  <div className="bg-transparent rounded-lg overflow-hidden shadow-md">
+                    <a
+                      href={`https://www.imdb.com/find?q=${encodeURIComponent(
+                        actor.name
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <img
+                        src={
+                          actor.profile_path
+                            ? `https://image.tmdb.org/t/p/w200/${actor.profile_path}`
+                            : "/not-found.png"
+                        }
+                        alt={actor.name}
+                        className="hover:transform hover:scale-110 transition-transform duration-300 ease-in-out w-full h-52 rounded-t-lg object-cover"
+                      />
+                    </a>
+                    <div className="p-4 text-center">
+                      <p className="text-lg font-semibold text-white mb-1">
+                        {actor.name}
+                      </p>
+                      <p className="text-sm text-gray-500">{actor.character}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
           {type === "tv" && (
