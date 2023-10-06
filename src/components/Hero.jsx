@@ -1,7 +1,7 @@
 import { TMDB_API_KEY } from "../services/Tmdb";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { FaPlay, FaInfoCircle, FaPlus } from "react-icons/fa";
+import { FaPlay, FaInfo, FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
@@ -26,47 +26,42 @@ const HeroSection = () => {
   return (
     <div className="relative h-screen overflow-hidden">
       {randomMovie && (
-        <>
-          <div
-            className={`absolute inset-0 flex justify-center items-end transition-opacity duration-500 ${
-              randomMovie ? "opacity-100" : "opacity-0"
-            }`}
-            style={{
-              background: "linear-gradient(to top, #202020, transparent)",
-            }}
-          >
-            <div className="text-white text-center p-8">
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-4">
-                {randomMovie.title || randomMovie.name}
-              </h1>
-              <div className="flex justify-center space-x-6 mt-4">
-                <button className="text-2xl p-2 rounded-full hover:bg-red-500 hover:text-white transition-all duration-300">
-                  <FaPlay />
-                </button>
-                <button
-                  onClick={() => {
-                    if (randomMovie.first_air_date) {
-                      navigate(`/info/tv/${randomMovie.id}`);
-                    } else {
-                      navigate(`/info/movie/${randomMovie.id}`);
-                    }
-                  }}
-                  className="text-2xl p-2 rounded-full hover:bg-red-500 hover:text-white transition-all duration-300"
-                >
-                  <FaInfoCircle />
-                </button>
-                <button className="text-2xl p-2 rounded-full hover:bg-red-500 hover:text-white transition-all duration-300">
-                  <FaPlus />
-                </button>
-              </div>
+        <div
+          className="relative h-full w-full bg-cover bg-center"
+          style={{
+            backgroundImage: `url('https://image.tmdb.org/t/p/original/${randomMovie.backdrop_path}')`,
+          }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-t from-dark to-transparent"></div>
+          <div className="absolute inset-0 flex flex-col justify-end p-4 md:p-8">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-white">
+              {randomMovie.title || randomMovie.name}
+            </h1>
+            <div className="flex justify-start mt-4 space-x-4">
+              <button className="text-lg md:text-xl p-2 md:p-3 rounded-full bg-red-600 text-white hover:bg-red-700 transition-all duration-300">
+                <FaPlay />
+              </button>
+              <button
+                onClick={() => {
+                  if (randomMovie.first_air_date) {
+                    navigate(`/info/tv/${randomMovie.id}`);
+                  } else {
+                    navigate(`/info/movie/${randomMovie.id}`);
+                  }
+                }}
+                className="text-lg md:text-xl p-2 md:p-3 rounded-full bg-red-600 text-white hover:bg-red-700 transition-all duration-300"
+              >
+                <FaInfo />
+              </button>
+              <button className="text-lg md:text-xl p-2 md:p-3 rounded-full bg-red-600 text-white hover:bg-red-700 transition-all duration-300">
+                <FaPlus />
+              </button>
+            </div>
+            <div className="mt-4 text-white opacity-70 text-sm">
+              {randomMovie.overview}
             </div>
           </div>
-          <img
-            src={`https://image.tmdb.org/t/p/original/${randomMovie.poster_path}`}
-            alt={randomMovie.title || randomMovie.name}
-            className="w-full h-full object-cover object-top"
-          />
-        </>
+        </div>
       )}
     </div>
   );
