@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 
 const MovieRow = ({ movies, header }) => {
   const navigate = useNavigate();
+
+  const isMobile = window.innerWidth <= 768; // You can adjust the breakpoint as needed
+
   return (
     <div className="md:mt-2">
       {header && (
@@ -10,32 +13,50 @@ const MovieRow = ({ movies, header }) => {
           {header}
         </h2>
       )}
-      <div className="overflow-x-auto">
-        <div className="flex gap-4 p-4 sm:p-0">
-          {movies.map((movie, index) => (
-            <div
-              key={index}
-              className="hover:transform hover:scale-110 transition-transform duration-300 ease-in-out ml-2 flex-none"
-            >
-              <div className="relative group">
-                <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg">
-                  <img
-                    src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                    alt={movie.title || movie.name}
-                    className="w-36 h-auto"
-                    onClick={() => {
-                      if (movie.first_air_date) {
-                        navigate(`/info/tv/${movie.id}`);
-                      } else {
-                        navigate(`/info/movie/${movie.id}`);
-                      }
-                    }}
-                  />
-                </div>
+      <div className="flex overflow-x-auto">
+        {movies.map((movie, index) => (
+          <div
+            key={index}
+            className={`${
+              isMobile
+                ? "cursor-pointer"
+                : "hover:transform hover:scale-105 transition-transform duration-300 ease-in-out"
+            } ml-4 md:ml-6 lg:ml-8 flex-none`}
+            onClick={() => {
+              if (movie.first_air_date) {
+                navigate(`/info/tv/${movie.id}`);
+              } else {
+                navigate(`/info/movie/${movie.id}`);
+              }
+            }}
+          >
+            <div className="relative group">
+              <div className="bg-black rounded-lg overflow-hidden shadow-md hover:shadow-lg">
+                <img
+                  src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                  alt={movie.title || movie.name}
+                  className="w-40 h-auto"
+                />
+                {!isMobile && (
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
+                    <button
+                      onClick={() => {
+                        if (movie.first_air_date) {
+                          navigate(`/info/tv/${movie.id}`);
+                        } else {
+                          navigate(`/info/movie/${movie.id}`);
+                        }
+                      }}
+                      className="bg-red-600 text-white rounded-full px-4 py-2 hover:bg-red-700 transition-all duration-300"
+                    >
+                      Watch Now
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -56,7 +56,9 @@ const App = () => {
         <Loading />
       ) : (
         <>
-          <Navbar />
+          <header>
+            <Navbar />
+          </header>
           <HeroSection />
           <MovieRow movies={trendingMoviesData} header="Trending Movies" />
           <MovieRow movies={trendingTvData} header="Trending TV" />
