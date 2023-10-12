@@ -49,16 +49,13 @@ const App = () => {
         console.error(`Error fetching data from ${endpoint}:`, error);
       });
   };
-
   return (
     <>
       {loading ? (
         <Loading />
       ) : (
         <>
-          <header>
-            <Navbar />
-          </header>
+          <Navbar />
           <HeroSection />
           <MovieRow movies={trendingMoviesData} header="Trending Movies" />
           <MovieRow movies={trendingTvData} header="Trending TV" />

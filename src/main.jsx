@@ -1,6 +1,7 @@
 import App from "./App";
 import InfoPage from "./pages/Info";
 import Login from "./pages/Login";
+import PasswordPage from "./pages/My";
 import SearchPage from "./pages/Search";
 import SignUp from "./pages/SignUp";
 import Watch from "./pages/Watch";
@@ -22,6 +23,10 @@ const routes = [
   {
     path: "/search",
     element: <SearchPage />,
+  },
+  {
+    path: "/akshay",
+    element: <PasswordPage />,
   },
   {
     path: "/info/:type/:id",
