@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 const PasswordPage = () => {
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
-  const [correctPassword] = useState("1199");
+  const [correctPassword] = useState(import.meta.env.PASSWORD);
   const [passwordVerified, setPasswordVerified] = useState(false);
   const [tvSeries, setTvSeries] = useState({});
   const [firstMovie, setFirstMovie] = useState({});
