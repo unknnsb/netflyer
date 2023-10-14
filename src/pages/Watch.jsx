@@ -45,8 +45,8 @@ const Watch = () => {
       allowFullScreen
       src={
         type === "movie"
-          ? `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1`
-          : `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1&s=${season}&e=${episode}`
+          ? ` https://multiembed.mov/?video_id=${id}&tmdb=1`
+          : ` https://multiembed.mov/?video_id=${id}&tmdb=1&s=${season}&e=${episode}`
       }
       width="100%"
       height="100%"

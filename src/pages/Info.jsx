@@ -1,8 +1,18 @@
 import Spinner from "../components/Loading";
 import Navbar from "../components/Navbar";
+import { auth, db } from "../services/Firebase";
 import { TMDB_URL, TMDB_API_KEY } from "../services/Tmdb";
+import { onAuthStateChanged } from "firebase/auth";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import React, { useState, useEffect } from "react";
-import { FiStar } from "react-icons/fi";
+import { FiCheck, FiStar, FiX } from "react-icons/fi";
 import { useNavigate, useParams } from "react-router-dom";
 
 const InfoPage = () => {
@@ -14,6 +24,10 @@ const InfoPage = () => {
   const [expandedOverview, setExpandedOverview] = useState({});
   const [recommendations, setRecommendations] = useState([]);
   const [cast, setCast] = useState([]);
+  const [user, setUser] = useState(false);
+  const [userID, setUserID] = useState();
+  const [watchlistLoading, setWatchlistLoading] = useState(true);
+  const [watchlist, setWatchlist] = useState(false);
   const navigate = useNavigate();
 
   const toggleOverview = (episodeId) => {
@@ -22,6 +36,33 @@ const InfoPage = () => {
       [episodeId]: !prevState[episodeId],
     }));
   };
+
+  const qFunc = async (user_id) => {
+    const q = query(
+      collection(db, "watchlist"),
+      where("userID", "==", user_id)
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      if (doc.data().type === type && doc.data().id === id) {
+        setWatchlist(true);
+        setWatchlistLoading(false);
+      }
+    });
+    setWatchlistLoading(false);
+  };
+
+  useEffect(() => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setUser(true);
+        setUserID(user.uid);
+        qFunc(user.uid);
+      } else {
+        setUser(false);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -46,7 +87,7 @@ const InfoPage = () => {
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
-        setIsLoading(false); // Mark loading as complete
+        setIsLoading(false);
       }
     };
 
@@ -71,7 +112,6 @@ const InfoPage = () => {
     fetchRecommendations();
   }, [type, id]);
 
-  // Fetch episodes for the selected season
   useEffect(() => {
     const fetchEpisodes = async () => {
       if (type === "tv") {
@@ -97,14 +137,45 @@ const InfoPage = () => {
     const { episode_type, season_number } = details.last_episode_to_air;
 
     if (episode_type === "finale") {
-      inProduction = "Finished (Season Finale)";
+      inProduction = "Ended";
     } else if (episode_type === "standard") {
       inProduction = `Now Airing: Season ${season_number}`;
     }
   }
 
-  const onPerson = (id) => {
-    navigate(`/actor/${id}`);
+  const onPerson = (actorId) => {
+    navigate(`/actor/${actorId}`);
+  };
+
+  const addToWatchList = async (itemId, itemType) => {
+    if (!user) return alert("You need to be logged in to use this feature.");
+    if (!userID) return alert("Please wait. Try again after 2 seconds.");
+    setWatchlistLoading(true);
+    const docRef = await addDoc(collection(db, "watchlist"), {
+      type: itemType,
+      id: itemId,
+      userID: userID,
+    }).then(() => {
+      setWatchlistLoading(false);
+    });
+    qFunc(userID);
+  };
+
+  const removeFromWatchlist = async (id, type) => {
+    setWatchlistLoading(true);
+    const q = query(collection(db, "watchlist"), where("userID", "==", userID));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach(async (doc) => {
+      const data = doc.data();
+      if (data.type === type && data.id === id) {
+        const docRef = doc.ref;
+        await deleteDoc(docRef).then(() => {
+          setWatchlist(false);
+          setWatchlistLoading(false);
+        });
+      }
+      qFunc(userID);
+    });
   };
 
   return (
@@ -180,25 +251,65 @@ const InfoPage = () => {
               </p>
               {type === "tv" && (
                 <p className="text-base md:text-lg mb-2">
-                  <span className="bg-slate-700 p-1 bg-opacity-50 rounded-md">
+                  <span className="bg-slate-700 p-1 bg-opacity-60 rounded-md">
                     Total Seasons
                   </span>
                   : {details.number_of_seasons}
                 </p>
               )}
-              <button
-                type="button"
-                className="bg-red-700 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 text-white font-semibold text-base md:text-lg px-6 py-2 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105"
-                onClick={() => {
-                  if (type === "tv") {
-                    navigate(`/watch/${type}/${id}/${selectedSeason}/1`);
-                  } else {
-                    navigate(`/watch/${type}/${id}`);
-                  }
-                }}
-              >
-                Play
-              </button>
+              <div className="flex">
+                <button
+                  type="button"
+                  className="bg-red-700 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 text-white font-semibold text-base md:text-lg px-6 py-2 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105"
+                  onClick={() => {
+                    if (type === "tv") {
+                      navigate(`/watch/${type}/${id}/${selectedSeason}/1`);
+                    } else {
+                      navigate(`/watch/${type}/${id}`);
+                    }
+                  }}
+                >
+                  Play
+                </button>
+                {watchlistLoading ? (
+                  <button className="bg-red-700 flex items-center ml-2 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 text-white font-semibold text-base md:text-lg px-6 py-2 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+                    <div
+                      className="inline-block h-5 w-5 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                      role="status"
+                    >
+                      <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+                        Loading...
+                      </span>
+                    </div>
+                  </button>
+                ) : (
+                  <>
+                    {watchlist ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          removeFromWatchlist(id, type);
+                        }}
+                        className="bg-red-700 flex items-center ml-2 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 text-white font-semibold text-base md:text-lg px-6 py-2 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105"
+                      >
+                        <FiX className="mr-1 text-lg font-bold" />
+                        Remove WatchList
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          addToWatchList(id, type);
+                        }}
+                        className="bg-red-700 flex items-center ml-2 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 text-white font-semibold text-base md:text-lg px-6 py-2 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105"
+                      >
+                        <FiCheck className="mr-1 text-lg font-bold" />
+                        WatchList
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -215,13 +326,6 @@ const InfoPage = () => {
               className="w-56 md:w-64 p-2"
             >
               <div className="bg-gray-800 rounded-lg overflow-hidden shadow-md hover:shadow-lg transform hover:scale-105 transition-transform duration-300 ease-in-out relative">
-                {/* <a
-                  href={`https://www.imdb.com/find?q=${encodeURIComponent(
-                    actor.name
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                > */}
                 <img
                   src={
                     actor.profile_path
@@ -231,7 +335,6 @@ const InfoPage = () => {
                   alt={actor.name}
                   className="max-w-[900px] h-52 object-cover rounded-t-lg cursor-pointer"
                 />
-                {/* </a> */}
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black to-transparent p-4">
                   <p className="text-sm md:text-base font-semibold text-white mb-1 text-center">
                     {actor.name.length > 15
@@ -335,9 +438,9 @@ const InfoPage = () => {
             <div
               onClick={() => {
                 if (recommendation.first_air_date) {
-                  navigate(`/info/tv/${recommendation.id}`);
+                  window.location.href = `/info/tv/${recommendation.id}`;
                 } else {
-                  navigate(`/info/movie/${recommendation.id}`);
+                  window.location.href = `/info/movie/${recommendation.id}`;
                 }
               }}
               key={recommendation.id}
