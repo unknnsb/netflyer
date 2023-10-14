@@ -44,48 +44,52 @@ const SearchPage = () => {
   };
 
   return (
-    <>
-      {loading ? (
-        <Loading />
-      ) : (
-        <>
-          <Navbar />
-          <br />
-          <br />
-          <br />
-          <div className="container p-3">
-            <h1 className="text-2xl font-bold text-white">Search</h1>
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              className="bg-[#444343] mt-2 p-2 rounded-lg outline-none border-none w-full text-gray-100"
-              placeholder="What do you want to search?"
-            />
-            <div>
-              {results.map((result) => (
-                <div
-                  onClick={() => {
-                    if (result.first_air_date) {
-                      handleClick(result.id, true);
-                    } else {
-                      handleClick(result.id, false);
-                    }
-                  }}
-                  key={result.id}
-                  className="hover:opacity-20 transition-opacity duration-100 flex items-center gap-1 text-white mt-4 text-sm border-zinc-600 border-b p-1"
-                >
-                  <FaSearch />
-                  <h2>
-                    {result.title || result.name} (
-                    {getDate(result.release_date || result.first_air_date)})
-                  </h2>
-                </div>
-              ))}
-            </div>
+    <div className="bg-dark mt-10 text-white min-h-screen">
+      <Navbar />
+      <div className="container mx-auto p-4">
+        <h1 className="text-3xl font-bold mb-4">Search</h1>
+        <div className="relative mb-4">
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="bg-stone-800 text-white w-full py-2 pl-10 pr-4 rounded-full focus:outline-none focus:shadow-outline"
+            placeholder="What do you want to search?"
+          />
+          <div className="absolute top-0 left-0 mt-[10px] ml-4">
+            <FaSearch />
           </div>
-        </>
-      )}
-    </>
+        </div>
+        {loading ? (
+          <Loading />
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {results.map((result) => (
+              <div
+                onClick={() => {
+                  if (result.first_air_date) {
+                    handleClick(result.id, true);
+                  } else {
+                    handleClick(result.id, false);
+                  }
+                }}
+                key={result.id}
+                className="cursor-pointer hover:opacity-75 transition-opacity duration-300"
+              >
+                <img
+                  src={`https://image.tmdb.org/t/p/w500/${result.poster_path}`}
+                  alt={result.title || result.name}
+                  className="w-full rounded-lg"
+                />
+                <p className="mt-2 text-sm font-semibold">
+                  {result.title || result.name} (
+                  {getDate(result.release_date || result.first_air_date)})
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 

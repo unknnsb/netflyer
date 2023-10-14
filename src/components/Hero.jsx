@@ -39,7 +39,15 @@ const HeroSection = () => {
             </h1>
             <div className="flex justify-start mt-4 space-x-4">
               <button className="text-lg md:text-xl p-2 md:p-3 rounded-full bg-red-600 text-white hover:bg-red-700 transition-all duration-300">
-                <FaPlay />
+                <FaPlay
+                  onClick={() => {
+                    if (randomMovie.first_air_date) {
+                      navigate(`/watch/tv/${randomMovie.id}/1/1`);
+                    } else {
+                      navigate(`/watch/movie/${randomMovie.id}`);
+                    }
+                  }}
+                />
               </button>
               <button
                 onClick={() => {

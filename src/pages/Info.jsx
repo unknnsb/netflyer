@@ -2,6 +2,7 @@ import Spinner from "../components/Loading";
 import Navbar from "../components/Navbar";
 import { TMDB_URL, TMDB_API_KEY } from "../services/Tmdb";
 import React, { useState, useEffect } from "react";
+import { FiStar } from "react-icons/fi";
 import { useNavigate, useParams } from "react-router-dom";
 
 const InfoPage = () => {
@@ -88,8 +89,23 @@ const InfoPage = () => {
   }, [type, id, selectedSeason]);
 
   if (isLoading) {
-    return <Spinner />; // Display a loading spinner while data is loading
+    return <Spinner />;
   }
+
+  let inProduction = "Unknown";
+  if (details.last_episode_to_air) {
+    const { episode_type, season_number } = details.last_episode_to_air;
+
+    if (episode_type === "finale") {
+      inProduction = "Finished (Season Finale)";
+    } else if (episode_type === "standard") {
+      inProduction = `Now Airing: Season ${season_number}`;
+    }
+  }
+
+  const onPerson = (id) => {
+    navigate(`/actor/${id}`);
+  };
 
   return (
     <>
@@ -113,7 +129,12 @@ const InfoPage = () => {
               />
             </div>
             <div className="md:w-2/3">
-              <h1 className="text-3xl md:text-5xl font-bold mb-2">
+              <h1
+                onClick={() => {
+                  window.location.href = details.homepage;
+                }}
+                className="text-3xl md:text-5xl font-bold mb-2"
+              >
                 {type === "movie" ? details.title : details.name}
               </h1>
               <div className="mb-4">
@@ -122,32 +143,62 @@ const InfoPage = () => {
                 </h2>
                 <p className="text-base md:text-lg">{details.overview}</p>
               </div>
-              <p className="text-base md:text-lg">
-                Release Date: {details.release_date || details.first_air_date}
+              <p className="text-base mt-1 mb-1 flex md:text-lg">
+                <span className="bg-slate-700 p-1 bg-opacity-50 rounded-md">
+                  IMDB
+                </span>
+                : {details.vote_average} <FiStar className="mt-1 ml-1" />
               </p>
-              <div className="mb-4">
-                <p className="text-base md:text-lg">
-                  Genre: {details.genres.map((genre) => genre.name).join(", ")}
-                </p>
-                {type === "tv" && (
-                  <p className="text-base md:text-lg">
-                    Total Seasons: {details.number_of_seasons}
-                  </p>
+              <p className="text-base md:text-lg">
+                {type === "movie" ? (
+                  <span>
+                    <span className="bg-slate-700 p-1 bg-opacity-60 rounded-md">
+                      Release Date
+                    </span>
+                    : {details.release_date}
+                  </span>
+                ) : (
+                  <span>
+                    <span className="bg-slate-700 p-1 bg-opacity-60 rounded-md">
+                      Release Date
+                    </span>
+                    : {details.first_air_date} - {inProduction}
+                  </span>
                 )}
-                <button
-                  type="button"
-                  className="bg-red-700 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 text-white font-semibold text-base md:text-lg px-6 py-2 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105"
-                  onClick={() => {
-                    if (type === "tv") {
-                      navigate(`/watch/${type}/${id}/${selectedSeason}/1`);
-                    } else {
-                      navigate(`/watch/${type}/${id}`);
-                    }
-                  }}
-                >
-                  Play
-                </button>
-              </div>
+              </p>
+              <p
+                className={
+                  type === "tv"
+                    ? "text-base mt-1 mb-1 md:text-lg"
+                    : "text-base mt-1 mb-2 md:text-lg"
+                }
+              >
+                <span className="bg-slate-700 p-1 bg-opacity-50 rounded-md">
+                  Genre
+                </span>
+                : {details.genres.map((genre) => genre.name).join(", ")}
+              </p>
+              {type === "tv" && (
+                <p className="text-base md:text-lg mb-2">
+                  <span className="bg-slate-700 p-1 bg-opacity-50 rounded-md">
+                    Total Seasons
+                  </span>
+                  : {details.number_of_seasons}
+                </p>
+              )}
+              <button
+                type="button"
+                className="bg-red-700 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 text-white font-semibold text-base md:text-lg px-6 py-2 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105"
+                onClick={() => {
+                  if (type === "tv") {
+                    navigate(`/watch/${type}/${id}/${selectedSeason}/1`);
+                  } else {
+                    navigate(`/watch/${type}/${id}`);
+                  }
+                }}
+              >
+                Play
+              </button>
             </div>
           </div>
         </div>
@@ -158,25 +209,29 @@ const InfoPage = () => {
         </h2>
         <div className="flex space-x-2 overflow-x-auto md:space-x-4">
           {cast.map((actor) => (
-            <div key={actor.id} className="w-56 md:w-64 p-2">
+            <div
+              onClick={() => onPerson(actor.id)}
+              key={actor.id}
+              className="w-56 md:w-64 p-2"
+            >
               <div className="bg-gray-800 rounded-lg overflow-hidden shadow-md hover:shadow-lg transform hover:scale-105 transition-transform duration-300 ease-in-out relative">
-                <a
+                {/* <a
                   href={`https://www.imdb.com/find?q=${encodeURIComponent(
                     actor.name
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                >
-                  <img
-                    src={
-                      actor.profile_path
-                        ? `https://image.tmdb.org/t/p/w200/${actor.profile_path}`
-                        : "/not-found.png"
-                    }
-                    alt={actor.name}
-                    className="max-w-[900px] h-52 object-cover rounded-t-lg cursor-pointer"
-                  />
-                </a>
+                > */}
+                <img
+                  src={
+                    actor.profile_path
+                      ? `https://image.tmdb.org/t/p/w200/${actor.profile_path}`
+                      : "/not-found.png"
+                  }
+                  alt={actor.name}
+                  className="max-w-[900px] h-52 object-cover rounded-t-lg cursor-pointer"
+                />
+                {/* </a> */}
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black to-transparent p-4">
                   <p className="text-sm md:text-base font-semibold text-white mb-1 text-center">
                     {actor.name.length > 15

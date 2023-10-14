@@ -49,7 +49,6 @@ const App = () => {
         console.error(`Error fetching data from ${endpoint}:`, error);
       });
   };
-
   return (
     <>
       {loading ? (
