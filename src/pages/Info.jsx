@@ -97,7 +97,7 @@ const InfoPage = () => {
     const { episode_type, season_number } = details.last_episode_to_air;
 
     if (episode_type === "finale") {
-      inProduction = "Finished (Season Finale)";
+      inProduction = "Ended";
     } else if (episode_type === "standard") {
       inProduction = `Now Airing: Season ${season_number}`;
     }
@@ -105,6 +105,10 @@ const InfoPage = () => {
 
   const onPerson = (id) => {
     navigate(`/actor/${id}`);
+  };
+
+  const handleRecommendationClick = () => {
+    setSelectedSeason(1);
   };
 
   return (
@@ -334,6 +338,7 @@ const InfoPage = () => {
           {recommendations.map((recommendation) => (
             <div
               onClick={() => {
+                handleRecommendationClick();
                 if (recommendation.first_air_date) {
                   navigate(`/info/tv/${recommendation.id}`);
                 } else {
