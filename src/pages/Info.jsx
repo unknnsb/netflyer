@@ -103,6 +103,10 @@ const InfoPage = () => {
     }
   }
 
+  const onPerson = (id) => {
+    navigate(`/actor/${id}`);
+  };
+
   return (
     <>
       <Navbar />
@@ -205,25 +209,29 @@ const InfoPage = () => {
         </h2>
         <div className="flex space-x-2 overflow-x-auto md:space-x-4">
           {cast.map((actor) => (
-            <div key={actor.id} className="w-56 md:w-64 p-2">
+            <div
+              onClick={() => onPerson(actor.id)}
+              key={actor.id}
+              className="w-56 md:w-64 p-2"
+            >
               <div className="bg-gray-800 rounded-lg overflow-hidden shadow-md hover:shadow-lg transform hover:scale-105 transition-transform duration-300 ease-in-out relative">
-                <a
+                {/* <a
                   href={`https://www.imdb.com/find?q=${encodeURIComponent(
                     actor.name
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                >
-                  <img
-                    src={
-                      actor.profile_path
-                        ? `https://image.tmdb.org/t/p/w200/${actor.profile_path}`
-                        : "/not-found.png"
-                    }
-                    alt={actor.name}
-                    className="max-w-[900px] h-52 object-cover rounded-t-lg cursor-pointer"
-                  />
-                </a>
+                > */}
+                <img
+                  src={
+                    actor.profile_path
+                      ? `https://image.tmdb.org/t/p/w200/${actor.profile_path}`
+                      : "/not-found.png"
+                  }
+                  alt={actor.name}
+                  className="max-w-[900px] h-52 object-cover rounded-t-lg cursor-pointer"
+                />
+                {/* </a> */}
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black to-transparent p-4">
                   <p className="text-sm md:text-base font-semibold text-white mb-1 text-center">
                     {actor.name.length > 15
