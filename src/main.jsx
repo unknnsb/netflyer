@@ -6,6 +6,7 @@ import PasswordPage from "./pages/My";
 import SearchPage from "./pages/Search";
 import SignUp from "./pages/SignUp";
 import Watch from "./pages/Watch";
+import WatchlistPage from "./pages/Watchlist";
 import "./styles/index.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
@@ -32,6 +33,10 @@ const routes = [
   {
     path: "/actor/:id",
     element: <ActorInfoPage />,
+  },
+  {
+    path: "/watchlist",
+    element: <WatchlistPage />,
   },
   {
     path: "/info/:type/:id",

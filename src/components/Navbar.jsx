@@ -40,7 +40,7 @@ const Navbar = () => {
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {
-        navigate("/login");
+        navigate("/");
       })
       .catch((error) => {
         console.log(error);
