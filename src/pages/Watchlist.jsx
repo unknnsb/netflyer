@@ -90,7 +90,7 @@ const WatchlistPage = () => {
             {watchlistData.map((item) => (
               <div
                 key={item.id}
-                className="relative bg-stone-800 rounded-lg overflow-hidden transition-transform transform hover:scale-105"
+                className="relative bg-stone-800 rounded-lg overflow-hidden transition-transform transform duration-300 hover:scale-105"
               >
                 <img
                   src={`https://image.tmdb.org/t/p/w500/${item.poster_path}`}
@@ -108,12 +108,20 @@ const WatchlistPage = () => {
                   <h2 className="text-lg font-semibold mb-2">
                     {item.title || item.name}
                   </h2>
-                  <p className="text-sm text-gray-300 mb-4">
-                    {item.release_date || item.first_air_date}
-                  </p>
-                  {/* <p className="text-sm text-gray-300 mb-4"></p> */}
+                  <div className="flex gap-2">
+                    <p className="text-sm text-gray-300 mb-1">
+                      {item.release_date || item.first_air_date}
+                    </p>
+                    {item.first_air_date ? (
+                      <p className="text-sm text-gray-300 mb-4 font-bold">Tv</p>
+                    ) : (
+                      <p className="text-sm text-gray-300 mb-4 font-bold">
+                        Movie
+                      </p>
+                    )}
+                  </div>
                   <button
-                    className="bg-red-500 hover:bg-red-600 px-4 py-2 text-white rounded-md transition-transform transform hover:scale-105"
+                    className="bg-red-500 hover:bg-red-600 px-4 py-2 duration-300 text-white rounded-md transition-transform transform hover:scale-105"
                     onClick={() => {
                       if (item.title) {
                         removeFromWatchlist(item.id, "movie");
