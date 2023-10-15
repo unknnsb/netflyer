@@ -60,6 +60,7 @@ const InfoPage = () => {
         qFunc(user.uid);
       } else {
         setUser(false);
+        setWatchlistLoading(false);
       }
     });
   }, []);
