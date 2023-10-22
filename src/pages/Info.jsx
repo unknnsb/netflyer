@@ -14,6 +14,7 @@ import {
 import React, { useState, useEffect } from "react";
 import { FiCheck, FiStar, FiX } from "react-icons/fi";
 import { useNavigate, useParams } from "react-router-dom";
+import { createToast } from "vercel-toast";
 
 const InfoPage = () => {
   const { type, id } = useParams();
@@ -149,8 +150,25 @@ const InfoPage = () => {
   };
 
   const addToWatchList = async (itemId, itemType) => {
-    if (!user) return alert("You need to be logged in to use this feature.");
-    if (!userID) return alert("Please wait. Try again after 2 seconds.");
+    if (!user) {
+      return createToast("You need to be logged in to use this feature.", {
+        action: {
+          text: "Login",
+          callback(toast) {
+            navigate("/login");
+            toast.destroy();
+          },
+        },
+        cancel: "Cancel",
+        type: "dark",
+      });
+    }
+    if (!userID) {
+      return createToast("Please wait. Try again after 2 seconds.", {
+        cancel: "Cancel",
+        type: "dark",
+      });
+    }
     setWatchlistLoading(true);
     const docRef = await addDoc(collection(db, "watchlist"), {
       type: itemType,
