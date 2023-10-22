@@ -3,6 +3,7 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import React, { useState, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
+import { createToast } from "vercel-toast";
 
 const Navbar = () => {
   const [scrolling, setScrolling] = useState(false);
@@ -52,7 +53,20 @@ const Navbar = () => {
     if (user) {
       navigate("/watchlist");
     } else {
-      alert("You are not signed in. Please sign in to access your watchlist.");
+      createToast(
+        "You are not signed in. Please sign in to access your watchlist.",
+        {
+          action: {
+            text: "Login",
+            callback(toast) {
+              navigate("/login");
+              toast.destroy();
+            },
+          },
+          cancel: "Cancel",
+          type: "dark",
+        }
+      );
     }
   };
 

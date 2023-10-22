@@ -3840,6 +3840,11 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
 
+vercel-toast@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/vercel-toast/-/vercel-toast-1.8.0.tgz#5e8a4ece64dfbe84fbc7669e6b8f196c6511ecf1"
+  integrity sha512-mpaa7pDNByukH5jFI9cSc5P/Ey7VRY1/FBvOyxwDNqTz6hcL9pZ95f3hM139vVDLoeuwYNdOHaD7ofXLvrTV5Q==
+
 vite-plugin-image-optimizer@^1.1.6:
   version "1.1.7"
   resolved "https://registry.yarnpkg.com/vite-plugin-image-optimizer/-/vite-plugin-image-optimizer-1.1.7.tgz#8513e9edcbdfecd6202759095e04d13521c9bbd5"
