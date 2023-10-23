@@ -14,6 +14,7 @@ import {
 } from "firebase/storage";
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { createToast } from "vercel-toast";
 
 const SignUp = () => {
   const [username, setUsername] = useState("");
@@ -86,7 +87,19 @@ const SignUp = () => {
         await setDoc(colRef, { username: username });
         navigate("/");
       } catch (error) {
-        alert(error.message);
+        if (error.message.includes("email-already-in-use")) {
+          return createToast("The Email Is Already Exists.", {
+            action: {
+              text: "Login",
+              callback(toast) {
+                navigate("/login");
+                toast.destroy();
+              },
+            },
+            cancel: "Cancel",
+            type: "dark",
+          });
+        }
       }
     }
   };
