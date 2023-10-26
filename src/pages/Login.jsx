@@ -3,6 +3,7 @@ import { auth } from "../services/Firebase";
 import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { createToast } from "vercel-toast";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -17,7 +18,19 @@ const Login = () => {
       await signInWithEmailAndPassword(auth, email, password);
       navigate("/");
     } catch (error) {
-      alert(error.message);
+      if (error.message.includes("not-found")) {
+        return createToast("The user is not found", {
+          action: {
+            text: "Sign UP",
+            callback(toast) {
+              navigate("/signup");
+              toast.destroy();
+            },
+          },
+          cancel: "Cancel",
+          type: "dark",
+        });
+      }
     }
   };
 
