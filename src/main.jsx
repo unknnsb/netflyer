@@ -49,9 +49,9 @@ const router = createBrowserRouter(routes);
 
 // Render the app
 ReactDOM.createRoot(document.querySelector("#root")).render(
-  <>
+  <div className="font-sans">
     <React.StrictMode>
       <RouterProvider router={router} />
     </React.StrictMode>
-  </>
+  </div>
 );
