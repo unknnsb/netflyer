@@ -94,6 +94,13 @@ const InfoPage = () => {
     };
 
     fetchDetails();
+    if (type === "tv" && id === "95479") {
+      alert(
+        "NOTE: The Second Season Episodes Of Jujutsu Kaisen Shows In Season 1 So Scroll Down To See Second Season Episodes"
+      );
+    } else {
+      return;
+    }
   }, [type, id]);
 
   useEffect(() => {
