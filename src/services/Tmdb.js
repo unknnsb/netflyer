@@ -8,4 +8,5 @@ export const endpoints = {
   airing_today: "/tv/airing_today?language=en-US&sort_by=popularity.desc",
   popular: "/movie/popular",
   search: "/search/multi",
+  anime: "/discover/tv?with_keywords=210024&sort_by=vote_average.desc",
 };

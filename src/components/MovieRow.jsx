@@ -38,7 +38,15 @@ const MovieRow = ({ movies, header }) => {
                   className="w-40 h-auto"
                 />
                 {!isMobile && (
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
+                  <div
+                    style={{
+                      backgroundColor: "rgba(0,0,0,0.6)",
+                    }}
+                    className="absolute inset-0 flex flex-col items-center justify-center opacity-0 md:group-hover:opacity-100 transition-opacity duration-300"
+                  >
+                    <h3 className="text-2xl font-semibold text-center text-white">
+                      {movie.title || movie.name}
+                    </h3>
                     <button
                       onClick={() => {
                         if (movie.first_air_date) {

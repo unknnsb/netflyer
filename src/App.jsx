@@ -14,6 +14,7 @@ const App = () => {
   const [trendingData, setTrendingData] = useState(null);
   const [airingTodayData, setAiringTodayData] = useState(null);
   const [popularData, setPopularData] = useState(null);
+  const [animeData, setAnimeData] = useState(null);
 
   const navigate = useNavigate();
 
@@ -24,6 +25,7 @@ const App = () => {
       fetchEndpointData(endpoints.trending, setTrendingData),
       fetchEndpointData(endpoints.airing_today, setAiringTodayData),
       fetchEndpointData(endpoints.popular, setPopularData),
+      fetchEndpointData(endpoints.anime, setAnimeData),
     ];
 
     Promise.all(fetchDataPromises)
@@ -59,6 +61,7 @@ const App = () => {
           <HeroSection />
           <MovieRow movies={trendingMoviesData} header="Trending Movies" />
           <MovieRow movies={trendingTvData} header="Trending TV" />
+          <MovieRow movies={animeData} header="Anime" />
           <MovieRow movies={popularData} header="Popular" />
           <MovieRow movies={airingTodayData} header="Airing Today" />
         </>
