@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@consumet/extensions": "^1.5.2",
+    "@vitejs/plugin-react": "^4.2.0",
     "axios": "^1.4.0",
     "bad-words": "^3.0.4",
     "firebase": "^10.4.0",
@@ -27,7 +28,6 @@
     "@eslint-kit/eslint-config-react": "^3.0.0",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
-    "@vitejs/plugin-react-swc": "^3.3.2",
     "autoprefixer": "^10.4.14",
     "babel-eslint": "10.1.0",
     "eslint": "7.32.0",
