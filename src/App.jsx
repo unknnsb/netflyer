@@ -1,3 +1,4 @@
+import Check from "./components/Check";
 import HeroSection from "./components/Hero";
 import Loading from "./components/Loading";
 import MovieRow from "./components/MovieRow";
@@ -58,6 +59,7 @@ const App = () => {
       ) : (
         <>
           <Navbar />
+          <Check />
           <HeroSection />
           <MovieRow movies={trendingMoviesData} header="Trending Movies" />
           <MovieRow movies={trendingTvData} header="Trending TV" />
