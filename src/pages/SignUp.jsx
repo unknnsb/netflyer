@@ -1,31 +1,20 @@
 import Loading from "../components/Loading";
-import { auth, db, storage } from "../services/Firebase";
+import { auth, db } from "../services/Firebase";
 import Filter from "bad-words";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import {
-  ref,
-  getDownloadURL,
-  uploadBytesResumable,
-  getMetadata,
-} from "firebase/storage";
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { createToast } from "vercel-toast";
 
 const SignUp = () => {
   const [username, setUsername] = useState("");
-  const [image, setImage] = useState(
-    "https://ih0.redbubble.net/image.618427277.3222/flat,1000x1000,075,f.u1.jpg"
-  );
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(true);
-  const [checkingAvatar, setCheckingAvatar] = useState(false);
-  const [avatarNotFound, setAvatarNotFound] = useState(false);
   const navigate = useNavigate();
 
   const checkForBadWords = (text) => {
@@ -33,72 +22,44 @@ const SignUp = () => {
     return filter.isProfane(text);
   };
 
-  const checkAvatarExists = async (username) => {
-    setCheckingAvatar(true);
-    const storageRef = ref(
-      storage,
-      `avatars/${username.toLowerCase()}_profile.jpg`
-    );
-    try {
-      await getMetadata(storageRef);
-      setCheckingAvatar(false);
-      return true; // Avatar exists
-    } catch (error) {
-      setCheckingAvatar(false);
-      return false; // Avatar doesn't exist
-    }
-  };
-
-  const onFileChange = async (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile && username) {
-      const storageRef = ref(
-        storage,
-        `avatars/${username.toLowerCase()}_profile.jpg`
-      );
-      try {
-        const snapshot = await uploadBytesResumable(storageRef, selectedFile);
-        const downloadURL = await getDownloadURL(snapshot.ref);
-        setImage(downloadURL);
-      } catch (error) {
-        console.error("Error uploading image:", error);
-      }
-    } else if (!username) {
-      alert("Please provide a username first.");
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (checkForBadWords(username) || checkForBadWords(email)) {
-      alert(
-        "Your username or email contains inappropriate words. Please choose a different one."
-      );
+    if (!username || !email || !password) {
+      return createToast("Please fill in all the fields.", {
+        cancel: "Cancel",
+        type: "error",
+      });
     } else {
-      try {
-        const userCred = await createUserWithEmailAndPassword(
-          auth,
-          email,
-          password
+      if (checkForBadWords(username) || checkForBadWords(email)) {
+        alert(
+          "Your username or email contains inappropriate words. Please choose a different one."
         );
-        const user = userCred.user;
-        const colRef = doc(db, "users", user.uid);
-        await setDoc(colRef, { username: username });
-        navigate("/");
-      } catch (error) {
-        if (error.message.includes("email-already-in-use")) {
-          return createToast("The Email Is Already Exists.", {
-            action: {
-              text: "Login",
-              callback(toast) {
-                navigate("/login");
-                toast.destroy();
+      } else {
+        try {
+          const userCred = await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+          const user = userCred.user;
+          const colRef = doc(db, "users", user.uid);
+          await setDoc(colRef, { username: username });
+          navigate("/");
+        } catch (error) {
+          if (error.message.includes("email-already-in-use")) {
+            return createToast("The Email Is Already Exists.", {
+              action: {
+                text: "Login",
+                callback(toast) {
+                  navigate("/login");
+                  toast.destroy();
+                },
               },
-            },
-            cancel: "Cancel",
-            type: "dark",
-          });
+              cancel: "Cancel",
+              type: "dark",
+            });
+          }
         }
       }
     }
@@ -115,23 +76,6 @@ const SignUp = () => {
 
     return () => unsubscribe();
   }, []);
-
-  const handleUsernameBlur = async () => {
-    if (username) {
-      const avatarExists = await checkAvatarExists(username);
-      if (avatarExists) {
-        const storageRef = ref(
-          storage,
-          `avatars/${username.toLowerCase()}_profile.jpg`
-        );
-        const downloadURL = await getDownloadURL(storageRef);
-        setImage(downloadURL);
-        setAvatarNotFound(false);
-      } else {
-        setAvatarNotFound(true);
-      }
-    }
-  };
 
   return (
     <>
@@ -153,37 +97,9 @@ const SignUp = () => {
               placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              onBlur={handleUsernameBlur}
               className="w-full px-4 py-2 rounded bg-[#1e1c1c] text-white mb-4"
-              required
+              required={true}
             />
-            {checkingAvatar && (
-              <p className="text-white text-base mb-2">
-                Checking for the username in the database...
-              </p>
-            )}
-            {avatarNotFound && <p className="text-white text-base mb-2"></p>}
-            <label
-              htmlFor="image"
-              className="block text-white font-semibold mb-1"
-            >
-              Avatar
-            </label>
-            <input
-              type="file"
-              accept="image/*"
-              id="image"
-              onChange={onFileChange}
-              className="w-full px-4 py-2 rounded bg-[#1e1c1c] text-white mb-4"
-            />
-            <div className="w-24 h-24 text-white rounded-full border-2 border-white mb-4 mx-auto">
-              <img
-                src={image}
-                alt="Avatar"
-                className="w-full h-full rounded-full"
-              />
-              <p className="text-center mt-2 font-medium" id="uploading"></p>
-            </div>
             <label
               htmlFor="email"
               className="block text-white font-semibold mb-1"
@@ -197,7 +113,7 @@ const SignUp = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 rounded bg-[#1e1c1c] text-white mb-4"
-              required
+              required={true}
             />
 
             <label
@@ -213,7 +129,7 @@ const SignUp = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 rounded bg-[#1e1c1c] text-white mb-6"
-              required
+              required={true}
             />
 
             <button

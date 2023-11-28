@@ -14,9 +14,36 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const isEmail = /\S+@\S+\.\S+/.test(email);
+
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigate("/");
+      if (!email || !password) {
+        return createToast("Please fill in all the fields", {
+          cancel: "Cancel",
+          type: "error",
+        });
+      } else {
+        if (!isEmail) {
+          return createToast("Please enter a valid email", {
+            cancel: "Cancel",
+            type: "error",
+          });
+        } else {
+          await signInWithEmailAndPassword(auth, email, password);
+          return createToast("Login Successful", {
+            action: {
+              text: '',
+              callback(toast) {
+                navigate("/");
+                setInterval(() => {
+                  toast.destroy();
+                }, 1500);
+              },
+            },
+            type: "success",
+          });
+        }
+      }
     } catch (error) {
       if (error.message.includes("not-found")) {
         return createToast("The user is not found", {
@@ -29,6 +56,11 @@ const Login = () => {
           },
           cancel: "Cancel",
           type: "dark",
+        });
+      } else if (error.message.includes("wrong-password")) {
+        return createToast("The password is incorrect", {
+          cancel: "Cancel",
+          type: "error",
         });
       }
     }
@@ -68,6 +100,7 @@ const Login = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-2 rounded bg-[#1e1c1c] text-white mb-4"
+                required
               />
 
               <label
@@ -83,6 +116,7 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-2 rounded bg-[#1e1c1c] text-white mb-6"
+                required
               />
 
               <button
