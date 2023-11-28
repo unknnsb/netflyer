@@ -2,7 +2,7 @@ import Check from "./components/Check";
 import HeroSection from "./components/Hero";
 import Loading from "./components/Loading";
 import MovieRow from "./components/MovieRow";
-import Navbar from "./components/Navbar";
+import Header from "./components/Navbar";
 import { TMDB_URL, TMDB_API_KEY, endpoints } from "./services/Tmdb";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -58,7 +58,7 @@ const App = () => {
         <Loading />
       ) : (
         <>
-          <Navbar />
+          <Header />
           <Check />
           <HeroSection />
           <MovieRow movies={trendingMoviesData} header="Trending Movies" />
