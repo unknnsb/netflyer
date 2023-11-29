@@ -16,7 +16,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { createToast } from "vercel-toast";
 
 const Header = () => {
-  const [scrolling, setScrolling] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -32,21 +31,6 @@ const Header = () => {
         setLoading(false);
       }
     });
-  }, []);
-
-  const handleScroll = () => {
-    if (window.scrollY > 50) {
-      setScrolling(true);
-    } else {
-      setScrolling(false);
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
   }, []);
 
   const handleSignOut = () => {
@@ -82,7 +66,12 @@ const Header = () => {
   };
 
   return (
-    <Navbar onMenuOpenChange={setIsMenuOpen} isBordered className="bg-black">
+    <Navbar
+      onMenuOpenChange={setIsMenuOpen}
+      isBlurred
+      isBordered
+      className="bg-black"
+    >
       <NavbarContent>
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
@@ -143,10 +132,9 @@ const Header = () => {
           <Button
             color="primary"
             onClick={() => navigate("/search")}
-            isIconOnly
             variant="flat"
           >
-            <FiSearch />
+            <FiSearch /> Search
           </Button>
         </NavbarMenuItem>
         <NavbarMenuItem>

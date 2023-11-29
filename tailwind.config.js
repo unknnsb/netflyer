@@ -17,7 +17,7 @@ export default {
       themes: {
         dark: {
           colors: {
-            black: "#202020",
+            black: "#000",
           },
         },
       },

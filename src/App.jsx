@@ -1,7 +1,7 @@
 import Check from "./components/Check";
 import HeroSection from "./components/Hero";
 import Loading from "./components/Loading";
-import MovieRow from "./components/MovieRow";
+import Row from "./components/MovieRow";
 import Header from "./components/Navbar";
 import { TMDB_URL, TMDB_API_KEY, endpoints } from "./services/Tmdb";
 import axios from "axios";
@@ -61,11 +61,11 @@ const App = () => {
           <Header />
           <Check />
           <HeroSection />
-          <MovieRow movies={trendingMoviesData} header="Trending Movies" />
-          <MovieRow movies={trendingTvData} header="Trending TV" />
-          <MovieRow movies={animeData} header="Anime" />
-          <MovieRow movies={popularData} header="Popular" />
-          <MovieRow movies={airingTodayData} header="Airing Today" />
+          <Row items={trendingMoviesData} title="Trending Movies" />
+          <Row items={trendingTvData} title="Trending TV" />
+          <Row items={animeData} title="Anime" />
+          <Row items={popularData} title="Popular" />
+          <Row items={airingTodayData} title="Airing Today" />
         </>
       )}
     </>
