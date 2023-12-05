@@ -11,7 +11,7 @@ import {
 } from "@nextui-org/react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import React, { useState, useEffect } from "react";
-import { FiSearch } from "react-icons/fi";
+import { FiEye, FiList, FiSearch } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import { createToast } from "vercel-toast";
 
@@ -66,12 +66,7 @@ const Header = () => {
   };
 
   return (
-    <Navbar
-      onMenuOpenChange={setIsMenuOpen}
-      isBlurred
-      isBordered
-      className="bg-black"
-    >
+    <Navbar onMenuOpenChange={setIsMenuOpen} isBlurred isBordered>
       <NavbarContent>
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
@@ -92,13 +87,18 @@ const Header = () => {
         justify="center"
       >
         <NavbarItem className="text-white">
-          <Button onClick={() => navigate("/search")} isIconOnly variant="flat">
-            <FiSearch />
+          <Button onClick={() => navigate("/search")} variant="flat">
+            <FiSearch /> Search
+          </Button>
+        </NavbarItem>
+        <NavbarItem>
+          <Button variant="flat" onClick={() => navigate("/discover")}>
+            <FiEye /> Discover
           </Button>
         </NavbarItem>
         <NavbarItem className="font-bold">
           <Button variant="flat" onClick={handleWatchlist}>
-            Watchlist
+            <FiList /> Watchlist
           </Button>
         </NavbarItem>
       </NavbarContent>
@@ -129,17 +129,18 @@ const Header = () => {
       </NavbarContent>
       <NavbarMenu className="text-white">
         <NavbarMenuItem>
-          <Button
-            color="primary"
-            onClick={() => navigate("/search")}
-            variant="flat"
-          >
+          <Button onClick={() => navigate("/search")} variant="flat">
             <FiSearch /> Search
           </Button>
         </NavbarMenuItem>
         <NavbarMenuItem>
-          <Button color="primary" variant="flat" onClick={handleWatchlist}>
-            Watchlist
+          <Button variant="flat" onClick={() => navigate("/discover")}>
+            <FiEye /> Discover
+          </Button>
+        </NavbarMenuItem>
+        <NavbarMenuItem>
+          <Button variant="flat" onClick={handleWatchlist}>
+            <FiList /> Watchlist
           </Button>
         </NavbarMenuItem>
       </NavbarMenu>

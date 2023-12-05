@@ -17,10 +17,10 @@ const Row = ({ items, title }) => {
   }));
 
   React.useEffect(() => {
-    if (items.length > 0) {
+    if (items.length > 5) {
       setLoading(false);
     }
-  });
+  }, [items]);
 
   return (
     <div>
@@ -28,7 +28,9 @@ const Row = ({ items, title }) => {
         <h2 className="text-2xl font-semibold text-white ml-3 mb-4">{title}</h2>
       )}
       {loading ? (
-        <Spinner size="lg" color="primary" />
+        <div className="w-full h-10 flex items-center justify-start mb-4 ml-3">
+          <Spinner size="lg" color="default" />
+        </div>
       ) : (
         <ScrollMenu LeftArrow={LeftArrow} RightArrow={RightArrow}>
           {Items.map(({ id, item }) => (

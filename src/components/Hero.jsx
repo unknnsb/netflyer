@@ -33,15 +33,16 @@ const HeroSection = () => {
 
   return (
     <div className="md:mb-[450px] mb-[500px] ">
-      <div className="h-screen absolute top-0 bg-black">
+      <div className="h-screen absolute top-0">
         {randomMovie && (
           <Card radius="none">
             <Image
               src={`https://image.tmdb.org/t/p/original/${randomMovie.backdrop_path}`}
-              className="z-0 w-full md:h-full h-[600px] object-cover bg-gradient-to-b from-transparent to-[#202020]"
+              className="z-0 w-full md:h-full h-[600px] object-cover"
               removeWrapper
               radius="none"
             />
+            <div className="z-10 w-full h-full absolute top-0 left-0 bg-gradient-to-b from-transparent to-[#202020]"></div>
             <CardFooter className="items-start flex-col overflow-hidden py-1 absolute bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-white">
                 {randomMovie.title || randomMovie.name}

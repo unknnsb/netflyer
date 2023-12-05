@@ -14,9 +14,12 @@ export default {
   plugins: [
     nextui({
       addCommonColors: true,
+      defaultTheme: "dark",
       themes: {
         dark: {
           colors: {
+            background: "#000",
+            foreground: "#202020",
             black: "#000",
           },
         },
