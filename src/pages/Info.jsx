@@ -1,3 +1,4 @@
+import Row from "../components/CastRow";
 import Spinner from "../components/Loading";
 import Navbar from "../components/Navbar";
 import { auth, db } from "../services/Firebase";
@@ -22,6 +23,8 @@ import {
   where,
 } from "firebase/firestore";
 import React, { useState, useEffect } from "react";
+import { ScrollMenu, VisibilityContext } from "react-horizontal-scrolling-menu";
+import "react-horizontal-scrolling-menu/dist/styles.css";
 import { FaStar, FaRegStar, FaPlay, FaTrash, FaPlus } from "react-icons/fa";
 import { FiCheck, FiX } from "react-icons/fi";
 import { useNavigate, useParams } from "react-router-dom";
@@ -239,6 +242,11 @@ const InfoPage = () => {
     );
   };
 
+  const castItems = cast.map((item, index) => ({
+    id: `cast-${index}`,
+    item: item,
+  }));
+
   return (
     <div className="bg-[#202020]">
       <div className="h-screen w-full">
@@ -260,7 +268,6 @@ const InfoPage = () => {
                   <Image
                     src={`https://image.tmdb.org/t/p/w300/${details.poster_path}`}
                     alt="Poster"
-                    fallbackSrc="/not-found.png"
                     radius="lg"
                     className="w-48 md:w-64 shadow-lg mx-auto md:mx-0 md:mt-0 mt-4"
                   />
@@ -408,37 +415,7 @@ const InfoPage = () => {
           <h2 className="text-2xl ml-2 md:text-3xl font-semibold mb-2 text-white">
             Cast
           </h2>
-          <div className="flex space-x-2 overflow-x-auto md:space-x-4">
-            {cast.map((actor) => (
-              <Card
-                key={actor.id}
-                className="w-56 md:w-64 p-2"
-                radius="sm"
-                shadow
-                onClick={() => onPerson(actor.id)}
-              >
-                <Image
-                  src={
-                    actor.profile_path
-                      ? `https://image.tmdb.org/t/p/w200/${actor.profile_path}`
-                      : "/not-found.png"
-                  }
-                  alt={actor.name}
-                  className="max-w-[900px] h-52 object-cover rounded-t-lg cursor-pointer"
-                />
-                <CardFooter>
-                  <p className="text-sm md:text-base font-semibold text-white mb-1 text-center">
-                    {actor.name.length > 15
-                      ? `${actor.name.substring(0, 15)}...`
-                      : actor.name}
-                  </p>
-                  <p className="text-xs md:text-sm text-gray-500 text-center">
-                    {actor.character}
-                  </p>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
+          <Row items={cast} />
         </div>
 
         {/* {type === "tv" && (
