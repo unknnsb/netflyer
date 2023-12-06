@@ -1,4 +1,12 @@
 import { TMDB_API_KEY } from "../services/Tmdb";
+import {
+  Button,
+  ButtonGroupProvider,
+  Card,
+  CardFooter,
+  CardHeader,
+  Image,
+} from "@nextui-org/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaPlay, FaInfo, FaPlus } from "react-icons/fa";
@@ -11,7 +19,7 @@ const HeroSection = () => {
   useEffect(() => {
     axios
       .get(
-        `https://api.themoviedb.org/3/trending/all/day?api_key=${TMDB_API_KEY}&language=en-US&page=1`
+        `https://api.themoviedb.org/3/trending/all/week?api_key=${TMDB_API_KEY}&language=en-US&page=1`
       )
       .then((response) => {
         const movies = response.data.results;
@@ -24,53 +32,57 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <div className="relative h-screen overflow-hidden">
-      {randomMovie && (
-        <div
-          className="relative h-full w-full bg-cover bg-center"
-          style={{
-            backgroundImage: `url('https://image.tmdb.org/t/p/original/${randomMovie.backdrop_path}')`,
-          }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-t from-dark to-transparent"></div>
-          <div className="absolute inset-0 flex flex-col justify-end p-4 md:p-8">
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-white">
-              {randomMovie.title || randomMovie.name}
-            </h1>
-            <div className="flex justify-start mt-4 space-x-4">
-              <button className="text-lg md:text-xl p-2 md:p-3 rounded-full bg-red-600 text-white hover:bg-red-700 transition-all duration-300">
-                <FaPlay
+    <div className="md:mb-[450px] mb-[500px] ">
+      <div className="h-screen absolute top-0">
+        {randomMovie && (
+          <Card radius="none">
+            <Image
+              src={`https://image.tmdb.org/t/p/original/${randomMovie.backdrop_path}`}
+              className="z-0 w-full md:h-full h-[600px] object-cover"
+              removeWrapper
+              radius="none"
+            />
+            <div className="z-10 w-full h-full absolute top-0 left-0 bg-gradient-to-b from-transparent to-[#202020]"></div>
+            <CardFooter className="items-start flex-col overflow-hidden py-1 absolute bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-white">
+                {randomMovie.title || randomMovie.name}
+              </h1>
+              <p className="text-lg md:text-xl lg:text-2xl font-semibold text-gray-400">
+                {randomMovie.overview}
+              </p>
+              <div className="flex mt-4">
+                <Button color="danger" size="lg" varient="flat" isIconOnly>
+                  <FaPlay
+                    onClick={() => {
+                      if (randomMovie.first_air_date) {
+                        navigate(`/watch/tv/${randomMovie.id}/1/1`);
+                      } else {
+                        navigate(`/watch/movie/${randomMovie.id}`);
+                      }
+                    }}
+                  />
+                </Button>
+                <Button
+                  className="ml-2"
+                  color="danger"
+                  size="lg"
+                  varient="flat"
                   onClick={() => {
                     if (randomMovie.first_air_date) {
-                      navigate(`/watch/tv/${randomMovie.id}/1/1`);
+                      navigate(`/info/tv/${randomMovie.id}`);
                     } else {
-                      navigate(`/watch/movie/${randomMovie.id}`);
+                      navigate(`/info/movie/${randomMovie.id}`);
                     }
                   }}
-                />
-              </button>
-              <button
-                onClick={() => {
-                  if (randomMovie.first_air_date) {
-                    navigate(`/info/tv/${randomMovie.id}`);
-                  } else {
-                    navigate(`/info/movie/${randomMovie.id}`);
-                  }
-                }}
-                className="text-lg md:text-xl p-2 md:p-3 rounded-full bg-red-600 text-white hover:bg-red-700 transition-all duration-300"
-              >
-                <FaInfo />
-              </button>
-              <button className="text-lg md:text-xl p-2 md:p-3 rounded-full bg-red-600 text-white hover:bg-red-700 transition-all duration-300">
-                <FaPlus />
-              </button>
-            </div>
-            <div className="mt-4 text-white opacity-70 text-sm">
-              {randomMovie.overview}
-            </div>
-          </div>
-        </div>
-      )}
+                  isIconOnly
+                >
+                  <FaInfo />
+                </Button>
+              </div>
+            </CardFooter>
+          </Card>
+        )}
+      </div>{" "}
     </div>
   );
 };

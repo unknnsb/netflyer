@@ -1,12 +1,22 @@
 import { auth } from "../services/Firebase";
+import {
+  Button,
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  NavbarMenu,
+  NavbarMenuItem,
+  NavbarMenuToggle,
+} from "@nextui-org/react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import React, { useState, useEffect } from "react";
-import { FiSearch } from "react-icons/fi";
+import { FiEye, FiList, FiSearch } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import { createToast } from "vercel-toast";
 
-const Navbar = () => {
-  const [scrolling, setScrolling] = useState(false);
+const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState(false);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -21,21 +31,6 @@ const Navbar = () => {
         setLoading(false);
       }
     });
-  }, []);
-
-  const handleScroll = () => {
-    if (window.scrollY > 50) {
-      setScrolling(true);
-    } else {
-      setScrolling(false);
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
   }, []);
 
   const handleSignOut = () => {
@@ -71,13 +66,13 @@ const Navbar = () => {
   };
 
   return (
-    <nav
-      className={`fixed top-0 w-full z-50 ${
-        scrolling ? "bg-black/70" : "bg-transparent"
-      } transition-all duration-300 ease-in-out`}
-    >
-      <div className="container mx-auto px-2 py-1 flex justify-between items-center">
-        <div className="flex items-center space-x-4">
+    <Navbar onMenuOpenChange={setIsMenuOpen} isBlurred isBordered>
+      <NavbarContent>
+        <NavbarMenuToggle
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          className="sm:hidden text-white"
+        />
+        <NavbarBrand>
           <Link to="/">
             <img
               src="/logo.png"
@@ -85,33 +80,72 @@ const Navbar = () => {
               className="h-12 w-12 md:h-16 md:w-16 lg:h-20 lg:w-20 object-contain"
             />
           </Link>
-        </div>
-        <div className="flex items-center space-x-4">
-          <button onClick={() => navigate("/search")} className="text-white">
-            <FiSearch />
-          </button>
-          <button className="text-white" onClick={handleWatchlist}>
-            Watchlist
-          </button>
-          {loading ? (
-            <div className="inline-block h-4 w-4 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[0.125em] motion-reduce:animate-spin-[1.5s]">
-              <span className="absolute -m-px h-px w-px overflow-hidden whitespace-nowrap border-0 p-0 clip-[rect(0,0,0,0)] text-white">
-                Loading...
-              </span>
-            </div>
-          ) : user ? (
-            <button className="text-white" onClick={handleSignOut}>
+        </NavbarBrand>
+      </NavbarContent>
+      <NavbarContent
+        className="hidden text-white sm:flex gap-4"
+        justify="center"
+      >
+        <NavbarItem className="text-white">
+          <Button onClick={() => navigate("/search")} variant="flat">
+            <FiSearch /> Search
+          </Button>
+        </NavbarItem>
+        <NavbarItem>
+          <Button variant="flat" onClick={() => navigate("/discover")}>
+            <FiEye /> Discover
+          </Button>
+        </NavbarItem>
+        <NavbarItem className="font-bold">
+          <Button variant="flat" onClick={handleWatchlist}>
+            <FiList /> Watchlist
+          </Button>
+        </NavbarItem>
+      </NavbarContent>
+      <NavbarContent justify="end">
+        {loading ? (
+          <NavbarItem>
+            <Button color="primary" variant="flat" isLoading>
+              Loading
+            </Button>
+          </NavbarItem>
+        ) : user ? (
+          <NavbarItem>
+            <Button color="primary" variant="flat" onClick={handleSignOut}>
               Sign Out
-            </button>
-          ) : (
-            <button className="text-white" onClick={() => navigate("/login")}>
+            </Button>
+          </NavbarItem>
+        ) : (
+          <NavbarItem>
+            <Button
+              variant="flat"
+              onClick={() => navigate("/login")}
+              color="primary"
+            >
               Login
-            </button>
-          )}
-        </div>
-      </div>
-    </nav>
+            </Button>
+          </NavbarItem>
+        )}
+      </NavbarContent>
+      <NavbarMenu className="text-white">
+        <NavbarMenuItem>
+          <Button onClick={() => navigate("/search")} variant="flat">
+            <FiSearch /> Search
+          </Button>
+        </NavbarMenuItem>
+        <NavbarMenuItem>
+          <Button variant="flat" onClick={() => navigate("/discover")}>
+            <FiEye /> Discover
+          </Button>
+        </NavbarMenuItem>
+        <NavbarMenuItem>
+          <Button variant="flat" onClick={handleWatchlist}>
+            <FiList /> Watchlist
+          </Button>
+        </NavbarMenuItem>
+      </NavbarMenu>
+    </Navbar>
   );
 };
 
-export default Navbar;
+export default Header;
