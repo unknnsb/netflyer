@@ -2,7 +2,16 @@ import Spinner from "../components/Loading";
 import Navbar from "../components/Navbar";
 import { auth, db } from "../services/Firebase";
 import { TMDB_URL, TMDB_API_KEY } from "../services/Tmdb";
-import { Card, CardFooter, Image, CardBody, Divider } from "@nextui-org/react";
+import {
+  Card,
+  CardFooter,
+  Image,
+  CardBody,
+  Divider,
+  Chip,
+  Button,
+  Spinner as CSpinner,
+} from "@nextui-org/react";
 import { onAuthStateChanged } from "firebase/auth";
 import {
   addDoc,
@@ -13,7 +22,8 @@ import {
   where,
 } from "firebase/firestore";
 import React, { useState, useEffect } from "react";
-import { FiCheck, FiStar, FiX } from "react-icons/fi";
+import { FaStar, FaRegStar, FaPlay, FaTrash, FaPlus } from "react-icons/fa";
+import { FiCheck, FiX } from "react-icons/fi";
 import { useNavigate, useParams } from "react-router-dom";
 import { createToast } from "vercel-toast";
 
@@ -30,6 +40,7 @@ const InfoPage = () => {
   const [userID, setUserID] = useState();
   const [watchlistLoading, setWatchlistLoading] = useState(true);
   const [watchlist, setWatchlist] = useState(false);
+  const [showFullText, setShowFullText] = useState(false);
   const navigate = useNavigate();
 
   const toggleOverview = (episodeId) => {
@@ -205,27 +216,52 @@ const InfoPage = () => {
     });
   };
 
+  const toggleText = () => {
+    setShowFullText(!showFullText);
+  };
+
+  const starRating = (rating) => {
+    const calculatedRating = Math.round(rating / 2);
+
+    return (
+      <>
+        {Array.from({ length: 5 }, (_, index) => (
+          <span className="ml-1 mt-1" key={index}>
+            {index < calculatedRating ? (
+              <FaStar className="text-yellow-500" />
+            ) : (
+              <FaRegStar />
+            )}
+          </span>
+        ))}
+        <span className="ml-1">{calculatedRating}</span>
+      </>
+    );
+  };
+
   return (
-    <>
+    <div className="bg-[#202020] h-screen w-full">
       <Navbar />
       <div className="h-screen absolute top-0">
-        <Card shadow>
+        <Card radius="none" className="text-white">
           <Image
             src={`https://image.tmdb.org/t/p/w1280/${details.backdrop_path}`}
-            className="z-0 w-full h-[400px] object-cover"
-            removeWrapper
+            className="z-0 w-full md:h-full h-[600px] object-cover"
             radius="none"
           />
-          <CardFooter
-            radius="none"
-            className="items-start flex-col overflow-hidden py-1 absolute bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10"
-          >
-            <div className="md:flex mt-10">
-              <div className="md:w-1/3 md:pr-8 mb-4 md:mb-0">
-                <img
+          <div className="z-10 w-full h-full absolute top-0 left-0 bg-gradient-to-b from-transparent to-[#202020]"></div>
+          <div className="md:mt-3 mt-[200px]">
+            <CardFooter
+              radius="none"
+              className="flex md:flex-row flex-col items-start overflow-hidden py-1 absolute bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10"
+            >
+              <div className="md:w-1/3 flex justify-center w-full h-full md:pr-8 mb-4 md:mb-0">
+                <Image
                   src={`https://image.tmdb.org/t/p/w300/${details.poster_path}`}
                   alt="Poster"
-                  className="w-48 md:w-64 rounded-lg shadow-lg mx-auto md:mx-0"
+                  fallbackSrc="/not-found.png"
+                  radius="lg"
+                  className="w-48 md:w-64 shadow-lg mx-auto md:mx-0 md:mt-0 mt-4"
                 />
               </div>
               <div className="md:w-2/3">
@@ -241,27 +277,44 @@ const InfoPage = () => {
                   <h2 className="text-xl md:text-2xl font-semibold mb-2">
                     Overview
                   </h2>
-                  <p className="text-base md:text-lg">{details.overview}</p>
+                  <p className="text-base md:text-lg">
+                    {details.overview.length > 155 && !showFullText
+                      ? `${details.overview.substring(0, 155)}...`
+                      : details.overview}
+                    {details.overview.length > 155 && (
+                      <Button
+                        className="ml-1"
+                        size="md"
+                        color="danger"
+                        variant="ghost"
+                        onClick={toggleText}
+                      >
+                        {showFullText ? "Read Less" : "Read More"}
+                      </Button>
+                    )}
+                  </p>
                 </div>
                 <p className="text-base mt-1 mb-1 flex md:text-lg">
-                  <span className="bg-slate-700 p-1 bg-opacity-50 rounded-md">
-                    IMDB
-                  </span>
-                  : {details.vote_average} <FiStar className="mt-1 ml-1" />
+                  <div className="flex">
+                    <Chip size="md" className="bg-opacity-60">
+                      IMDB
+                    </Chip>
+                    :{starRating(details.vote_average)}
+                  </div>
                 </p>
                 <p className="text-base md:text-lg">
                   {type === "movie" ? (
                     <span>
-                      <span className="bg-slate-700 p-1 bg-opacity-60 rounded-md">
+                      <Chip size="md" className="bg-opacity-60">
                         Release Date
-                      </span>
+                      </Chip>
                       : {details.release_date}
                     </span>
                   ) : (
                     <span>
-                      <span className="bg-slate-700 p-1 bg-opacity-60 rounded-md">
+                      <Chip size="md" className="bg-opacity-60">
                         Release Date
-                      </span>
+                      </Chip>
                       : {details.first_air_date} - {inProduction}
                     </span>
                   )}
@@ -273,23 +326,25 @@ const InfoPage = () => {
                       : "text-base mt-1 mb-2 md:text-lg"
                   }
                 >
-                  <span className="bg-slate-700 p-1 bg-opacity-50 rounded-md">
+                  <Chip size="md" className="bg-opacity-60">
                     Genre
-                  </span>
+                  </Chip>
                   : {details.genres.map((genre) => genre.name).join(", ")}
                 </p>
                 {type === "tv" && (
                   <p className="text-base md:text-lg mb-2">
-                    <span className="bg-slate-700 p-1 bg-opacity-60 rounded-md">
+                    <Chip size="md" className="bg-opacity-60">
                       Total Seasons
-                    </span>
+                    </Chip>
                     : {details.number_of_seasons}
                   </p>
                 )}
                 <div className="flex">
-                  <button
-                    type="button"
-                    className="bg-red-700 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 text-white font-semibold text-base md:text-lg px-6 py-2 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105"
+                  <Button
+                    variant="shadow"
+                    color="danger"
+                    radius="full"
+                    startContent={<FaPlay />}
                     onClick={() => {
                       if (type === "tv") {
                         navigate(`/watch/${type}/${id}/${selectedSeason}/1`);
@@ -299,53 +354,56 @@ const InfoPage = () => {
                     }}
                   >
                     Play
-                  </button>
+                  </Button>
                   {watchlistLoading ? (
-                    <button className="bg-red-700 flex items-center ml-2 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 text-white font-semibold text-base md:text-lg px-6 py-2 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105">
-                      <div
-                        className="inline-block h-5 w-5 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
-                        role="status"
-                      >
-                        <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
-                          Loading...
-                        </span>
-                      </div>
-                    </button>
+                    <Button
+                      disabled
+                      variant="shadow"
+                      color="danger"
+                      radius="full"
+                      className="ml-2"
+                    >
+                      <CSpinner color="white" size="md" />
+                    </Button>
                   ) : (
                     <>
                       {watchlist ? (
-                        <button
-                          type="button"
+                        <Button
                           onClick={() => {
                             removeFromWatchlist(id, type);
                           }}
-                          className="bg-red-700 flex items-center ml-2 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 text-white font-semibold text-base md:text-lg px-6 py-2 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105"
+                          variant="shadow"
+                          color="danger"
+                          radius="full"
+                          className="ml-2"
+                          endContent={<FaTrash />}
                         >
-                          <FiX className="mr-1 text-lg font-bold" />
-                          Remove WatchList
-                        </button>
+                          Remove From Watchlist
+                        </Button>
                       ) : (
-                        <button
-                          type="button"
+                        <Button
                           onClick={() => {
                             addToWatchList(id, type);
                           }}
-                          className="bg-red-700 flex items-center ml-2 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 text-white font-semibold text-base md:text-lg px-6 py-2 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105"
+                          variant="shadow"
+                          color="danger"
+                          radius="full"
+                          className="ml-2"
+                          endContent={<FaPlus />}
                         >
-                          <FiCheck className="mr-1 text-lg font-bold" />
                           WatchList
-                        </button>
+                        </Button>
                       )}
                     </>
                   )}
                 </div>
               </div>
-            </div>
-          </CardFooter>
+            </CardFooter>
+          </div>
         </Card>
       </div>
 
-      <div className="mb-4 ml-2">
+      {/* <div className="mb-4 ml-2">
         <h2 className="text-2xl md:text-3xl font-semibold mb-2 text-white">
           Cast
         </h2>
@@ -522,8 +580,8 @@ const InfoPage = () => {
             </Card>
           ))}
         </div>
-      </div>
-    </>
+      </div> */}
+    </div>
   );
 };
 
