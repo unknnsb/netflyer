@@ -3,10 +3,8 @@ import React from "react";
 import { ScrollMenu, VisibilityContext } from "react-horizontal-scrolling-menu";
 import "react-horizontal-scrolling-menu/dist/styles.css";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { useNavigate } from "react-router-dom";
 
 const Row = ({ items, title }) => {
-  const navigate = useNavigate();
   const [loading, setLoading] = React.useState(true);
 
   const isMobile = window.innerWidth <= 768;
@@ -38,7 +36,6 @@ const Row = ({ items, title }) => {
               key={id}
               item={item}
               isMobile={isMobile}
-              navigate={navigate}
             />
           ))}
         </ScrollMenu>
@@ -84,12 +81,12 @@ function RightArrow() {
   );
 }
 
-function RowCard({ item, isMobile, navigate }) {
+function RowCard({ item, isMobile }) {
   const onClick = async () => {
     if (item.first_air_date) {
-      navigate(`/info/tv/${item.id}`);
+    window.location.href = `/info/tv/${item.id}`
     } else {
-      navigate(`/info/movie/${item.id}`);
+      window.location.href = `/info/movie/${item.id}`
     }
   };
 

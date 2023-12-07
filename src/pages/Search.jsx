@@ -1,7 +1,15 @@
 import Loading from "../components/Loading";
 import Navbar from "../components/Navbar";
 import { TMDB_API_KEY, endpoints, TMDB_URL } from "../services/Tmdb";
-import { ANIME } from "@consumet/extensions";
+import {
+  Input,
+  Card,
+  CardBody,
+  Image,
+  Button,
+  Tabs,
+  Tab,
+} from "@nextui-org/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
@@ -59,16 +67,6 @@ const SearchPage = () => {
         .then((res) => {
           setAnimeResults(res.data.results);
         });
-      // const pkg = async () => {
-      //   const anime = new ANIME.Gogoanime();
-      //   await anime.search(query).then(async (res) => {
-      //     setAnimeResults(res.results);
-      //     const firstAnime = res.results[0];
-      //     const animeInfo = await anime.fetchAnimeInfo(firstAnime.id);
-      //     console.log(animeInfo);
-      //   });
-      // };
-      // pkg();
       axios
         .get(`${TMDB_URL}${endpoints.searchAnimeMovie}`, {
           params: {
@@ -97,85 +95,66 @@ const SearchPage = () => {
   };
 
   return (
-    <div className="bg-dark mt-10 text-white min-h-screen">
+    <div className="text-white">
       <Navbar />
       <div className="container mx-auto p-4">
         <h1 className="text-3xl font-bold mb-4">Search</h1>
         <div className="relative mb-4">
-          <input
+          <Input
             value={query}
+            startContent={<FaSearch />}
             onChange={(e) => setQuery(e.target.value)}
-            className="bg-stone-800 text-white w-full py-2 pl-10 pr-4 rounded-full focus:outline-none focus:shadow-outline"
             placeholder="What do you want to search?"
           />
-          <div className="absolute top-0 left-0 mt-[10px] ml-4">
-            <FaSearch />
-          </div>
-          {/* Tabs */}
-          <div className="flex mt-4">
-            <button
-              onClick={() => setSelectedTab("movie")}
-              className={`px-4 py-2 mr-4 rounded-full ${
-                selectedTab === "movie" ? "bg-white text-dark" : "bg-stone-800"
-              }`}
-            >
-              Movies
-            </button>
-            <button
-              onClick={() => setSelectedTab("tv")}
-              className={`px-4 py-2 mr-4 rounded-full ${
-                selectedTab === "tv" ? "bg-white text-dark" : "bg-stone-800"
-              }`}
-            >
-              TV Shows
-            </button>
-            <button
-              onClick={() => setSelectedTab("anime")}
-              className={`px-4 py-2 mr-4 rounded-full ${
-                selectedTab === "anime" ? "bg-white text-dark" : "bg-stone-800"
-              }`}
-            >
-              Anime
-            </button>
-          </div>
-        </div>
-        {loading ? (
-          <Loading />
-        ) : (
-          <div>
-            {selectedTab === "movie" ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {movieResults.map((movie) => (
-                  <div
-                    onClick={() => handleClick(movie.id, false)}
-                    key={movie.id}
-                    className="cursor-pointer hover:opacity-75 transition-opacity duration-300"
-                  >
-                    <img
-                      src={
-                        movie.poster_path
-                          ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
-                          : "/not-found.png"
-                      }
-                      alt={movie.title || movie.name}
-                      className="w-full rounded-lg"
-                    />
-                    <p className="mt-2 text-sm font-semibold">
-                      {movie.title || movie.name} (
-                      {getDate(movie.release_date || movie.first_air_date)})
-                    </p>
-                  </div>
-                ))}
+          <Tabs
+            selectedKey={selectedTab}
+            onSelectionChange={setSelectedTab}
+            className="flex mt-4"
+            variant="underlined"
+          >
+            <Tab key="movie" title="Movies">
+              <div className="text-center mb-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {movieResults.map((movie) => (
+                    <Card
+                      key={movie.id}
+                      className="cursor-pointer hover:opacity-75 transition-opacity duration-300"
+                    >
+                      <Image
+                        onClick={() =>
+                          (window.location.href = `/info/movie/${movie.id}`)
+                        }
+                        src={
+                          movie.poster_path
+                            ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
+                            : "/not-found.png"
+                        }
+                        alt={movie.title || movie.name}
+                        className="w-full rounded-lg"
+                        fallbackSrc="/not-found.png"
+                      />
+                      <CardBody>
+                        <p className="mt-2 text-sm font-semibold">
+                          {movie.title || movie.name} (
+                          {getDate(movie.release_date || movie.first_air_date)})
+                        </p>
+                      </CardBody>
+                    </Card>
+                  ))}
+                </div>
               </div>
-            ) : selectedTab === "tv" ? (
+            </Tab>
+            <Tab key="tv" title="TV Shows">
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {tvResults.map((tvShow) => (
-                  <div
-                    onClick={() => handleClick(tvShow.id, true)}
+                  <Card
                     key={tvShow.id}
                     className="cursor-pointer hover:opacity-75 transition-opacity duration-300"
                   >
-                    <img
+                    <Image
+                      onClick={() =>
+                        (window.location.href = `/info/tv/${tvShow.id}`)
+                      }
                       src={
                         tvShow.poster_path
                           ? `https://image.tmdb.org/t/p/w500/${tvShow.poster_path}`
@@ -183,68 +162,81 @@ const SearchPage = () => {
                       }
                       alt={tvShow.name}
                       className="w-full rounded-lg"
+                      fallbackSrc="/not-found.png"
                     />
-                    <p className="mt-2 text-sm font-semibold">{tvShow.name}</p>
-                  </div>
+                    <CardBody>
+                      <p className="mt-2 text-sm font-semibold">
+                        {tvShow.name} ({getDate(tvShow.first_air_date)})
+                      </p>
+                    </CardBody>
+                  </Card>
                 ))}
               </div>
-            ) : selectedTab === "anime" ? (
-              <>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {animeResults.map((anime) => (
-                    <div
-                      onClick={() => handleClick(anime.id, true)}
-                      key={anime.id}
-                      className="cursor-pointer hover:opacity-75 transition-opacity duration-300"
-                    >
-                      <img
-                        src={
-                          anime.poster_path
-                            ? `https://image.tmdb.org/t/p/w500/${anime.poster_path}`
-                            : "/not-found.png"
-                        }
-                        alt={anime.title}
-                        className="w-full rounded-lg"
-                      />
+            </Tab>
+            <Tab key="anime" title="Anime">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {animeResults.map((anime) => (
+                  <Card
+                    key={anime.id}
+                    className="cursor-pointer hover:opacity-75 transition-opacity duration-300"
+                  >
+                    <Image
+                      onClick={() =>
+                        (window.location.href = `/info/tv/${anime.id}`)
+                      }
+                      src={
+                        anime.poster_path
+                          ? `https://image.tmdb.org/t/p/w500/${anime.poster_path}`
+                          : "/not-found.png"
+                      }
+                      alt={anime.title || anime.name}
+                      className="w-full rounded-lg"
+                      fallbackSrc="/not-found.png"
+                    />
+                    <CardBody>
                       <p className="mt-2 text-sm font-semibold">
-                        {anime.title}
+                        {anime.title || anime.name} (
+                        {getDate(anime.release_date || anime.first_air_date)})
                       </p>
-                    </div>
-                  ))}
-                </div>
-                <h2 className="mt-4 text-2xl font-bold mb-3">Anime Movies</h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {animeMovieResults.map((anime) => (
-                    <div
-                      onClick={() => handleClick(anime.id, false)}
-                      key={anime.id}
-                      className="cursor-pointer hover:opacity-75 transition-opacity duration-300"
-                    >
-                      <img
-                        src={
-                          anime.poster_path
-                            ? `https://image.tmdb.org/t/p/w500/${anime.poster_path}`
-                            : "/not-found.png"
-                        }
-                        alt={anime.title}
-                        className="w-full rounded-lg"
-                      />
-                      <p className="mt-2 text-sm font-semibold">
-                        {anime.title}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </>
-            ) : (
-              <div>
-                <h2 className="mt-4 text-2xl font-bold">
-                  Search Results for "{query}" Not Found.
-                </h2>
+                    </CardBody>
+                  </Card>
+                ))}
               </div>
-            )}
-          </div>
-        )}
+              <h2 className="text-3xl font-bold mb-4">Anime Movies</h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {animeMovieResults.map((animeMovie) => (
+                  <Card
+                    key={animeMovie.id}
+                    className="cursor-pointer hover:opacity-75 transition-opacity duration-300"
+                  >
+                    <Image
+                      onClick={() =>
+                        (window.location.href = `/info/movie/${animeMovie.id}`)
+                      }
+                      src={
+                        animeMovie.poster_path
+                          ? `https://image.tmdb.org/t/p/w500/${animeMovie.poster_path}`
+                          : "/not-found.png"
+                      }
+                      alt={animeMovie.title || animeMovie.name}
+                      className="w-full rounded-lg"
+                      fallbackSrc="/not-found.png"
+                    />
+                    <CardBody>
+                      <p className="mt-2 text-sm font-semibold">
+                        {animeMovie.title || animeMovie.name} (
+                        {getDate(
+                          animeMovie.release_date || animeMovie.first_air_date
+                        )}
+                        )
+                      </p>
+                    </CardBody>
+                  </Card>
+                ))}
+              </div>
+            </Tab>
+          </Tabs>
+        </div>
       </div>
     </div>
   );
