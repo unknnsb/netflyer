@@ -1,3 +1,12 @@
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Spinner,
+} from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 
 const Check = () => {
@@ -19,7 +28,7 @@ const Check = () => {
       );
 
       const data = await response.json();
-      setResponse(data.success ? "Thank You." : "Thanks");
+      setResponse(data.success ? "Thank You." : "Thank You Again.");
       setTimeout(() => {
         setShowPopup(false);
         localStorage.setItem("popupShown", "true");
@@ -37,18 +46,30 @@ const Check = () => {
   return (
     <>
       {showPopup && (
-        <div className="fixed top-0 left-0 w-full z-50 h-full flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-8 rounded-md">
-            <p>Has anyone using this website?</p>
-            <button
-              className="bg-blue-500 text-white px-4 py-2 mt-4 rounded-md"
-              onClick={handleButtonClick}
-            >
-              Yes
-            </button>
-            <p className="font-500">{response}</p>
-          </div>
-        </div>
+        <Modal className="text-white" placement="auto" isOpen={showPopup}>
+          <ModalHeader>What's This?</ModalHeader>
+          <ModalContent>
+            <ModalBody>
+              This is popup to know if anyone is using this website.
+            </ModalBody>
+            <ModalFooter>
+              {response ? (
+                <Button auto flat color="success" disabled>
+                  <Spinner color="success" />
+                </Button>
+              ) : (
+                <Button onClick={handleButtonClick} auto flat color="danger">
+                  I'm Using
+                </Button>
+              )}
+              {response && (
+                <Button auto flat color="success" disabled>
+                  {response}
+                </Button>
+              )}
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       )}
     </>
   );
