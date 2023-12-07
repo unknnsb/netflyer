@@ -1,5 +1,6 @@
 import Row from "../components/CastRow";
 import Spinner from "../components/Loading";
+import MovieRow from "../components/MovieRow";
 import Navbar from "../components/Navbar";
 import { auth, db } from "../services/Firebase";
 import { TMDB_URL, TMDB_API_KEY } from "../services/Tmdb";
@@ -14,6 +15,8 @@ import {
   Spinner as CSpinner,
   Select,
   SelectItem,
+  Tabs,
+  Tab,
 } from "@nextui-org/react";
 import { onAuthStateChanged } from "firebase/auth";
 import {
@@ -46,6 +49,7 @@ const InfoPage = () => {
   const [watchlistLoading, setWatchlistLoading] = useState(true);
   const [watchlist, setWatchlist] = useState(false);
   const [showFullText, setShowFullText] = useState(false);
+  const [similar, setSimilar] = useState([]);
   const navigate = useNavigate();
 
   const toggleOverview = (episodeId) => {
@@ -136,6 +140,22 @@ const InfoPage = () => {
     };
 
     fetchRecommendations();
+
+    const fetchSimilar = async () => {
+      try {
+        const response = await fetch(
+          `${TMDB_URL}/${type}/${id}/similar?api_key=${TMDB_API_KEY}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setSimilar(data.results);
+        }
+      } catch (error) {
+        console.error("Error fetching similar:", error);
+      }
+    };
+
+    fetchSimilar();
   }, [type, id]);
 
   useEffect(() => {
@@ -224,11 +244,6 @@ const InfoPage = () => {
   const toggleText = () => {
     setShowFullText(!showFullText);
   };
-
-  const castItems = cast.map((item, index) => ({
-    id: `cast-${index}`,
-    item: item,
-  }));
 
   const seasonItems = [];
   for (
@@ -421,7 +436,7 @@ const InfoPage = () => {
       </div>
 
       {type === "tv" && (
-        <div className="mb-4 ml-2 pt-2">
+        <div className="ml-2 pt-2">
           <h2 className="text-2xl md:text-3xl font-semibold mb-2 text-white">
             Seasons
           </h2>
@@ -439,12 +454,13 @@ const InfoPage = () => {
         </div>
       )}
 
-      {/* {type === "tv" && (
+      {type === "tv" && (
         <div className="p-3 text-white">
           <h2 className="text-xl md:text-2xl font-semibold mb-2">
-            Episodes - Season {selectedSeason}
+            Episodes - Season {selectedSeason}{" "}
+            <span className="text-sm text-gray-600">({episodes.length})</span>
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4">
             {episodes.map((episode) => (
               <Card
                 key={episode.id}
@@ -457,6 +473,7 @@ const InfoPage = () => {
                 }
               >
                 <Image
+                  isZoomed
                   src={
                     episode.still_path
                       ? `https://image.tmdb.org/t/p/original/${episode.still_path}`
@@ -484,12 +501,14 @@ const InfoPage = () => {
                       : episode.overview.substring(0, 100)}
                   </p>
                   {episode.overview.length > 100 && (
-                    <button
-                      className="text-blue-500 hover:underline mt-2"
+                    <Button
+                      className="hover:underline mt-2"
+                      color="danger"
+                      variant="solid"
                       onClick={() => toggleOverview(episode.id)}
                     >
                       {expandedOverview[episode.id] ? "Read Less" : "Read More"}
-                    </button>
+                    </Button>
                   )}
                 </CardBody>
               </Card>
@@ -499,62 +518,23 @@ const InfoPage = () => {
       )}
 
       <div>
-        <h2 className="text-2xl ml-2 text-white md:text-3xl font-semibold mb-2">
-          You May Also Like This
-        </h2>
-        <div className="grid p-3 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {recommendations.map((recommendation) => (
-            <Card
-              key={recommendation.id}
-              className="hover:transform hover:scale-105 transition-transform duration-500 ease-in-out text-white text-center mb-6"
-              shadow
-              onClick={() => {
-                if (recommendation.first_air_date) {
-                  window.location.href = `/info/tv/${recommendation.id}`;
-                } else {
-                  window.location.href = `/info/movie/${recommendation.id}`;
-                }
-              }}
-            >
-              <Image
-                src={
-                  recommendation.poster_path
-                    ? `https://image.tmdb.org/t/p/w500/${recommendation.poster_path}`
-                    : "/not-found.png"
-                }
-                alt={recommendation.title || recommendation.name}
-                className="w-full h-100 rounded-lg cursor-pointer"
-              />
-              <CardBody>
-                <h3 className="text-base md:text-lg mt-2 mb-2 overflow-hidden">
-                  {recommendation.title || recommendation.name}
-                </h3>
-                <p
-                  className={`text-xs md:text-sm ${
-                    expandedOverview[recommendation.id]
-                      ? "overflow-visible"
-                      : "overflow-hidden"
-                  }`}
-                >
-                  {expandedOverview[recommendation.id]
-                    ? recommendation.overview
-                    : recommendation.overview.substring(0, 100)}
-                </p>
-                {recommendation.overview.length > 100 && (
-                  <button
-                    className="text-blue-500 hover:underline mt-2"
-                    onClick={() => toggleOverview(recommendation.id)}
-                  >
-                    {expandedOverview[recommendation.id]
-                      ? "Read Less"
-                      : "Read More"}
-                  </button>
-                )}
-              </CardBody>
-            </Card>
-          ))}
-        </div>
-      </div> */}
+        <Tabs aria-label="Similar" variant="underlined">
+          <Tab
+            className="text-1xl ml-2 text-white md:text-2xl mb-2"
+            key="similar"
+            title="Similar"
+          >
+            <MovieRow items={similar} />
+          </Tab>
+          <Tab
+            className="text-1xl text-white md:text-2xl mb-2"
+            key="recommendations"
+            title="Recommendations"
+          >
+            <MovieRow items={recommendations} />
+          </Tab>
+        </Tabs>
+      </div>
     </div>
   );
 };
