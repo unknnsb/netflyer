@@ -12,6 +12,8 @@ import {
   Chip,
   Button,
   Spinner as CSpinner,
+  Select,
+  SelectItem,
 } from "@nextui-org/react";
 import { onAuthStateChanged } from "firebase/auth";
 import {
@@ -223,227 +225,221 @@ const InfoPage = () => {
     setShowFullText(!showFullText);
   };
 
-  const starRating = (rating) => {
-    const calculatedRating = Math.round(rating / 2);
-
-    return (
-      <>
-        {Array.from({ length: 5 }, (_, index) => (
-          <span className="ml-1 mt-1" key={index}>
-            {index < calculatedRating ? (
-              <FaStar className="text-yellow-500" />
-            ) : (
-              <FaRegStar />
-            )}
-          </span>
-        ))}
-        <span className="ml-1">{calculatedRating}</span>
-      </>
-    );
-  };
-
   const castItems = cast.map((item, index) => ({
     id: `cast-${index}`,
     item: item,
   }));
 
+  const seasonItems = [];
+  for (
+    let seasonNumber = 1;
+    seasonNumber <= details.number_of_seasons;
+    seasonNumber++
+  ) {
+    seasonItems.push(
+      <SelectItem
+        key={seasonNumber.toString()}
+        value={seasonNumber.toString()}
+        textValue={`Season ${seasonNumber}`}
+        onClick={() => {
+          setSelectedSeason(seasonNumber);
+        }}
+      >
+        Season {seasonNumber}
+      </SelectItem>
+    );
+  }
+
   return (
-    <div className="bg-[#202020]">
-      <div className="h-screen w-full">
-        <Navbar />
-        <div className="h-screen absolute top-0">
-          <Card radius="none" className="text-white">
-            <Image
-              src={`https://image.tmdb.org/t/p/w1280/${details.backdrop_path}`}
-              className="z-0 w-full md:h-full h-[600px] object-cover"
+    <div className="h-screen w-full">
+      <Navbar />
+      <div className="h-screen absolute top-0">
+        <Card radius="none" className="text-white">
+          <Image
+            src={`https://image.tmdb.org/t/p/w1280/${details.backdrop_path}`}
+            className="z-0 w-full md:h-full h-[600px] object-cover"
+            radius="none"
+          />
+          <div className="z-10 w-full h-full absolute top-0 left-0 bg-gradient-to-b from-transparent to-[#202020]"></div>
+          <div className="md:mt-3 mt-[200px]">
+            <CardFooter
               radius="none"
-            />
-            <div className="z-10 w-full h-full absolute top-0 left-0 bg-gradient-to-b from-transparent to-[#202020]"></div>
-            <div className="md:mt-3 mt-[200px]">
-              <CardFooter
-                radius="none"
-                className="flex md:flex-row flex-col items-start overflow-hidden py-1 absolute bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10"
-              >
-                <div className="md:w-1/3 flex justify-center w-full h-full md:pr-8 mb-4 md:mb-0">
-                  <Image
-                    src={`https://image.tmdb.org/t/p/w300/${details.poster_path}`}
-                    alt="Poster"
-                    radius="lg"
-                    className="w-48 md:w-64 shadow-lg mx-auto md:mx-0 md:mt-0 mt-4"
-                  />
-                </div>
-                <div className="md:w-2/3">
-                  <h1
-                    onClick={() => {
-                      window.location.href = details.homepage;
-                    }}
-                    className="text-3xl md:text-5xl font-bold mb-2"
-                  >
-                    {type === "movie" ? details.title : details.name}
-                  </h1>
-                  <div className="mb-4">
-                    <h2 className="text-xl md:text-2xl font-semibold mb-2">
-                      Overview
-                    </h2>
-                    <p className="text-base md:text-lg">
-                      {details.overview.length > 155 && !showFullText
-                        ? `${details.overview.substring(0, 155)}...`
-                        : details.overview}
-                      {details.overview.length > 155 && (
-                        <Button
-                          className="ml-1"
-                          size="md"
-                          color="danger"
-                          variant="ghost"
-                          onClick={toggleText}
-                        >
-                          {showFullText ? "Read Less" : "Read More"}
-                        </Button>
-                      )}
-                    </p>
-                  </div>
-                  <p className="text-base mt-1 mb-1 flex md:text-lg">
-                    <div className="flex">
-                      <Chip size="md" className="bg-opacity-60">
-                        IMDB
-                      </Chip>
-                      :{starRating(details.vote_average)}
-                    </div>
-                  </p>
+              className="flex md:flex-row flex-col items-start overflow-hidden py-1 absolute bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10"
+            >
+              <div className="md:w-1/3 flex justify-center w-full h-full md:pr-8 mb-4 md:mb-0">
+                <Image
+                  src={`https://image.tmdb.org/t/p/w300/${details.poster_path}`}
+                  alt="Poster"
+                  radius="lg"
+                  className="w-48 md:w-64 shadow-lg mx-auto md:mx-0 md:mt-0 mt-4"
+                />
+              </div>
+              <div className="md:w-2/3">
+                <h1
+                  onClick={() => {
+                    window.location.href = details.homepage;
+                  }}
+                  className="text-3xl md:text-5xl font-bold mb-2"
+                >
+                  {type === "movie" ? details.title : details.name}
+                </h1>
+                <div className="mb-4">
+                  <h2 className="text-xl md:text-2xl font-semibold mb-2">
+                    Overview
+                  </h2>
                   <p className="text-base md:text-lg">
-                    {type === "movie" ? (
-                      <span>
-                        <Chip size="md" className="bg-opacity-60">
-                          Release Date
-                        </Chip>
-                        : {details.release_date}
-                      </span>
-                    ) : (
-                      <span>
-                        <Chip size="md" className="bg-opacity-60">
-                          Release Date
-                        </Chip>
-                        : {details.first_air_date} - {inProduction}
-                      </span>
+                    {details.overview.length > 155 && !showFullText
+                      ? `${details.overview.substring(0, 155)}...`
+                      : details.overview}
+                    {details.overview.length > 155 && (
+                      <Button
+                        className="ml-1"
+                        size="md"
+                        color="danger"
+                        variant="ghost"
+                        onClick={toggleText}
+                      >
+                        {showFullText ? "Read Less" : "Read More"}
+                      </Button>
                     )}
                   </p>
-                  <p
-                    className={
-                      type === "tv"
-                        ? "text-base mt-1 mb-1 md:text-lg"
-                        : "text-base mt-1 mb-2 md:text-lg"
-                    }
-                  >
+                </div>
+                <p className="text-base mt-1 mb-1 flex md:text-lg">
+                  <span className="flex">
                     <Chip size="md" className="bg-opacity-60">
-                      Genre
+                      IMDB
                     </Chip>
-                    : {details.genres.map((genre) => genre.name).join(", ")}
-                  </p>
-                  {type === "tv" && (
-                    <p className="text-base md:text-lg mb-2">
+                    : <span className="ml-1">{details.vote_average}</span>
+                  </span>
+                </p>
+                <p className="text-base md:text-lg">
+                  {type === "movie" ? (
+                    <span>
                       <Chip size="md" className="bg-opacity-60">
-                        Total Seasons
+                        Release Date
                       </Chip>
-                      : {details.number_of_seasons}
-                    </p>
+                      : {details.release_date}
+                    </span>
+                  ) : (
+                    <span>
+                      <Chip size="md" className="bg-opacity-60">
+                        Release Date
+                      </Chip>
+                      : {details.first_air_date} - {inProduction}
+                    </span>
                   )}
-                  <div className="flex">
+                </p>
+                <p
+                  className={
+                    type === "tv"
+                      ? "text-base mt-1 mb-1 md:text-lg"
+                      : "text-base mt-1 mb-2 md:text-lg"
+                  }
+                >
+                  <Chip size="md" className="bg-opacity-60">
+                    Genre
+                  </Chip>
+                  : {details.genres.map((genre) => genre.name).join(", ")}
+                </p>
+                {type === "tv" && (
+                  <p className="text-base md:text-lg mb-2">
+                    <Chip size="md" className="bg-opacity-60">
+                      Total Seasons
+                    </Chip>
+                    : {details.number_of_seasons}
+                  </p>
+                )}
+                <div className="flex">
+                  <Button
+                    variant="shadow"
+                    color="danger"
+                    radius="full"
+                    startContent={<FaPlay />}
+                    onClick={() => {
+                      if (type === "tv") {
+                        navigate(`/watch/${type}/${id}/${selectedSeason}/1`);
+                      } else {
+                        navigate(`/watch/${type}/${id}`);
+                      }
+                    }}
+                  >
+                    Play
+                  </Button>
+                  {watchlistLoading ? (
                     <Button
+                      disabled
                       variant="shadow"
                       color="danger"
                       radius="full"
-                      startContent={<FaPlay />}
-                      onClick={() => {
-                        if (type === "tv") {
-                          navigate(`/watch/${type}/${id}/${selectedSeason}/1`);
-                        } else {
-                          navigate(`/watch/${type}/${id}`);
-                        }
-                      }}
+                      className="ml-2"
                     >
-                      Play
+                      <CSpinner color="white" size="md" />
                     </Button>
-                    {watchlistLoading ? (
-                      <Button
-                        disabled
-                        variant="shadow"
-                        color="danger"
-                        radius="full"
-                        className="ml-2"
-                      >
-                        <CSpinner color="white" size="md" />
-                      </Button>
-                    ) : (
-                      <>
-                        {watchlist ? (
-                          <Button
-                            onClick={() => {
-                              removeFromWatchlist(id, type);
-                            }}
-                            variant="shadow"
-                            color="danger"
-                            radius="full"
-                            className="ml-2"
-                            endContent={<FaTrash />}
-                          >
-                            Remove From Watchlist
-                          </Button>
-                        ) : (
-                          <Button
-                            onClick={() => {
-                              addToWatchList(id, type);
-                            }}
-                            variant="shadow"
-                            color="danger"
-                            radius="full"
-                            className="ml-2"
-                            endContent={<FaPlus />}
-                          >
-                            WatchList
-                          </Button>
-                        )}
-                      </>
-                    )}
-                  </div>
+                  ) : (
+                    <>
+                      {watchlist ? (
+                        <Button
+                          onClick={() => {
+                            removeFromWatchlist(id, type);
+                          }}
+                          variant="shadow"
+                          color="danger"
+                          radius="full"
+                          className="ml-2"
+                          endContent={<FaTrash />}
+                        >
+                          Remove From Watchlist
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={() => {
+                            addToWatchList(id, type);
+                          }}
+                          variant="shadow"
+                          color="danger"
+                          radius="full"
+                          className="ml-2"
+                          endContent={<FaPlus />}
+                        >
+                          WatchList
+                        </Button>
+                      )}
+                    </>
+                  )}
                 </div>
-              </CardFooter>
-            </div>
-          </Card>
-        </div>
+              </div>
+            </CardFooter>
+          </div>
+        </Card>
+      </div>
 
-        <div className="bg-[#202020] mb-4 md:mt-[455px] mt-[755px]">
-          <h2 className="text-2xl ml-2 md:text-3xl font-semibold mb-2 text-white">
-            Cast
-          </h2>
-          <Row items={cast} />
-        </div>
+      <div className="bg-[#202020] md:mt-[455px] mt-[755px]">
+        <h2 className="text-2xl ml-2 md:text-3xl font-semibold mb-2 text-white">
+          Cast
+        </h2>
+        <Row items={cast} />
+      </div>
 
-        {/* {type === "tv" && (
-        <div className="mb-2 ml-2">
+      {type === "tv" && (
+        <div className="mb-4 ml-2 pt-2">
           <h2 className="text-2xl md:text-3xl font-semibold mb-2 text-white">
             Seasons
           </h2>
-          <div className="flex p-2 space-x-2 md:space-x-4 overflow-x-auto">
-            {[...Array(details.number_of_seasons).keys()].map(
-              (seasonNumber) => (
-                <button
-                  key={seasonNumber + 1}
-                  className={`${
-                    selectedSeason === seasonNumber + 1
-                      ? "bg-red-500 text-white"
-                      : "bg-gray-400 text-black"
-                  } px-2 md:px-4 py-1 md:py-2 rounded-lg text-base md:text-lg`}
-                  onClick={() => setSelectedSeason(seasonNumber + 1)}
-                >
-                  Season {seasonNumber + 1}
-                </button>
-              )
-            )}
+          <div className="text-white">
+            <Select
+              label="Select Season"
+              variant="flat"
+              placeholder="Select an season"
+              className="max-w-xs mb-2"
+              defaultSelectedKeys={"1"}
+            >
+              {seasonItems}
+            </Select>
           </div>
         </div>
       )}
 
-      {type === "tv" && (
+      {/* {type === "tv" && (
         <div className="p-3 text-white">
           <h2 className="text-xl md:text-2xl font-semibold mb-2">
             Episodes - Season {selectedSeason}
@@ -559,7 +555,6 @@ const InfoPage = () => {
           ))}
         </div>
       </div> */}
-      </div>
     </div>
   );
 };

@@ -17,7 +17,7 @@ const Row = ({ items }) => {
   }));
 
   React.useEffect(() => {
-    if (items.length > 5) {
+    if (items.length > 1) {
       setLoading(false);
     }
   }, [items]);
@@ -102,19 +102,19 @@ function RowCard({ item, isMobile, navigate }) {
             : "hover:transform hover:scale-105 transition-transform duration-300 ease-in-out"
         }`}
       >
-<div class="rounded-lg overflow-hidden shadow-md hover:shadow-lg">
-  <Card isFooterBlurred radius="lg" class="border-none">
-    <Image
-      src={`https://image.tmdb.org/t/p/original/${item.profile_path}`}
-      alt={item.name}
-      class="w-60 h-90 md:w-40 md:h-60 object-cover"
-      fallbackSrc="/not-found.png"
-    />
-    <CardFooter class="before:bg-white/10 border-white/20 border-1 overflow-hidden p-2 absolute before:rounded-xl rounded-large bottom-3 text-center md:w-[100px] w-[200px] ml-4 shadow-small z-10">
-      <p class="text-tiny text-white/80">{item.name}</p>
-    </CardFooter>
-  </Card>
-</div>
+        <div className="rounded-lg overflow-hidden shadow-md hover:shadow-lg">
+          <Card isFooterBlurred radius="lg" className="border-none">
+            <Image
+              src={`https://image.tmdb.org/t/p/original/${item.profile_path}`}
+              alt={item.name}
+              className="w-60 h-90 md:w-40 md:h-60 object-cover"
+              fallbackSrc="/not-found.png"
+            />
+            <CardFooter className="before:bg-white/10 border-white/20 border-1 overflow-hidden p-2 absolute before:rounded-xl rounded-large bottom-3 text-center md:w-[100px] w-[200px] ml-4 shadow-small z-10">
+              <p className="text-tiny text-white/80">{item.name}</p>
+            </CardFooter>
+          </Card>
+        </div>
       </div>
     </div>
   );

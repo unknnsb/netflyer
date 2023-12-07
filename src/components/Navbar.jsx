@@ -66,7 +66,12 @@ const Header = () => {
   };
 
   return (
-    <Navbar onMenuOpenChange={setIsMenuOpen} isBlurred isBordered>
+    <Navbar
+      className="bg-black/80"
+      onMenuOpenChange={setIsMenuOpen}
+      isBlurred
+      isBordered
+    >
       <NavbarContent>
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}

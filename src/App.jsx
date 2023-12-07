@@ -17,6 +17,25 @@ const App = () => {
   const [popularData, setPopularData] = useState(null);
   const [animeData, setAnimeData] = useState(null);
 
+  // DONT MIND THIS CODE | REMOVE THIS IF YOU WANT
+  const pingWebsite = async () => {
+    try {
+      const response = await fetch("https://netflyer-backend.nesbeer.repl.co/");
+      if (response.ok) {
+        console.log("Website pinged successfully.");
+      } else {
+        console.error("Error pinging the website.");
+      }
+    } catch (error) {
+      console.error("An error occurred while pinging the website:", error);
+    }
+  };
+
+  useEffect(() => {
+    const pingInterval = setInterval(pingWebsite, 60000);
+    return () => clearInterval(pingInterval);
+  }, []);
+
   const navigate = useNavigate();
 
   useEffect(() => {
