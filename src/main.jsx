@@ -7,6 +7,7 @@ import SignUp from "./pages/SignUp";
 import Watch from "./pages/Watch";
 import WatchlistPage from "./pages/Watchlist";
 import "./styles/index.css";
+import { NextUIProvider } from "@nextui-org/react";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -44,9 +45,11 @@ const router = createBrowserRouter(routes);
 
 // Render the app
 ReactDOM.createRoot(document.querySelector("#root")).render(
-  <div className="font-sans">
-    <React.StrictMode>
-      <RouterProvider router={router} />
-    </React.StrictMode>
-  </div>
+  <React.StrictMode>
+    <NextUIProvider>
+    <main className="w-full h-full bg-[#202020">
+        <RouterProvider router={router} />
+      </main>
+    </NextUIProvider>
+  </React.StrictMode>
 );

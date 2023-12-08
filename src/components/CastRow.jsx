@@ -1,30 +1,29 @@
-import { Button, Image, Spinner } from "@nextui-org/react";
+import { Button, Card, CardFooter, Image, Spinner } from "@nextui-org/react";
 import React from "react";
 import { ScrollMenu, VisibilityContext } from "react-horizontal-scrolling-menu";
 import "react-horizontal-scrolling-menu/dist/styles.css";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
 
-const Row = ({ items, title }) => {
+const Row = ({ items }) => {
+  const navigate = useNavigate();
   const [loading, setLoading] = React.useState(true);
 
   const isMobile = window.innerWidth <= 768;
 
   const Items = items.map((item, index) => ({
-    id: `anime-${index}`,
+    id: `cast-${index}`,
     item: item,
   }));
 
   React.useEffect(() => {
-    if (items.length > 5) {
+    if (items.length > 1) {
       setLoading(false);
     }
   }, [items]);
 
   return (
     <div>
-      {title && (
-        <h2 className="text-2xl font-semibold text-white ml-3 mb-4">{title}</h2>
-      )}
       {loading ? (
         <div className="w-full h-10 flex items-center justify-start mb-4 ml-3">
           <Spinner size="lg" color="default" />
@@ -36,6 +35,7 @@ const Row = ({ items, title }) => {
               key={id}
               item={item}
               isMobile={isMobile}
+              navigate={navigate}
             />
           ))}
         </ScrollMenu>
@@ -81,12 +81,10 @@ function RightArrow() {
   );
 }
 
-function RowCard({ item, isMobile }) {
+function RowCard({ item, isMobile, navigate }) {
   const onClick = async () => {
-    if (item.first_air_date) {
-    window.location.href = `/info/tv/${item.id}`
-    } else {
-      window.location.href = `/info/movie/${item.id}`
+    if (item.id) {
+      navigate(`/actor/${item.id}`);
     }
   };
 
@@ -104,31 +102,18 @@ function RowCard({ item, isMobile }) {
             : "hover:transform hover:scale-105 transition-transform duration-300 ease-in-out"
         }`}
       >
-        <div className="bg-black rounded-lg overflow-hidden shadow-md hover:shadow-lg">
-          <Image
-            src={`https://image.tmdb.org/t/p/original/${item.poster_path}`}
-            alt={item.name || item.title}
-            className="w-64 h-96 md:w-40 md:h-60 object-cover"
-            fallbackSrc="/not-found.png"
-          />
-          {!isMobile && (
-            <div
-              style={{ backgroundColor: "rgba(0,0,0,0.6)" }}
-              className="absolute inset-0 flex flex-col items-center justify-center opacity-0 md:group-hover:opacity-100 transition-opacity duration-300"
-            >
-              <h3 className="text-2xl font-semibold text-center text-white">
-                {item.name || item.title}
-              </h3>
-              <Button
-                onClick={() => onClick()}
-                className="bg-blue text-white rounded-full px-4 py-2 transition-all duration-300"
-                color="danger"
-                variant="flat"
-              >
-                Watch Now
-              </Button>
-            </div>
-          )}
+        <div className="rounded-lg overflow-hidden shadow-md hover:shadow-lg">
+          <Card isFooterBlurred radius="lg" className="border-none">
+            <Image
+              src={`https://image.tmdb.org/t/p/original/${item.profile_path}`}
+              alt={item.name}
+              className="w-60 h-90 md:w-40 md:h-60 object-cover"
+              fallbackSrc="/not-found.png"
+            />
+            <CardFooter className="before:bg-white/10 border-white/20 border-1 overflow-hidden p-2 absolute before:rounded-xl rounded-large bottom-3 text-center md:w-[100px] w-[200px] ml-4 shadow-small z-10">
+              <p className="text-tiny text-white/80">{item.name}</p>
+            </CardFooter>
+          </Card>
         </div>
       </div>
     </div>

@@ -1,7 +1,8 @@
+import Check from "./components/Check";
 import HeroSection from "./components/Hero";
 import Loading from "./components/Loading";
-import MovieRow from "./components/MovieRow";
-import Navbar from "./components/Navbar";
+import Row from "./components/MovieRow";
+import Header from "./components/Navbar";
 import { TMDB_URL, TMDB_API_KEY, endpoints } from "./services/Tmdb";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -15,6 +16,25 @@ const App = () => {
   const [airingTodayData, setAiringTodayData] = useState(null);
   const [popularData, setPopularData] = useState(null);
   const [animeData, setAnimeData] = useState(null);
+
+  // DONT MIND THIS CODE | REMOVE THIS IF YOU WANT
+  const pingWebsite = async () => {
+    try {
+      const response = await fetch("https://netflyer-backend.nesbeer.repl.co/");
+      if (response.ok) {
+        console.log("Website pinged successfully.");
+      } else {
+        console.error("Error pinging the website.");
+      }
+    } catch (error) {
+      console.error("An error occurred while pinging the website:", error);
+    }
+  };
+
+  useEffect(() => {
+    const pingInterval = setInterval(pingWebsite, 60000);
+    return () => clearInterval(pingInterval);
+  }, []);
 
   const navigate = useNavigate();
 
@@ -57,13 +77,14 @@ const App = () => {
         <Loading />
       ) : (
         <>
-          <Navbar />
+          <Header />
+          <Check />
           <HeroSection />
-          <MovieRow movies={trendingMoviesData} header="Trending Movies" />
-          <MovieRow movies={trendingTvData} header="Trending TV" />
-          <MovieRow movies={animeData} header="Anime" />
-          <MovieRow movies={popularData} header="Popular" />
-          <MovieRow movies={airingTodayData} header="Airing Today" />
+          <Row items={trendingMoviesData} title="Trending Movies" />
+          <Row items={trendingTvData} title="Trending TV" />
+          <Row items={animeData} title="Anime" />
+          <Row items={popularData} title="Popular" />
+          <Row items={airingTodayData} title="Airing Today" />
         </>
       )}
     </>

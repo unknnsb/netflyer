@@ -1,7 +1,9 @@
 import Loading from "../components/Loading";
 import { auth } from "../services/Firebase";
+import { Button, Input, Spinner } from "@nextui-org/react";
 import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import React, { useEffect, useState } from "react";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { useNavigate, Link } from "react-router-dom";
 import { createToast } from "vercel-toast";
 
@@ -9,14 +11,34 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(true);
+  const [isVisible, setIsVisible] = React.useState(false);
+  const [LoggedIn, setLoggedIn] = useState(false);
   const navigate = useNavigate();
+
+  const toggleVisibility = () => setIsVisible(!isVisible);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const isEmail = /\S+@\S+\.\S+/.test(email);
+
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigate("/");
+      if (!email || !password) {
+        return createToast("Please fill in all the fields", {
+          cancel: "Cancel",
+          type: "error",
+        });
+      } else {
+        if (!isEmail) {
+          return createToast("Please enter a valid email", {
+            cancel: "Cancel",
+            type: "error",
+          });
+        } else {
+          setLoggedIn(true);
+          await signInWithEmailAndPassword(auth, email, password);
+        }
+      }
     } catch (error) {
       if (error.message.includes("not-found")) {
         return createToast("The user is not found", {
@@ -29,6 +51,11 @@ const Login = () => {
           },
           cancel: "Cancel",
           type: "dark",
+        });
+      } else if (error.message.includes("wrong-password")) {
+        return createToast("The password is incorrect", {
+          cancel: "Cancel",
+          type: "error",
         });
       }
     }
@@ -54,50 +81,66 @@ const Login = () => {
         <div className="flex flex-col items-center justify-center min-h-screen bg-[#202020]">
           <div className="p-4">
             <h1 className="text-white text-4xl font-bold mb-6 mt-2">Login</h1>
-            <form className="w-full max-w-md">
-              <label
-                htmlFor="email"
-                className="block text-white font-semibold mb-1"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 rounded bg-[#1e1c1c] text-white mb-4"
-              />
+            <Input
+              isRequired
+              type="email"
+              placeholder="example@gmail.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="max-w-xs text-white mb-2"
+              label="Email"
+            />
+            <Input
+              isRequired
+              type={isVisible ? "text" : "password"}
+              placeholder="enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="max-w-xs text-white mb-2"
+              label="Password"
+              endContent={
+                <button
+                  className="focus:outline-none"
+                  type="button"
+                  onClick={toggleVisibility}
+                >
+                  {isVisible ? (
+                    <FaRegEye className="text-2xl text-default-400 pointer-events-none" />
+                  ) : (
+                    <FaRegEyeSlash className="text-2xl text-default-400 pointer-events-none" />
+                  )}
+                </button>
+              }
+            />
 
-              <label
-                htmlFor="password"
-                className="block text-white font-semibold mb-1"
+            {LoggedIn ? (
+              <Button
+                disabled
+                variant="flat"
+                color="primary"
+                className="w-full"
               >
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 rounded bg-[#1e1c1c] text-white mb-6"
-              />
-
-              <button
-                type="submit"
+                <Spinner />
+              </Button>
+            ) : (
+              <Button
                 onClick={handleSubmit}
-                className="w-full py-2 bg-red-500 text-white font-semibold rounded hover:bg-red-600 transition duration-300"
+                className="w-full text-white"
+                variant="flat"
+                color="primary"
               >
                 Login
-              </button>
-            </form>
+              </Button>
+            )}
           </div>
           <p className="text-white mt-4">
             Don't Have An Account?{" "}
-            <Link to="/signup" className="text-blue-500">
+            <Link to="/signup" className="text-blue-500 underline">
               Sign Up
+            </Link>
+            <span className="text-white"> | </span>
+            <Link to="/forgot-password" className="text-blue-500 underline">
+              Forgot Password
             </Link>
           </p>
         </div>
