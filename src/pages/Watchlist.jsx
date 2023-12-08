@@ -3,6 +3,13 @@ import Navbar from "../components/Navbar";
 import { auth } from "../services/Firebase";
 import { db } from "../services/Firebase";
 import { TMDB_API_KEY } from "../services/Tmdb";
+import {
+  Card,
+  CardBody,
+  Spinner as NextSpinner,
+  Button,
+  Image,
+} from "@nextui-org/react";
 import { onAuthStateChanged } from "firebase/auth";
 import {
   collection,
@@ -81,62 +88,66 @@ const WatchlistPage = () => {
   return (
     <>
       <Navbar />
-      <div className="bg-dark mt-12 text-white p-4">
+      <div className="p-2">
         <h1 className="text-3xl font-bold mb-6">My Watchlist</h1>
-        {watchlistLoading ? (
-          <Spinner />
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {watchlistData.map((item) => (
-              <div
-                key={item.id}
-                className="relative bg-stone-800 rounded-lg overflow-hidden transition-transform transform duration-300 hover:scale-105"
-              >
-                <img
-                  src={`https://image.tmdb.org/t/p/w500/${item.poster_path}`}
-                  alt={item.title || item.name}
-                  onClick={() => {
-                    if (item.title) {
-                      window.location.href = `/info/movie/${item.id}`;
-                    } else {
-                      window.location.href = `/info/tv/${item.id}`;
-                    }
-                  }}
-                  className="w-full h-64 object-cover rounded-t-lg"
-                />
-                <div className="p-4">
-                  <h2 className="text-lg font-semibold mb-2">
-                    {item.title || item.name}
-                  </h2>
-                  <div className="flex gap-2">
-                    <p className="text-sm text-gray-300 mb-1">
-                      {item.release_date || item.first_air_date}
-                    </p>
-                    {item.first_air_date ? (
-                      <p className="text-sm text-gray-300 mb-4 font-bold">Tv</p>
-                    ) : (
-                      <p className="text-sm text-gray-300 mb-4 font-bold">
-                        Movie
-                      </p>
-                    )}
-                  </div>
-                  <button
-                    className="bg-red-500 hover:bg-red-600 px-4 py-2 duration-300 text-white rounded-md transition-transform transform hover:scale-105"
+        <div>
+          {watchlistLoading ? (
+            <div className="flex items-center justify-center">
+              <NextSpinner color="primary" size="xl" className="mb-6 mt-2" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+              {watchlistData.map((item) => (
+                <Card key={item.id}>
+                  <Image
+                    isZoomed
+                    src={`https://image.tmdb.org/t/p/w500/${item.poster_path}`}
+                    alt={item.title || item.name}
                     onClick={() => {
                       if (item.title) {
-                        removeFromWatchlist(item.id, "movie");
+                        window.location.href = `/info/movie/${item.id}`;
                       } else {
-                        removeFromWatchlist(item.id, "tv");
+                        window.location.href = `/info/tv/${item.id}`;
                       }
                     }}
-                  >
-                    Remove
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+                  />
+                  <div className="p-4">
+                    <h2 className="text-lg font-semibold mb-2">
+                      {item.title || item.name}
+                    </h2>
+                    <div className="flex gap-2">
+                      <p className="text-sm text-gray-300 mb-1">
+                        {item.release_date || item.first_air_date}
+                      </p>
+                      {item.first_air_date ? (
+                        <p className="text-sm text-gray-300 mb-4 font-bold">
+                          Tv
+                        </p>
+                      ) : (
+                        <p className="text-sm text-gray-300 mb-4 font-bold">
+                          Movie
+                        </p>
+                      )}
+                    </div>
+                    <Button
+                      variant="flat"
+                      color="danger"
+                      onClick={() => {
+                        if (item.title) {
+                          removeFromWatchlist(item.id, "movie");
+                        } else {
+                          removeFromWatchlist(item.id, "tv");
+                        }
+                      }}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </>
   );
