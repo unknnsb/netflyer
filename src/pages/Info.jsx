@@ -462,17 +462,13 @@ const InfoPage = () => {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4">
             {episodes.map((episode) => (
-              <Card
-                key={episode.id}
-                className="text-center mb-6"
-                shadow
-                onClick={() =>
-                  navigate(
-                    `/watch/${type}/${id}/${selectedSeason}/${episode.episode_number}`
-                  )
-                }
-              >
+              <Card key={episode.id} className="text-center mb-6" shadow>
                 <Image
+                  onClick={() =>
+                    navigate(
+                      `/watch/${type}/${id}/${selectedSeason}/${episode.episode_number}`
+                    )
+                  }
                   isZoomed
                   src={
                     episode.still_path
@@ -517,7 +513,7 @@ const InfoPage = () => {
         </div>
       )}
 
-      <div>
+      <div className="mt-4">
         <Tabs aria-label="Similar" variant="underlined">
           <Tab
             className="text-1xl ml-2 text-white md:text-2xl mb-2"
