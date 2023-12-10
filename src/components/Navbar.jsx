@@ -12,6 +12,7 @@ import {
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import React, { useState, useEffect } from "react";
 import { FiEye, FiList, FiSearch } from "react-icons/fi";
+import { MdEmail } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import { createToast } from "vercel-toast";
 
@@ -106,6 +107,16 @@ const Header = () => {
             <FiList /> Watchlist
           </Button>
         </NavbarItem>
+        <NavbarItem>
+          <Button
+            variant="flat"
+            onClick={() =>
+              (window.location.href = "mailto:itznesbro@proton.me")
+            }
+          >
+            <MdEmail /> Contact
+          </Button>
+        </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
         {loading ? (
@@ -146,6 +157,16 @@ const Header = () => {
         <NavbarMenuItem>
           <Button variant="flat" onClick={handleWatchlist}>
             <FiList /> Watchlist
+          </Button>
+        </NavbarMenuItem>
+        <NavbarMenuItem>
+          <Button
+            variant="flat"
+            onClick={() =>
+              (window.location.href = "mailto:itznesbro@proton.me")
+            }
+          >
+            <MdEmail /> Contact
           </Button>
         </NavbarMenuItem>
       </NavbarMenu>
