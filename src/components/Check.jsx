@@ -11,7 +11,7 @@ import React, { useEffect, useState } from "react";
 
 const Check = () => {
   const [showPopup, setShowPopup] = useState(
-    localStorage.getItem("popupShown") !== "true"
+    localStorage.getItem("popup") !== "true"
   );
   const [response, setResponse] = useState("");
 
@@ -31,7 +31,7 @@ const Check = () => {
       setResponse(data.success ? "Thank You." : "Thank You Again.");
       setTimeout(() => {
         setShowPopup(false);
-        localStorage.setItem("popupShown", "true");
+        localStorage.setItem("popup", "true");
       }, 3000);
     } catch (error) {
       console.error("Error handling button click:", error);
@@ -40,7 +40,10 @@ const Check = () => {
   };
 
   useEffect(() => {
-    setShowPopup(localStorage.getItem("popupShown") !== "true");
+    if (localStorage.getItem("popupShown")) {
+      localStorage.removeItem("popupShown");
+    }
+    setShowPopup(localStorage.getItem("popup") !== "true");
   }, []);
 
   return (

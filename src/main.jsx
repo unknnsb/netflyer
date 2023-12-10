@@ -47,7 +47,7 @@ const router = createBrowserRouter(routes);
 ReactDOM.createRoot(document.querySelector("#root")).render(
   <React.StrictMode>
     <NextUIProvider>
-    <main className="w-full h-full bg-[#202020">
+      <main className="w-full h-full bg-[#202020">
         <RouterProvider router={router} />
       </main>
     </NextUIProvider>

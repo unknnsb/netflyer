@@ -512,18 +512,18 @@ const InfoPage = () => {
           </div>
         </div>
       )}
-
-      <div className="mt-4">
+      <br />
+      <div className="md:mt-4 mt-6">
         <Tabs aria-label="Similar" variant="underlined">
           <Tab
-            className="text-1xl ml-2 text-white md:text-2xl mb-2"
+            className="text-2xl ml-2 text-white mb-2"
             key="similar"
             title="Similar"
           >
             <MovieRow items={similar} />
           </Tab>
           <Tab
-            className="text-1xl text-white md:text-2xl mb-2"
+            className="text-2xl text-white mb-2"
             key="recommendations"
             title="Recommendations"
           >
