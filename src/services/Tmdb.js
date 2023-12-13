@@ -7,10 +7,6 @@ export const endpoints = {
   trending: "/trending/all/week",
   airing_today: "/tv/airing_today?language=en-US&sort_by=popularity.desc",
   popular: "/movie/popular",
-  searchAnime: "/discover/tv?with_genres=16&with_keywords=210024|287501",
-  searchTv: "/discover/tv?without_keywords=210024|287501",
-  searchMovie: "/discover/movie?without_keywords=210024|287501",
-  searchAnimeMovie:
-    "/discover/movie?with_genres=16&with_keywords=210024|287501",
+  search: "/search/multi?language=en-US&sort_by=popularity.desc",
   anime: "/discover/tv?with_keywords=210024&sort_by=vote_average.desc",
 };

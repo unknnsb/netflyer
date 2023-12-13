@@ -1,3 +1,9 @@
+// Imports
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { NextUIProvider } from "@nextui-org/react";
+// Pages
 import App from "./App";
 import ActorInfoPage from "./pages/ActorInfo";
 import InfoPage from "./pages/Info";
@@ -6,17 +12,21 @@ import SearchPage from "./pages/Search";
 import SignUp from "./pages/SignUp";
 import Watch from "./pages/Watch";
 import WatchlistPage from "./pages/Watchlist";
+// Styles
 import "./styles/index.css";
-import { NextUIProvider } from "@nextui-org/react";
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 const routes = [
-  { path: "/", element: <App /> },
   {
-    path: "/signup",
-    element: <SignUp />,
+    path: "/",
+    element: <App />,
+  },
+  {
+    path: "/actor/:id",
+    element: <ActorInfoPage />,
+  },
+  {
+    path: "/info/:type/:id",
+    element: <InfoPage />,
   },
   {
     path: "/login",
@@ -27,18 +37,17 @@ const routes = [
     element: <SearchPage />,
   },
   {
-    path: "/actor/:id",
-    element: <ActorInfoPage />,
+    path: "/signup",
+    element: <SignUp />,
+  },
+  {
+    path: "/watch/:type/:id/:season?/:episode?",
+    element: <Watch />,
   },
   {
     path: "/watchlist",
     element: <WatchlistPage />,
   },
-  {
-    path: "/info/:type/:id",
-    element: <InfoPage />,
-  },
-  { path: "/watch/:type/:id/:season?/:episode?", element: <Watch /> },
 ];
 
 const router = createBrowserRouter(routes);
