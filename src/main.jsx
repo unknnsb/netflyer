@@ -1,10 +1,7 @@
 // Imports
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { NextUIProvider } from "@nextui-org/react";
 // Pages
 import App from "./App";
+import About from "./pages/About";
 import ActorInfoPage from "./pages/ActorInfo";
 import InfoPage from "./pages/Info";
 import Login from "./pages/Login";
@@ -14,6 +11,10 @@ import Watch from "./pages/Watch";
 import WatchlistPage from "./pages/Watchlist";
 // Styles
 import "./styles/index.css";
+import { NextUIProvider } from "@nextui-org/react";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 const routes = [
   {
@@ -23,6 +24,10 @@ const routes = [
   {
     path: "/actor/:id",
     element: <ActorInfoPage />,
+  },
+  {
+    path: "/about",
+    element: <About />,
   },
   {
     path: "/info/:type/:id",

@@ -12,7 +12,7 @@ import {
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import React, { useState, useEffect } from "react";
 import { FiEye, FiList, FiSearch } from "react-icons/fi";
-import { MdEmail } from "react-icons/md";
+import { MdEmail, MdQuestionMark } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import { createToast } from "vercel-toast";
 
@@ -108,13 +108,8 @@ const Header = () => {
           </Button>
         </NavbarItem>
         <NavbarItem>
-          <Button
-            variant="flat"
-            onClick={() =>
-              (window.location.href = "mailto:itznesbro@proton.me")
-            }
-          >
-            <MdEmail /> Contact
+          <Button variant="flat" onClick={() => navigate("/about")}>
+            <MdQuestionMark /> About
           </Button>
         </NavbarItem>
       </NavbarContent>
@@ -160,13 +155,8 @@ const Header = () => {
           </Button>
         </NavbarMenuItem>
         <NavbarMenuItem>
-          <Button
-            variant="flat"
-            onClick={() =>
-              (window.location.href = "mailto:itznesbro@proton.me")
-            }
-          >
-            <MdEmail /> Contact
+          <Button variant="flat" onClick={() => navigate("/about")}>
+            <MdQuestionMark /> About
           </Button>
         </NavbarMenuItem>
       </NavbarMenu>
