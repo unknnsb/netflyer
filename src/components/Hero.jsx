@@ -32,8 +32,8 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <div className="md:mb-[450px] mb-[500px] ">
-      <div className="h-screen absolute top-0">
+    <div>
+      <div className="h-screen absolute top-0 z-20">
         {randomMovie && (
           <Card radius="none">
             <Image

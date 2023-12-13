@@ -80,7 +80,9 @@ const App = () => {
           <Header />
           <Check />
           <HeroSection />
-          <Row items={trendingMoviesData} title="Trending Movies" />
+          <div className="mt-[540px] lg:mt-[450px] md:mt-[530px]">
+            <Row items={trendingMoviesData} title="Trending Movies" />
+          </div>
           <Row items={trendingTvData} title="Trending TV" />
           <Row items={animeData} title="Anime" />
           <Row items={popularData} title="Popular" />

@@ -49,25 +49,29 @@ const Check = () => {
   return (
     <>
       {showPopup && (
-        <Modal className="text-white" placement="auto" isOpen={showPopup}>
+        <Modal
+          onClose={() => setShowPopup(false)}
+          className="text-white"
+          placement="auto"
+          isOpen={showPopup}
+        >
           <ModalHeader>What's This?</ModalHeader>
           <ModalContent>
             <ModalBody>
-              This is popup to know if anyone is using this website.
+              {response ? (
+                <p>{response}</p>
+              ) : (
+                <p>This is popup to know if anyone is using this website.</p>
+              )}
             </ModalBody>
             <ModalFooter>
               {response ? (
                 <Button auto flat color="success" disabled>
-                  <Spinner color="success" />
+                  <Spinner color="primary" />
                 </Button>
               ) : (
                 <Button onClick={handleButtonClick} auto flat color="danger">
                   I'm Using
-                </Button>
-              )}
-              {response && (
-                <Button auto flat color="success" disabled>
-                  {response}
                 </Button>
               )}
             </ModalFooter>

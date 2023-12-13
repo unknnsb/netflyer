@@ -268,7 +268,7 @@ const InfoPage = () => {
   return (
     <div className="h-screen w-full">
       <Navbar />
-      <div className="h-screen absolute top-0">
+      <div className="h-screen absolute top-0 z-20">
         <Card radius="none" className="text-white">
           <Image
             src={`https://image.tmdb.org/t/p/w1280/${details.backdrop_path}`}
@@ -428,7 +428,7 @@ const InfoPage = () => {
         </Card>
       </div>
 
-      <div className="bg-[#202020] md:mt-[455px] mt-[755px]">
+      <div className="bg-[#202020] lg:mt-[450px] md:mt-[530px] mt-[740px] mb-2">
         <h2 className="text-2xl ml-2 md:text-3xl font-semibold mb-2 text-white">
           Cast
         </h2>
@@ -455,7 +455,7 @@ const InfoPage = () => {
       )}
 
       {type === "tv" && (
-        <div className="p-3 text-white">
+        <div className="p-3 text-white z-20">
           <h2 className="text-xl md:text-2xl font-semibold mb-2">
             Episodes - Season {selectedSeason}{" "}
             <span className="text-sm text-gray-600">({episodes.length})</span>
@@ -512,8 +512,7 @@ const InfoPage = () => {
           </div>
         </div>
       )}
-      <br />
-      <div className="md:mt-4 mt-6">
+      <div>
         <Tabs aria-label="Similar" variant="underlined">
           <Tab
             className="text-2xl ml-2 text-white mb-2"

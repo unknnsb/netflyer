@@ -32,11 +32,7 @@ const Row = ({ items, title }) => {
       ) : (
         <ScrollMenu LeftArrow={LeftArrow} RightArrow={RightArrow}>
           {Items.map(({ id, item }) => (
-            <RowCard
-              key={id}
-              item={item}
-              isMobile={isMobile}
-            />
+            <RowCard key={id} item={item} isMobile={isMobile} />
           ))}
         </ScrollMenu>
       )}
@@ -84,9 +80,9 @@ function RightArrow() {
 function RowCard({ item, isMobile }) {
   const onClick = async () => {
     if (item.first_air_date) {
-    window.location.href = `/info/tv/${item.id}`
+      window.location.href = `/info/tv/${item.id}`;
     } else {
-      window.location.href = `/info/movie/${item.id}`
+      window.location.href = `/info/movie/${item.id}`;
     }
   };
 
