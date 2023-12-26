@@ -1,4 +1,3 @@
-import Check from "./components/Check";
 import HeroSection from "./components/Hero";
 import Loading from "./components/Loading";
 import Row from "./components/MovieRow";
@@ -48,7 +47,6 @@ const App = () => {
       ) : (
         <>
           <Header />
-          <Check />
           <HeroSection />
           <div className="mt-[540px] lg:mt-[450px] md:mt-[530px]">
             {data.trending_movies && (
