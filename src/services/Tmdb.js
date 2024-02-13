@@ -1,5 +1,5 @@
 export const TMDB_URL = "https://api.themoviedb.org/3";
-export const TMDB_API_KEY = "bb2818a2abb39fbdf6da79343e5e376b";
+export const TMDB_API_KEY = import.meta.env.VITE_TMDB_API;
 
 export const endpoints = {
   trending_tv: "/trending/tv/week",
