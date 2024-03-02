@@ -1,5 +1,7 @@
 import Loading from "../components/Loading";
 import { auth, db } from "../services/Firebase";
+import { Button, Input } from "@nextui-org/react";
+import axios from "axios";
 import Filter from "bad-words";
 import {
   createUserWithEmailAndPassword,
@@ -15,6 +17,7 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(true);
+  const [backdrop, setBackdrop] = useState("");
   const navigate = useNavigate();
 
   const checkForBadWords = (text) => {
@@ -77,68 +80,80 @@ const SignUp = () => {
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    axios
+      .get(
+        "https://api.themoviedb.org/3/movie/27205/images?api_key=bb2818a2abb39fbdf6da79343e5e376b"
+      )
+      .then((response) => {
+        setBackdrop(
+          "https://image.tmdb.org/t/p/original" +
+            response.data.backdrops[0].file_path
+        );
+      });
+  });
+
   return (
     <>
       {loading ? (
         <Loading />
       ) : (
-        <div className="p-4 flex flex-col items-center justify-center min-h-screen bg-[#202020]">
-          <h1 className="text-white text-4xl font-bold mb-6 mt-2">SignUp</h1>
-          <form className="w-full max-w-md">
-            <label
-              htmlFor="username"
-              className="block text-white font-semibold mb-1"
-            >
-              Username
-            </label>
-            <input
+        <div
+          style={{
+            position: "relative",
+            backgroundImage: `url(${backdrop})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+          className={`p-4 flex flex-col items-center justify-center min-h-screen`}
+        >
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              backgroundImage:
+                "linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.5) 100%)",
+            }}
+          ></div>
+
+          <form className="w-full max-w-md flex flex-col items-center">
+            <h1 className="text-white text-4xl font-bold mb-6 mt-2">SignUp</h1>
+            <Input
               type="text"
-              id="username"
               placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-2 rounded bg-[#1e1c1c] text-white mb-4"
+              className="w-full px-4 py-2 rounded text-white mb-2"
               required={true}
             />
-            <label
-              htmlFor="email"
-              className="block text-white font-semibold mb-1"
-            >
-              Email
-            </label>
-            <input
+            <Input
               type="email"
-              id="email"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 rounded bg-[#1e1c1c] text-white mb-4"
+              className="w-full px-4 py-2 rounded text-white mb-2"
               required={true}
             />
-
-            <label
-              htmlFor="password"
-              className="block text-white font-semibold mb-1"
-            >
-              Password
-            </label>
-            <input
+            <Input
               type="password"
-              id="password"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 rounded bg-[#1e1c1c] text-white mb-6"
+              className="w-full px-4 py-2 rounded text-white mb-4"
               required={true}
             />
 
-            <button
+            <Button
               type="submit"
               onClick={handleSubmit}
-              className="w-full py-2 bg-red-500 text-white font-semibold rounded hover:bg-red-600 transition duration-300"
+              color="primary"
+              className="w-[95%]"
             >
               SignUp
-            </button>
+            </Button>
           </form>
           <p className="text-white mt-4">
             Already Have An Account?{" "}
