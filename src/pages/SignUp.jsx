@@ -115,52 +115,56 @@ const SignUp = () => {
               width: "100%",
               height: "100%",
               backgroundImage:
-                "linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.5) 100%)",
+                "linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 100%)",
             }}
           ></div>
 
-          <form className="w-full max-w-md flex flex-col items-center">
+          <div className="relative z-10 w-full max-w-md flex flex-col items-center">
             <h1 className="text-white text-4xl font-bold mb-6 mt-2">SignUp</h1>
-            <Input
-              type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-2 rounded text-white mb-2"
-              required={true}
-            />
-            <Input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 rounded text-white mb-2"
-              required={true}
-            />
-            <Input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 rounded text-white mb-4"
-              required={true}
-            />
+            <form className="w-full">
+              <Input
+                type="text"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="w-full px-4 py-2 rounded text-white mb-2"
+                required={true}
+              />
+              <Input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-2 rounded text-white mb-2"
+                required={true}
+              />
+              <Input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-2 rounded text-white mb-4"
+                required={true}
+              />
 
-            <Button
-              type="submit"
-              onClick={handleSubmit}
-              color="primary"
-              className="w-[95%]"
-            >
-              SignUp
-            </Button>
-          </form>
-          <p className="text-white mt-4">
-            Already Have An Account?{" "}
-            <Link to="/login" className="text-blue-500">
-              Login
-            </Link>
-          </p>
+              <Button
+                type="submit"
+                onClick={handleSubmit}
+                color="primary"
+                className="w-[95%]"
+              >
+                SignUp
+              </Button>
+            </form>
+          </div>
+          <div className="relative z-10 text-white mt-4">
+            <p>
+              Already Have An Account?{" "}
+              <Link to="/login" className="text-blue-500">
+                Login
+              </Link>
+            </p>
+          </div>
         </div>
       )}
     </>
