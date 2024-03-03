@@ -6,10 +6,11 @@ import Filter from "bad-words";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  sendEmailVerification,
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { createToast } from "vercel-toast";
 
 const SignUp = () => {
@@ -19,6 +20,7 @@ const SignUp = () => {
   const [loading, setLoading] = useState(true);
   const [backdrop, setBackdrop] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
 
   const checkForBadWords = (text) => {
     const filter = new Filter();
@@ -48,7 +50,24 @@ const SignUp = () => {
           const user = userCred.user;
           const colRef = doc(db, "users", user.uid);
           await setDoc(colRef, { username: username });
-          navigate("/");
+          sendEmailVerification(user, {
+            url: `${import.meta.env.VITE_WEBSITE_URL}/signup?verified=true`,
+          })
+            .then(() => {
+              return createToast(
+                "We Have Sent You An Email For Verification.",
+                {
+                  cancel: "Hide",
+                  type: "info",
+                }
+              );
+            })
+            .catch((error) => {
+              return createToast(error.message, {
+                cancel: "Cancel",
+                type: "error",
+              });
+            });
         } catch (error) {
           if (error.message.includes("email-already-in-use")) {
             return createToast("The Email Is Already Exists.", {
@@ -91,7 +110,15 @@ const SignUp = () => {
             response.data.backdrops[0].file_path
         );
       });
-  });
+
+    const params = new URLSearchParams(location.search);
+    if (params.get("verified") === "true") {
+      createToast("Your Email Has Been Verified.", {
+        cancel: "Cancel",
+        type: "success",
+      });
+    }
+  }, []);
 
   return (
     <>

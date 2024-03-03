@@ -1,4 +1,4 @@
-import { auth } from "../services/Firebase";
+import { auth, db } from "../services/Firebase";
 import {
   Button,
   Navbar,
@@ -9,10 +9,24 @@ import {
   NavbarMenuItem,
   NavbarMenuToggle,
 } from "@nextui-org/react";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import {
+  EmailAuthProvider,
+  deleteUser,
+  onAuthStateChanged,
+  reauthenticateWithCredential,
+  signOut,
+} from "firebase/auth";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import React, { useState, useEffect } from "react";
 import { FiEye, FiList, FiSearch } from "react-icons/fi";
-import { MdEmail, MdQuestionMark } from "react-icons/md";
+import { MdDelete, MdEmail, MdQuestionMark } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import { createToast } from "vercel-toast";
 
@@ -20,12 +34,14 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [userToDelete, setUserToDelete] = useState();
   const navigate = useNavigate();
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(true);
+        setUserToDelete(user);
         setLoading(false);
       } else {
         setUser(false);
@@ -64,6 +80,72 @@ const Header = () => {
         }
       );
     }
+  };
+
+  const handleDelete = async () => {
+    alert(
+      "The delete functions is still in development. It will be available soon!"
+    );
+
+    // if (user) {
+    //   const confirm = window.confirm(
+    //     "Are you sure you want to delete your account?"
+    //   );
+    //   if (!confirm) {
+    //     return;
+    //   } else {
+    //     const password = prompt("Please enter your password");
+    //     if (!password) {
+    //       return;
+    //     }
+    //     const credential = EmailAuthProvider.credential(
+    //       auth.currentUser.email,
+    //       password
+    //     );
+    //     reauthenticateWithCredential(auth.currentUser, credential)
+    //       .then(async () => {
+    //         const docRef = doc(db, "users", auth.currentUser.uid);
+    //         deleteDoc(docRef)
+    //           .then(() => {
+    //             console.log("User infos successfully deleted!");
+    //           })
+    //           .catch((error) => {
+    //             alert(error.message);
+    //           });
+    //         const q = query(
+    //           collection(db, "watchlist"),
+    //           where("userID", "==", auth.currentUser.uid)
+    //         );
+    //         const querySnapshot = await getDocs(q);
+    //         querySnapshot.forEach(async (doc) => {
+    //           const docRef = doc(db, "watchlist", doc.id);
+    //           await deleteDoc(docRef)
+    //             .then(() => {
+    //               console.log("Watchlist successfully deleted!");
+    //             })
+    //             .catch((error) => {
+    //               alert(error.message);
+    //             });
+    //         });
+    //         deleteUser(auth.currentUser)
+    //           .then(() => {
+    //             signOut(auth);
+    //             createToast("Successfully deleted your account", {
+    //               type: "success",
+    //               cancel: "Ok",
+    //             });
+
+    //             navigate("/");
+    //           })
+    //           .catch((error) => {
+    //             alert(error.message);
+    //           });
+    //       })
+    //       .catch((error) => {
+    //         alert(error.message);
+    //       });
+    //   }
+    // }
   };
 
   return (
@@ -121,9 +203,12 @@ const Header = () => {
             </Button>
           </NavbarItem>
         ) : user ? (
-          <NavbarItem>
+          <NavbarItem className="flex gap-1 items-center">
             <Button color="primary" variant="flat" onClick={handleSignOut}>
               Sign Out
+            </Button>
+            <Button color="primary" variant="flat" onClick={handleDelete}>
+              <MdDelete /> Delete
             </Button>
           </NavbarItem>
         ) : (
@@ -158,6 +243,30 @@ const Header = () => {
           <Button variant="flat" onClick={() => navigate("/about")}>
             <MdQuestionMark /> About
           </Button>
+        </NavbarMenuItem>
+        <NavbarMenuItem>
+          {loading ? (
+            <Button color="primary" variant="flat" isLoading>
+              Loading
+            </Button>
+          ) : user ? (
+            <div className="flex gap-1 items-center">
+              <Button color="primary" variant="flat" onClick={handleSignOut}>
+                Sign Out
+              </Button>
+              <Button color="primary" variant="flat" onClick={handleDelete}>
+                <MdDelete /> Delete
+              </Button>
+            </div>
+          ) : (
+            <Button
+              variant="flat"
+              onClick={() => navigate("/login")}
+              color="primary"
+            >
+              Login
+            </Button>
+          )}
         </NavbarMenuItem>
       </NavbarMenu>
     </Navbar>
