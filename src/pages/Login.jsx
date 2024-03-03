@@ -2,10 +2,14 @@ import Loading from "../components/Loading";
 import { auth } from "../services/Firebase";
 import { Button, Input, Spinner } from "@nextui-org/react";
 import axios from "axios";
-import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  sendPasswordResetEmail,
+} from "firebase/auth";
 import React, { useEffect, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { createToast } from "vercel-toast";
 
 const Login = () => {
@@ -16,6 +20,7 @@ const Login = () => {
   const [LoggedIn, setLoggedIn] = useState(false);
   const [backdrop, setBackdrop] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
@@ -88,7 +93,38 @@ const Login = () => {
             res.data.backdrops[5].file_path
         );
       });
+
+    const params = new URLSearchParams(location.search);
+    const email = params.get("email");
+    if (email) {
+      setEmail(email);
+    }
   }, []);
+
+  const resetPassword = () => {
+    if (email) {
+      sendPasswordResetEmail(auth, email, {
+        url: `${import.meta.env.VITE_WEBSITE_URL}/login?email=${email}`,
+      })
+        .then(() => {
+          return createToast("We have sent you an email", {
+            cancel: "Cancel",
+            type: "info",
+          });
+        })
+        .catch((error) => {
+          return createToast(error.message, {
+            cancel: "Cancel",
+            type: "error",
+          });
+        });
+    } else {
+      return createToast("Please enter your email", {
+        cancel: "Cancel",
+        type: "error",
+      });
+    }
+  };
 
   return (
     <>
@@ -176,9 +212,12 @@ const Login = () => {
                 Sign Up
               </Link>
               <span className="text-white"> | </span>
-              <Link to="/forgot-password" className="text-blue-500 underline">
+              <Button
+                onClick={resetPassword}
+                className="bg-transparent text-blue-500 underline"
+              >
                 Forgot Password
-              </Link>
+              </Button>
             </p>
           </div>
         </div>
