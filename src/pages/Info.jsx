@@ -203,6 +203,7 @@ const InfoPage = () => {
             toast.destroy();
           },
         },
+        timeout: 3000,
         cancel: "Cancel",
         type: "dark",
       });
@@ -210,6 +211,7 @@ const InfoPage = () => {
     if (!userID) {
       return createToast("Please wait. Try again after 2 seconds.", {
         cancel: "Cancel",
+        timeout: 2000,
         type: "dark",
       });
     }

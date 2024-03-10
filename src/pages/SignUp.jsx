@@ -33,6 +33,7 @@ const SignUp = () => {
     if (!username || !email || !password) {
       return createToast("Please fill in all the fields.", {
         cancel: "Cancel",
+        timeout: 3000,
         type: "error",
       });
     } else {
@@ -58,6 +59,7 @@ const SignUp = () => {
                 "We Have Sent You An Email For Verification.",
                 {
                   cancel: "Hide",
+                  timeout: 3000,
                   type: "info",
                 }
               );
@@ -66,6 +68,7 @@ const SignUp = () => {
               return createToast(error.message, {
                 cancel: "Cancel",
                 type: "error",
+                timeout: 3000,
               });
             });
         } catch (error) {
@@ -78,6 +81,7 @@ const SignUp = () => {
                   toast.destroy();
                 },
               },
+              timeout: 3000,
               cancel: "Cancel",
               type: "dark",
             });
@@ -115,6 +119,7 @@ const SignUp = () => {
     if (params.get("verified") === "true") {
       createToast("Your Email Has Been Verified.", {
         cancel: "Cancel",
+        timeout: 3000,
         type: "success",
       });
     }
