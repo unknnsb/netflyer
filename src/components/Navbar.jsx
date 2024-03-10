@@ -75,6 +75,7 @@ const Header = () => {
               toast.destroy();
             },
           },
+          timeout: 3000,
           cancel: "Cancel",
           type: "dark",
         }

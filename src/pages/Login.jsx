@@ -33,12 +33,14 @@ const Login = () => {
       if (!email || !password) {
         return createToast("Please fill in all the fields", {
           cancel: "Cancel",
+          timeout: 3000,
           type: "error",
         });
       } else {
         if (!isEmail) {
           return createToast("Please enter a valid email", {
             cancel: "Cancel",
+            timeout: 3000,
             type: "error",
           });
         } else {
@@ -57,6 +59,7 @@ const Login = () => {
               toast.destroy();
             },
           },
+          timeout: 3000,
           cancel: "Cancel",
           type: "dark",
         });
@@ -64,6 +67,7 @@ const Login = () => {
         setLoggedIn(false);
         return createToast("The password is incorrect", {
           cancel: "Cancel",
+          timeout: 3000,
           type: "error",
         });
       }
@@ -121,6 +125,7 @@ const Login = () => {
     } else {
       return createToast("Please enter your email", {
         cancel: "Cancel",
+        timeout: 3000,
         type: "error",
       });
     }
