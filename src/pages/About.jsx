@@ -9,8 +9,8 @@ const About = () => {
   useEffect(() => {
     const fetchDeveloperPicks = async () => {
       const picks = [
+        { title: "Interstellar", type: "movie", id: 157336 },
         { title: "Breaking Bad", type: "tv", id: 1396 },
-        { title: "Fight Club", type: "movie", id: 550 },
         { title: "Dark", type: "tv", id: 70523 },
         { title: "Lost", type: "tv", id: 4607 },
       ];
@@ -48,12 +48,28 @@ const About = () => {
         </section>
 
         <section className="text-center mb-8">
+          <h2 className="text-2xl font-bold mt-4">About Me</h2>
+          <p className="text-lg text-gray-200">
+            Hey there! I'm Nesbeer, also known as ItzNesbro. I built this
+            streaming app with passion and dedication, and it's currently
+            ad-free. In the future, I might consider adding ads to support its
+            development.
+          </p>
+
+          <p className="text-lg text-gray-200 mt-4">
+            Apart from being a front-end developer, I'm a YouTuber and a Discord
+            bot coder. Expect regular updates and improvements to make your
+            streaming experience even better!
+          </p>
+        </section>
+
+        <section className="text-center mb-8">
           <h2 className="text-2xl font-bold mb-4 mt-4">Developer Picks</h2>
           <p className="text-lg text-gray-200">
             Check out some of the best movies and TV shows recommended by{" "}
             <span className="font-bold text-blue-500">
               <a
-                href="https://github.com/itznesbro"
+                href="https://github.com/itznesbrodev"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -79,22 +95,6 @@ const About = () => {
               />
             ))}
           </div>
-        </section>
-
-        <section className="text-center mb-8">
-          <h2 className="text-2xl font-bold mt-4">About Me</h2>
-          <p className="text-lg text-gray-200">
-            Hey there! I'm Nesbeer, also known as ItzNesbro. I built this
-            streaming app with passion and dedication, and it's currently
-            ad-free. In the future, I might consider adding ads to support its
-            development.
-          </p>
-
-          <p className="text-lg text-gray-200 mt-4">
-            Apart from being a front-end developer, I'm a YouTuber and a Discord
-            bot coder. Expect regular updates and improvements to make your
-            streaming experience even better!
-          </p>
         </section>
 
         <Button
