@@ -4,6 +4,8 @@ NetFlyer is a free and ad-free movie/series streaming platform. Anyone can use t
 
 ### NOTE: I'm completely re-working on the site so if you get any bugs/issues please open a issue
 
+### NOTE: This Website's Style is only responsive on small devices, if you are a expert in css please help me by restyling and creating pull requests
+
 ## Setup
 
 1. Clone the repository:
