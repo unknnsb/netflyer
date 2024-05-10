@@ -45,10 +45,10 @@ const App = () => {
       {loading ? (
         <Loading />
       ) : (
-        <div style={{ position: "relative" }}>
+        <div className="relative">
           <Header />
           <HeroSection />
-          <div style={{ marginTop: "clamp(34.5rem, 50vh, 60rem)" }}>
+          <div>
             {data.trending_movies && (
               <Row items={data.trending_movies} title="Trending Movies" />
             )}
