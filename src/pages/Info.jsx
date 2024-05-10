@@ -50,6 +50,7 @@ const InfoPage = () => {
   const [watchlist, setWatchlist] = useState(false);
   const [showFullText, setShowFullText] = useState(false);
   const [similar, setSimilar] = useState([]);
+  const [userUsername, setUserUsername] = useState("");
   const navigate = useNavigate();
 
   const toggleOverview = (episodeId) => {
@@ -80,6 +81,14 @@ const InfoPage = () => {
         setUser(true);
         setUserID(user.uid);
         qFunc(user.uid);
+        const q = query(
+          collection(db, "users"),
+          where("userID", "==", user.uid)
+        )
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+          setUserUsername(doc.data().username);
+        })
       } else {
         setUser(false);
         setWatchlistLoading(false);
@@ -220,6 +229,7 @@ const InfoPage = () => {
       type: itemType,
       id: itemId,
       userID: userID,
+      username: userUsername,
     }).then(() => {
       setWatchlistLoading(false);
     });
@@ -489,8 +499,8 @@ const InfoPage = () => {
                   </h3>
                   <p
                     className={`text-xs md:text-sm ${expandedOverview[episode.id]
-                        ? "overflow-visible"
-                        : "overflow-hidden"
+                      ? "overflow-visible"
+                      : "overflow-hidden"
                       }`}
                   >
                     {expandedOverview[episode.id]
