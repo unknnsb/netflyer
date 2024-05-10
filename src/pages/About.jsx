@@ -1,6 +1,7 @@
 import Header from "../components/Navbar";
 import { TMDB_API_KEY } from "../services/Tmdb";
-import { Chip, Button, Image } from "@nextui-org/react";
+import { Button, Image } from "@nextui-org/react";
+import { FaGithub, FaYoutube, FaTelegram, FaDiscord, FaMailchimp } from "react-icons/fa";
 import React, { useEffect, useState } from "react";
 
 const About = () => {
@@ -97,13 +98,60 @@ const About = () => {
           </div>
         </section>
 
-        <Button
-          color="primary"
-          className="mx-auto block mt-8"
-          onClick={() => (window.location.href = "mailto:itznesbro@proton.me")}
-        >
-          Contact Me
-        </Button>
+        <section className="text-center mb-8">
+          <h2 className="text-2xl font-bold mb-4 mt-4">Contact</h2>
+          <p className="text-lg text-gray-200">
+            If you have any questions or feedback, feel free to reach out to me on any of the following platforms:
+          </p>
+
+          <div className="flex flex-wrap gap-2 justify-center mt-4">
+            <Button
+              startContent={<FaGithub />}
+              className="bg-gray-800 hover:bg-gray-700"
+              onClick={() => {
+                window.location.href = "https://github.com/ItzNesbroDev";
+              }}
+            >
+              GitHub
+            </Button>
+            <Button
+              startContent={<FaYoutube />}
+              className="bg-red-600 hover:bg-red-500"
+              onClick={() => {
+                window.location.href = "https://www.youtube.com/@itznesbro";
+              }}
+            >
+              YouTube
+            </Button>
+            <Button
+              startContent={<FaDiscord />}
+              className="bg-blue-600 hover:bg-blue-500"
+              onClick={() => {
+                window.location.href = "https://dsc.gg/itznesbro";
+              }}
+            >
+              Discord
+            </Button>
+            <Button
+              startContent={<FaTelegram />}
+              className="bg-blue-500 hover:bg-blue-400"
+              onClick={() => {
+                window.location.href = "https://t.me/+8J8mDkdPoBQ5MzA1";
+              }}
+            >
+              Telegram
+            </Button>
+            <Button
+              startContent={<FaMailchimp />}
+              className="bg-slate-600 hover:bg-slate-500"
+              onClick={() => {
+                window.location.href = "mailto:itznesbro@proton.me";
+              }}
+            >
+              Email
+            </Button>
+          </div>
+        </section>
       </div>
     </>
   );
