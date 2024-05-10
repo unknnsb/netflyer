@@ -1,15 +1,13 @@
 import { TMDB_API_KEY } from "../services/Tmdb";
 import {
   Button,
-  ButtonGroupProvider,
   Card,
   CardFooter,
-  CardHeader,
   Image,
 } from "@nextui-org/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { FaPlay, FaInfo, FaPlus } from "react-icons/fa";
+import { FaPlay, FaInfo } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
@@ -51,7 +49,7 @@ const HeroSection = () => {
                 {randomMovie.overview}
               </p>
               <div className="flex mt-4">
-                <Button color="danger" size="lg" varient="flat" isIconOnly>
+                <Button color="default" size="lg" varient="flat" isIconOnly>
                   <FaPlay
                     onClick={() => {
                       if (randomMovie.first_air_date) {
@@ -64,7 +62,7 @@ const HeroSection = () => {
                 </Button>
                 <Button
                   className="ml-2"
-                  color="danger"
+                  color="default"
                   size="lg"
                   varient="flat"
                   onClick={() => {
