@@ -488,11 +488,10 @@ const InfoPage = () => {
                       : episode.name}
                   </h3>
                   <p
-                    className={`text-xs md:text-sm ${
-                      expandedOverview[episode.id]
+                    className={`text-xs md:text-sm ${expandedOverview[episode.id]
                         ? "overflow-visible"
                         : "overflow-hidden"
-                    }`}
+                      }`}
                   >
                     {expandedOverview[episode.id]
                       ? episode.overview
@@ -514,23 +513,13 @@ const InfoPage = () => {
           </div>
         </div>
       )}
-      <div>
-        <Tabs aria-label="Similar" variant="underlined">
-          <Tab
-            className="text-2xl ml-2 text-white mb-2"
-            key="similar"
-            title="Similar"
-          >
-            <MovieRow items={similar} />
-          </Tab>
-          <Tab
-            className="text-2xl text-white mb-2"
-            key="recommendations"
-            title="Recommendations"
-          >
-            <MovieRow items={recommendations} />
-          </Tab>
-        </Tabs>
+      <div className="mt-4">
+        <section className="mb-2">
+          <MovieRow items={similar} title="Similar Movies" />
+        </section>
+        <section className="mb-4">
+          <MovieRow items={recommendations} title="Recommendations" />
+        </section>
       </div>
     </div>
   );
