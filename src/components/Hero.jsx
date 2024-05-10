@@ -1,10 +1,5 @@
 import { TMDB_API_KEY } from "../services/Tmdb";
-import {
-  Button,
-  Card,
-  CardFooter,
-  Image,
-} from "@nextui-org/react";
+import { Button, Card, CardFooter, Image } from "@nextui-org/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaPlay, FaInfo } from "react-icons/fa";
@@ -30,41 +25,46 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <div>
-      <div className="h-screen absolute top-0 z-20">
-        {randomMovie && (
-          <Card radius="none">
-            <Image
-              src={`https://image.tmdb.org/t/p/original/${randomMovie.backdrop_path}`}
-              className="z-0 w-full md:h-full h-[600px] object-cover"
-              removeWrapper
-              radius="none"
-            />
-            <div className="z-10 w-full h-full absolute top-0 left-0 bg-gradient-to-b from-transparent to-[#202020]"></div>
-            <CardFooter className="items-start flex-col overflow-hidden py-1 absolute bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-white">
+    <div className="relative">
+      {randomMovie && (
+        <Card radius="none" className="overflow-hidden relative">
+          <Image
+            src={`https://image.tmdb.org/t/p/original/${randomMovie.backdrop_path}`}
+            className="w-full h-[600px] object-cover"
+            removeWrapper
+            radius="none"
+          />
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-black opacity-80"></div>
+          <CardFooter className="absolute bottom-0 left-0 w-full p-6 z-10">
+            <div className="text-white">
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold mb-4">
                 {randomMovie.title || randomMovie.name}
               </h1>
-              <p className="text-lg md:text-xl lg:text-2xl font-semibold text-gray-400">
+              <p className="text-lg md:text-xl lg:text-2xl font-semibold mb-6">
                 {randomMovie.overview}
               </p>
-              <div className="flex mt-4">
-                <Button color="default" size="lg" varient="flat" isIconOnly>
-                  <FaPlay
-                    onClick={() => {
-                      if (randomMovie.first_air_date) {
-                        navigate(`/watch/tv/${randomMovie.id}/1/1`);
-                      } else {
-                        navigate(`/watch/movie/${randomMovie.id}`);
-                      }
-                    }}
-                  />
-                </Button>
+              <div className="flex">
                 <Button
-                  className="ml-2"
                   color="default"
                   size="lg"
-                  varient="flat"
+                  variant="flat"
+                  className="mr-2"
+                  isIconOnly
+                  onClick={() => {
+                    if (randomMovie.first_air_date) {
+                      navigate(`/watch/tv/${randomMovie.id}/1/1`);
+                    } else {
+                      navigate(`/watch/movie/${randomMovie.id}`);
+                    }
+                  }}
+                >
+                  <FaPlay />
+                </Button>
+                <Button
+                  color="default"
+                  size="lg"
+                  variant="flat"
+                  isIconOnly
                   onClick={() => {
                     if (randomMovie.first_air_date) {
                       navigate(`/info/tv/${randomMovie.id}`);
@@ -72,17 +72,17 @@ const HeroSection = () => {
                       navigate(`/info/movie/${randomMovie.id}`);
                     }
                   }}
-                  isIconOnly
                 >
                   <FaInfo />
                 </Button>
               </div>
-            </CardFooter>
-          </Card>
-        )}
-      </div>{" "}
+            </div>
+          </CardFooter>
+        </Card>
+      )}
     </div>
   );
 };
 
 export default HeroSection;
+
