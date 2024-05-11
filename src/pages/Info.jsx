@@ -28,8 +28,6 @@ import {
   where,
 } from "firebase/firestore";
 import React, { useState, useEffect } from "react";
-import { ScrollMenu, VisibilityContext } from "react-horizontal-scrolling-menu";
-import "react-horizontal-scrolling-menu/dist/styles.css";
 import { FaStar, FaRegStar, FaPlay, FaTrash, FaPlus } from "react-icons/fa";
 import { FiCheck, FiX } from "react-icons/fi";
 import { useNavigate, useParams } from "react-router-dom";
