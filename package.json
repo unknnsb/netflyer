@@ -1,5 +1,6 @@
 {
   "name": "netflyer",
+  "description": "netflyer is a free movie streaming platform. Watch your favorite movies, anime and TV shows online for free.",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,6 +10,25 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
+  "author": "itznesbro <Nesbeer As asnesbeer3@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://netflyer.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ItzNesbroDev/netflyer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ItzNesbroDev/netflyer/issues"
+  },
+  "keywords": [
+    "netflyer",
+    "netflix",
+    "free",
+    "movie",
+    "series",
+    "anime",
+    "streaming"
+  ],
   "dependencies": {
     "@consumet/extensions": "^1.5.2",
     "@nextui-org/react": "^2.2.9",
