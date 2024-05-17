@@ -366,8 +366,8 @@ const InfoPage = () => {
                 <div className="flex">
                   <Button
                     variant="shadow"
-                    color="danger"
-                    radius="full"
+                    color="primary"
+                    radius="md"
                     startContent={<FaPlay />}
                     onClick={() => {
                       if (type === "tv") {
@@ -383,8 +383,8 @@ const InfoPage = () => {
                     <Button
                       disabled
                       variant="shadow"
-                      color="danger"
-                      radius="full"
+                      color="success"
+                      radius="md"
                       className="ml-2"
                     >
                       <CSpinner color="white" size="md" />
@@ -397,8 +397,8 @@ const InfoPage = () => {
                             removeFromWatchlist(id, type);
                           }}
                           variant="shadow"
-                          color="danger"
-                          radius="full"
+                          color="success"
+                          radius="md"
                           className="ml-2"
                           endContent={<FaTrash />}
                         >
@@ -410,8 +410,8 @@ const InfoPage = () => {
                             addToWatchList(id, type);
                           }}
                           variant="shadow"
-                          color="danger"
-                          radius="full"
+                          color="success"
+                          radius="md"
                           className="ml-2"
                           endContent={<FaPlus />}
                         >

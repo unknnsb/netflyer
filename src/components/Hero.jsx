@@ -45,9 +45,9 @@ const HeroSection = () => {
               </p>
               <div className="flex">
                 <Button
-                  color="default"
                   size="lg"
-                  variant="flat"
+                  color="default"
+                  variant="solid"
                   className="mr-2"
                   isIconOnly
                   onClick={() => {
@@ -63,7 +63,7 @@ const HeroSection = () => {
                 <Button
                   color="default"
                   size="lg"
-                  variant="flat"
+                  variant="solid"
                   isIconOnly
                   onClick={() => {
                     if (randomMovie.first_air_date) {

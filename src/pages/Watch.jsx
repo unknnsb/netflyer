@@ -7,10 +7,11 @@ const Watch = () => {
   return (
     <iframe
       allowFullScreen
+      referrerPolicy="origin"
       src={
         type === "movie"
-          ? `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1`
-          : ` https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1&s=${season}&e=${episode}`
+          ? `https://vidsrc.xyz/embed/movie/${id}`
+          : `https://vidsrc.xyz/embed/tv/${id}/${season}-${episode}`
       }
       width="100%"
       height="100%"

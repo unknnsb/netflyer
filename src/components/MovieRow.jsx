@@ -34,4 +34,3 @@ function RowCard({ item }) {
 }
 
 export default Row;
-
