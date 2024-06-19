@@ -58,6 +58,12 @@ NetFlyer is a free and ad-free movie/series streaming platform. Anyone can use t
 
 5. Open your browser and navigate to [http://localhost:5173](http://localhost:5173) to view the application.
 
+## Love My Work?
+
+- Support My Work By Donation:
+ *USDT:*
+  `UQCv7Na2BE2VemPjUy27vh_wp49Gby08csoA3GooSpWEfu6b`
+
 ## Contribution
 
 Feel free to fork and contribute to this project. If you have any ideas, bug fixes, or feature requests, please open an issue or submit a pull request.
