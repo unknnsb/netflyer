@@ -4,6 +4,7 @@ import Row from "./components/MovieRow";
 import Header from "./components/Navbar";
 import { TMDB_URL, TMDB_API_KEY, endpoints } from "./services/Tmdb";
 import axios from "axios";
+import { Modal, Button, ModalContent, ModalBody, Chip } from '@nextui-org/react';
 import React, { useEffect, useState } from "react";
 
 const useFetchData = () => {
@@ -40,28 +41,52 @@ const useFetchData = () => {
 const App = () => {
   const { loading, data } = useFetchData();
 
+  const [isOpen, setIsOpen] = useState(true);
+
+  const handleClose = () => {
+    setIsOpen(false);
+  };
+
   return (
     <>
       {loading ? (
         <Loading />
       ) : (
-        <div className="relative">
-          <Header />
-          <HeroSection />
-          <div>
-            {data.trending_movies && (
-              <Row items={data.trending_movies} title="Trending Movies" />
+        <>
+          <Modal className="m-2 " backdrop="opaque" isOpen={isOpen} size="md" placement="center" isDismissable={false} isKeyboardDismissDisabled={true} onClose={handleClose}>
+            <ModalContent>
+              <ModalBody>
+                <p>Things are bit of tough now..
+                  <br></br>
+                  <br></br>
+                  I would appreciate a little donation to help me with the server costs :)
+                  <br></br>
+                  <br></br>
+                  <span>USDT BEP20:</span>
+                  <br></br>
+                  <b>0xFcBeBc1148a79D8e2e272d1FA84BB66aAaC061850xFcBeBc1148a79D8e2e272d1FA84BB66aAaC06185</b>
+                </p>
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+          <div className="relative">
+            <Header />
+            <HeroSection />
+            <div>
+              {data.trending_movies && (
+                <Row items={data.trending_movies} title="Trending Movies" />
+              )}
+            </div>
+            {data.trending_tv && (
+              <Row items={data.trending_tv} title="Trending TV" />
+            )}
+            {data.anime && <Row items={data.anime} title="Anime" />}
+            {data.popular && <Row items={data.popular} title="Popular" />}
+            {data.airing_today && (
+              <Row items={data.airing_today} title="Airing Today" />
             )}
           </div>
-          {data.trending_tv && (
-            <Row items={data.trending_tv} title="Trending TV" />
-          )}
-          {data.anime && <Row items={data.anime} title="Anime" />}
-          {data.popular && <Row items={data.popular} title="Popular" />}
-          {data.airing_today && (
-            <Row items={data.airing_today} title="Airing Today" />
-          )}
-        </div>
+        </>
       )}
     </>
   );

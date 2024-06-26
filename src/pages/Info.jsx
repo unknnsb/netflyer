@@ -77,7 +77,7 @@ const InfoPage = () => {
       if (user) {
         setUser(true);
         setUserID(user.uid);
-        setWatchlistLoading(false);
+        // setWatchlistLoading(false);
       } else {
         setUser(false);
         setWatchlistLoading(false);
