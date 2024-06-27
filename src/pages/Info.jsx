@@ -43,7 +43,7 @@ const InfoPage = () => {
   const [recommendations, setRecommendations] = useState([]);
   const [cast, setCast] = useState([]);
   const [user, setUser] = useState(false);
-  const [userID, setUserID] = useState();
+  const [userUID, setUserID] = useState();
   const [watchlistLoading, setWatchlistLoading] = useState(true);
   const [watchlist, setWatchlist] = useState(false);
   const [showFullText, setShowFullText] = useState(false);
@@ -57,6 +57,19 @@ const InfoPage = () => {
     }));
   };
 
+  useEffect(() => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setUser(true);
+        setUserID(user.uid);
+        qFunc(user.uid);
+      } else {
+        setUser(false);
+        setWatchlistLoading(false);
+      }
+    });
+  }, []);
+
   const qFunc = async (user_id) => {
     const q = query(
       collection(db, "watchlist"),
@@ -65,25 +78,12 @@ const InfoPage = () => {
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       if (doc.data().type === type && doc.data().id === id) {
-        setWatchlist(true);
         setWatchlistLoading(false);
+        setWatchlist(true);
       }
     });
     setWatchlistLoading(false);
   };
-
-  useEffect(() => {
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        setUser(true);
-        setUserID(user.uid);
-        // setWatchlistLoading(false);
-      } else {
-        setUser(false);
-        setWatchlistLoading(false);
-      }
-    });
-  }, []);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -113,13 +113,6 @@ const InfoPage = () => {
     };
 
     fetchDetails();
-    if (type === "tv" && id === "95479") {
-      alert(
-        "NOTE: The Second Season Episodes Of Jujutsu Kaisen Shows In Season 1 So Scroll Down To See Second Season Episodes"
-      );
-    } else {
-      return;
-    }
   }, [type, id]);
 
   useEffect(() => {
@@ -206,7 +199,7 @@ const InfoPage = () => {
         type: "dark",
       });
     }
-    if (!userID) {
+    if (!userUID) {
       return createToast("Please wait. Try again after 2 seconds.", {
         cancel: "Cancel",
         timeout: 2000,
@@ -214,19 +207,19 @@ const InfoPage = () => {
       });
     }
     setWatchlistLoading(true);
-    const docRef = await addDoc(collection(db, "watchlist"), {
+    await addDoc(collection(db, "watchlist"), {
       type: itemType,
       id: itemId,
-      userID: userID,
+      userID: userUID,
     }).then(() => {
       setWatchlistLoading(false);
     });
-    qFunc(userID);
+    qFunc(userUID);
   };
 
   const removeFromWatchlist = async (id, type) => {
     setWatchlistLoading(true);
-    const q = query(collection(db, "watchlist"), where("userID", "==", userID));
+    const q = query(collection(db, "watchlist"), where("userID", "==", userUID));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach(async (doc) => {
       const data = doc.data();
@@ -237,7 +230,7 @@ const InfoPage = () => {
           setWatchlistLoading(false);
         });
       }
-      qFunc(userID);
+      qFunc(userUID);
     });
   };
 
@@ -311,7 +304,7 @@ const InfoPage = () => {
                         className="ml-1"
                         size="md"
                         color="danger"
-                        variant="ghost"
+                        variant="faded"
                         onClick={toggleText}
                       >
                         {showFullText ? "Read Less" : "Read More"}
@@ -513,7 +506,7 @@ const InfoPage = () => {
       )}
       <div className="mt-4">
         <section className="mb-2">
-          <MovieRow items={similar} title="Similar Movies" />
+          <MovieRow items={similar} title="Similar" />
         </section>
         <section className="mb-4">
           <MovieRow items={recommendations} title="Recommendations" />

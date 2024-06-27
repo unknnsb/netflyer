@@ -157,8 +157,8 @@ const Login = () => {
             }}
           ></div>
 
-          <div className="relative z-10 w-full max-w-md flex flex-col items-center">
-            <h1 className="text-white text-4xl font-bold mb-6 mt-2">Login</h1>
+          <div className="relative z-10 w-full max-w-md flex flex-col items-center rounded-md p-8">
+            <h1 className="text-white text-3xl font-bold mb-6">Login</h1>
             <form className="w-full">
               <Input
                 isRequired
@@ -166,8 +166,9 @@ const Login = () => {
                 placeholder="example@gmail.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 rounded text-white mb-2"
+                className="w-full px-4 py-2 rounded-md text-white mb-4"
                 label="Email"
+                labelClassName="text-white"
               />
               <Input
                 isRequired
@@ -175,8 +176,9 @@ const Login = () => {
                 placeholder="enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 rounded text-white mb-2"
+                className="w-full px-4 py-2 rounded-md text-white mb-4"
                 label="Password"
+                labelClassName="text-white"
                 endContent={
                   <button
                     className="focus:outline-none"
@@ -195,23 +197,22 @@ const Login = () => {
               {LoggedIn ? (
                 <Button
                   disabled
-                  variant="outlined"
                   color="primary"
-                  className="ml-4 w-[95%]"
+                  className="ml-auto w-full flex justify-center items-center gap-2"
                 >
-                  <Spinner />
+                  <Spinner color="default" />
                 </Button>
               ) : (
                 <Button
                   onClick={handleSubmit}
-                  className="w-[95%] ml-4 text-white"
+                  className="w-full mt-4 text-white"
                   color="primary"
                 >
                   Login
                 </Button>
               )}
             </form>
-            <p className="text-white mt-4">
+            <p className="text-white mt-4 text-center">
               Don't Have An Account?{" "}
               <Link to="/signup" className="text-blue-500 underline">
                 Sign Up

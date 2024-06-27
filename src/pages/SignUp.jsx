@@ -60,7 +60,7 @@ const SignUp = () => {
                 {
                   cancel: "Hide",
                   timeout: 3000,
-                  type: "info",
+                  type: "success",
                 }
               );
             })
@@ -152,7 +152,7 @@ const SignUp = () => {
           ></div>
 
           <div className="relative z-10 w-full max-w-md flex flex-col items-center">
-            <h1 className="text-white text-4xl font-bold mb-6 mt-2">SignUp</h1>
+            <h1 className="text-white text-4xl font-bold mb-6 mt-2">Sign Up</h1>
             <form className="w-full">
               <Input
                 type="text"
@@ -185,7 +185,7 @@ const SignUp = () => {
                 color="primary"
                 className="w-[95%]"
               >
-                SignUp
+                Sign Up
               </Button>
             </form>
           </div>
