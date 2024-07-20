@@ -1,5 +1,4 @@
 import { TMDB_API_KEY } from "../services/Tmdb";
-import { Button, Card, CardFooter, Image } from "@nextui-org/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaPlay, FaInfo } from "react-icons/fa";
@@ -27,58 +26,48 @@ const HeroSection = () => {
   return (
     <div className="relative">
       {randomMovie && (
-        <Card radius="none" className="overflow-hidden relative">
-          <Image
+        <div className="relative overflow-hidden">
+          <img
             src={`https://image.tmdb.org/t/p/original/${randomMovie.backdrop_path}`}
+            alt={randomMovie.title || randomMovie.name}
             className="w-full h-[600px] object-cover"
-            removeWrapper
-            radius="none"
           />
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-black opacity-80"></div>
-          <CardFooter className="absolute bottom-0 left-0 w-full p-6 z-10">
-            <div className="text-white">
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold mb-4">
-                {randomMovie.title || randomMovie.name}
-              </h1>
-              <p className="text-lg md:text-xl lg:text-2xl font-semibold mb-6">
-                {randomMovie.overview}
-              </p>
-              <div className="flex">
-                <Button
-                  size="lg"
-                  color="default"
-                  variant="solid"
-                  className="mr-2"
-                  isIconOnly
-                  onClick={() => {
-                    if (randomMovie.first_air_date) {
-                      navigate(`/watch/tv/${randomMovie.id}/1/1`);
-                    } else {
-                      navigate(`/watch/movie/${randomMovie.id}`);
-                    }
-                  }}
-                >
-                  <FaPlay />
-                </Button>
-                <Button
-                  color="default"
-                  size="lg"
-                  variant="solid"
-                  isIconOnly
-                  onClick={() => {
-                    if (randomMovie.first_air_date) {
-                      navigate(`/info/tv/${randomMovie.id}`);
-                    } else {
-                      navigate(`/info/movie/${randomMovie.id}`);
-                    }
-                  }}
-                >
-                  <FaInfo />
-                </Button>
-              </div>
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-gray-900"></div>
+          <div className="absolute bottom-0 left-0 w-full p-6 z-10 text-white bg-gradient-to-b from-transparent to-gray-900">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold mb-4">
+              {randomMovie.title || randomMovie.name}
+            </h1>
+            <p className="text-lg md:text-xl lg:text-2xl font-semibold mb-6">
+              {randomMovie.overview}
+            </p>
+            <div className="flex">
+              <button
+                className="bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2 px-4 rounded-md mr-2 flex items-center"
+                onClick={() => {
+                  if (randomMovie.first_air_date) {
+                    navigate(`/watch/tv/${randomMovie.id}/1/1`);
+                  } else {
+                    navigate(`/watch/movie/${randomMovie.id}`);
+                  }
+                }}
+              >
+                <FaPlay className="mr-2" /> Play
+              </button>
+              <button
+                className="bg-gray-800 hover:bg-gray-900 text-white font-semibold py-2 px-4 rounded-md flex items-center"
+                onClick={() => {
+                  if (randomMovie.first_air_date) {
+                    navigate(`/info/tv/${randomMovie.id}`);
+                  } else {
+                    navigate(`/info/movie/${randomMovie.id}`);
+                  }
+                }}
+              >
+                <FaInfo className="mr-2" /> More Info
+              </button>
             </div>
-          </CardFooter>
-        </Card>
+          </div>
+        </div>
       )}
     </div>
   );

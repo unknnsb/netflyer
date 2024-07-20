@@ -19,9 +19,7 @@ const Row = ({ items, title }) => {
 
 function RowCard({ item }) {
   const onClick = async () => {
-    const path = item.first_air_date
-      ? `/info/tv/${item.id}`
-      : `/info/movie/${item.id}`;
+    const path = `/actor/${item.id}`;
     window.location.href = path;
   };
 

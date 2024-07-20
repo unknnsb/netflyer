@@ -72,7 +72,7 @@ const ActorInfoPage = () => {
   return (
     <>
       <Navbar />
-      <div className="bg-dark mt-5 md:mt-10 text-white py-10">
+      <div className="bg-gray-900 text-white py-10">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row">
             <div className="w-full md:w-1/2">
@@ -103,7 +103,7 @@ const ActorInfoPage = () => {
                 {showFullBio
                   ? actorInfo.biography
                   : `${actorInfo.biography.slice(0, 200)}...`}
-                <button className="text-blue-500" onClick={toggleFullBio}>
+                <button className="text-blue-500 ml-2" onClick={toggleFullBio}>
                   {showFullBio ? "Read Less" : "Read More"}
                 </button>
               </p>
@@ -123,26 +123,22 @@ const ActorInfoPage = () => {
           </div>
         </div>
 
-        <div className="flex md:ml-9 mt-4 md:mt-8">
+        <div className="flex justify-center mt-8">
           <h2
-            className={
-              toggleTvShow
-                ? "text-2xl ml-3 md:text-3xl lg:text-4xl font-bold mb-2 md:mb-4"
-                : "text-2xl ml-3 md:text-3xl lg:text-4xl font-bold mb-2 md:mb-4 border-b-red-500 border-b-2"
-            }
+            className={`text-2xl md:text-3xl lg:text-4xl font-bold mb-2 md:mb-4 cursor-pointer ${
+              !toggleTvShow ? "border-b-2 border-red-500" : ""
+            }`}
             onClick={() => setToggleTvShow(false)}
           >
             Movies
           </h2>
-          <span className="text-2xl ml-3 md:text-3xl lg:text-4xl font-bold mb-2 md:mb-4">
+          <span className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2 md:mb-4 mx-3">
             |
           </span>
           <h2
-            className={
-              toggleTvShow
-                ? "text-2xl ml-3 md:text-3xl lg:text-4xl font-bold mb-2 md:mb-4 border-b-red-500 border-b-2"
-                : "text-2xl ml-3 md:text-3xl lg:text-4xl font-bold mb-2 md:mb-4"
-            }
+            className={`text-2xl md:text-3xl lg:text-4xl font-bold mb-2 md:mb-4 cursor-pointer ${
+              toggleTvShow ? "border-b-2 border-red-500" : ""
+            }`}
             onClick={() => setToggleTvShow(true)}
           >
             TV Series
@@ -157,7 +153,7 @@ const ActorInfoPage = () => {
                   className="w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6 p-2"
                   key={index}
                 >
-                  <div className="rounded-lg bg-stone-900 overflow-hidden shadow-lg">
+                  <div className="rounded-lg bg-gray-800 overflow-hidden shadow-lg">
                     <img
                       onClick={() => {
                         navigate(`/info/tv/${show.id}`);
@@ -177,7 +173,7 @@ const ActorInfoPage = () => {
                       <p className="text-sm md:text-base lg:text-lg">
                         {show.first_air_date}
                       </p>
-                      <p className="text-sm text-gray-600 font-bold md:text-base lg:text-lg">
+                      <p className="text-sm text-gray-400 font-bold md:text-base lg:text-lg">
                         {show.character}
                       </p>
                     </div>
@@ -194,7 +190,7 @@ const ActorInfoPage = () => {
                   className="w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6 p-2"
                   key={index}
                 >
-                  <div className="rounded-lg bg-stone-900 overflow-hidden shadow-lg">
+                  <div className="rounded-lg bg-gray-800 overflow-hidden shadow-lg">
                     <img
                       onClick={() => {
                         navigate(`/info/movie/${movie.id}`);
@@ -214,7 +210,7 @@ const ActorInfoPage = () => {
                       <p className="text-sm md:text-base lg:text-lg">
                         {movie.release_date}
                       </p>
-                      <p className="text-sm text-gray-600 font-bold md:text-base lg:text-lg">
+                      <p className="text-sm text-gray-400 font-bold md:text-base lg:text-lg">
                         {movie.character}
                       </p>
                     </div>
@@ -230,3 +226,4 @@ const ActorInfoPage = () => {
 };
 
 export default ActorInfoPage;
+

@@ -3,6 +3,7 @@
 import App from "./App";
 import About from "./pages/About";
 import ActorInfoPage from "./pages/ActorInfo";
+import Discover from "./pages/Discover";
 import InfoPage from "./pages/Info";
 import Login from "./pages/Login";
 import SearchPage from "./pages/Search";
@@ -28,6 +29,10 @@ const routes = [
   {
     path: "/about",
     element: <About />,
+  },
+  {
+    path: "/discover",
+    element: <Discover />
   },
   {
     path: "/info/:type/:id",
@@ -61,7 +66,7 @@ const router = createBrowserRouter(routes);
 ReactDOM.createRoot(document.querySelector("#root")).render(
   <React.StrictMode>
     <NextUIProvider>
-      <main className="w-full h-full bg-[#202020">
+      <main className="w-full h-full bg-gray-900">
         <RouterProvider router={router} />
       </main>
     </NextUIProvider>

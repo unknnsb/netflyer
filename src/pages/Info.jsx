@@ -26,6 +26,10 @@ import {
   getDocs,
   query,
   where,
+  updateDoc,
+  doc,
+  getDoc,
+  setDoc,
 } from "firebase/firestore";
 import React, { useState, useEffect } from "react";
 import { FaStar, FaRegStar, FaPlay, FaTrash, FaPlus } from "react-icons/fa";
@@ -44,10 +48,15 @@ const InfoPage = () => {
   const [cast, setCast] = useState([]);
   const [user, setUser] = useState(false);
   const [userUID, setUserID] = useState();
+  const [userName, setUserName] = useState("");
   const [watchlistLoading, setWatchlistLoading] = useState(true);
   const [watchlist, setWatchlist] = useState(false);
   const [showFullText, setShowFullText] = useState(false);
   const [similar, setSimilar] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [newReview, setNewReview] = useState("");
+  const [editingReviewId, setEditingReviewId] = useState(null);
+  const [editingReviewText, setEditingReviewText] = useState("");
   const navigate = useNavigate();
 
   const toggleOverview = (episodeId) => {
@@ -62,6 +71,17 @@ const InfoPage = () => {
       if (user) {
         setUser(true);
         setUserID(user.uid);
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (userDoc.exists()) {
+          setUserName(userDoc.data().username);
+        } else {
+          // If user does not have a username, prompt for it
+          let username = prompt("Please enter a username:");
+          if (username) {
+            await setDoc(doc(db, "users", user.uid), { username });
+            setUserName(username);
+          }
+        }
         qFunc(user.uid);
       } else {
         setUser(false);
@@ -165,6 +185,84 @@ const InfoPage = () => {
     fetchEpisodes();
   }, [type, id, selectedSeason]);
 
+  useEffect(() => {
+    fetchReviews();
+  }, [id, type]);
+
+  const handleAddReview = async () => {
+    if (newReview.trim() === "") return;
+
+    await addDoc(collection(db, "reviews"), {
+      userId: userUID,
+      userName: userName,
+      itemId: id,
+      type: type,
+      text: newReview,
+      likes: [],
+    });
+    setNewReview("");
+    fetchReviews();
+  };
+
+  const handleLikeReview = async (reviewId) => {
+    const reviewRef = doc(db, "reviews", reviewId);
+    const reviewDoc = await getDoc(reviewRef);
+
+    if (reviewDoc.exists() && !Array.isArray(reviewDoc.data().likes)) {
+      await updateDoc(reviewRef, {
+        likes: [],
+      });
+    }
+
+    if (reviewDoc.exists() && !reviewDoc.data().likes.includes(userUID)) {
+      await updateDoc(reviewRef, {
+        likes: [...reviewDoc.data().likes, userUID],
+      });
+      fetchReviews();
+    }
+  };
+
+  const handleUnlikeReview = async (reviewId) => {
+    const reviewRef = doc(db, "reviews", reviewId);
+    const reviewDoc = await getDoc(reviewRef);
+
+    if (reviewDoc.exists() && !Array.isArray(reviewDoc.data().likes)) {
+      await updateDoc(reviewRef, {
+        likes: [],
+      });
+    }
+
+    if (reviewDoc.exists() && reviewDoc.data().likes.includes(userUID)) {
+      await updateDoc(reviewRef, {
+        likes: reviewDoc.data().likes.filter((uid) => uid !== userUID),
+      });
+      fetchReviews();
+    }
+  };
+
+  const handleDeleteReview = async (reviewId) => {
+    await deleteDoc(doc(db, "reviews", reviewId));
+    fetchReviews();
+  };
+
+  const fetchReviews = async () => {
+    const q = query(
+      collection(db, "reviews"),
+      where("itemId", "==", id),
+      where("type", "==", type)
+    );
+    const querySnapshot = await getDocs(q);
+    const reviewsData = [];
+    querySnapshot.forEach((doc) => {
+      const reviewData = doc.data();
+      if (!Array.isArray(reviewData.likes)) {
+        reviewData.likes = [];
+      }
+      reviewsData.push({ ...reviewData, id: doc.id });
+    });
+    setReviews(reviewsData);
+  };
+
   if (isLoading) {
     return <Spinner />;
   }
@@ -245,271 +343,269 @@ const InfoPage = () => {
     seasonNumber++
   ) {
     seasonItems.push(
-      <SelectItem
-        key={seasonNumber.toString()}
-        value={seasonNumber.toString()}
-        textValue={`Season ${seasonNumber}`}
-        onClick={() => {
-          setSelectedSeason(seasonNumber);
-        }}
-      >
+      <option key={seasonNumber} value={seasonNumber}>
         Season {seasonNumber}
-      </SelectItem>
+      </option>
     );
   }
 
-  return (
-    <div className="h-screen w-full">
-      <Navbar />
-      <div className="h-screen absolute top-0 z-20">
-        <Card radius="none" className="text-white">
-          <Image
-            src={`https://image.tmdb.org/t/p/w1280/${details.backdrop_path}`}
-            className="z-0 w-full md:h-full h-[600px] object-cover"
-            radius="none"
-          />
-          <div className="z-10 w-full h-full absolute top-0 left-0 bg-gradient-to-b from-transparent to-[#202020]"></div>
-          <div className="md:mt-3 mt-[200px]">
-            <CardFooter
-              radius="none"
-              className="flex md:flex-row flex-col items-start overflow-hidden py-1 absolute bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10"
-            >
-              <div className="md:w-1/3 flex justify-center w-full h-full md:pr-8 mb-4 md:mb-0">
-                <Image
-                  src={`https://image.tmdb.org/t/p/w300/${details.poster_path}`}
-                  alt="Poster"
-                  radius="lg"
-                  className="w-48 md:w-64 shadow-lg mx-auto md:mx-0 md:mt-0 mt-4"
-                />
-              </div>
-              <div className="md:w-2/3">
-                <h1
-                  onClick={() => {
-                    window.location.href = details.homepage;
-                  }}
-                  className="text-3xl md:text-5xl font-bold mb-2"
-                >
-                  {type === "movie" ? details.title : details.name}
-                </h1>
-                <div className="mb-4">
-                  <h2 className="text-xl md:text-2xl font-semibold mb-2">
-                    Overview
-                  </h2>
-                  <p className="text-base md:text-lg">
-                    {details.overview.length > 155 && !showFullText
-                      ? `${details.overview.substring(0, 155)}...`
-                      : details.overview}
-                    {details.overview.length > 155 && (
-                      <Button
-                        className="ml-1"
-                        size="md"
-                        color="danger"
-                        variant="faded"
-                        onClick={toggleText}
-                      >
-                        {showFullText ? "Read Less" : "Read More"}
-                      </Button>
-                    )}
-                  </p>
-                </div>
-                <p className="text-base mt-1 mb-1 flex md:text-lg">
-                  <span className="flex">
-                    <Chip size="md" className="bg-opacity-60">
-                      IMDB
-                    </Chip>
-                    : <span className="ml-1">{details.vote_average}</span>
-                  </span>
-                </p>
-                <p className="text-base md:text-lg">
-                  {type === "movie" ? (
-                    <span>
-                      <Chip size="md" className="bg-opacity-60">
-                        Release Date
-                      </Chip>
-                      : {details.release_date}
-                    </span>
-                  ) : (
-                    <span>
-                      <Chip size="md" className="bg-opacity-60">
-                        Release Date
-                      </Chip>
-                      : {details.first_air_date} - {inProduction}
-                    </span>
-                  )}
-                </p>
-                <p
-                  className={
-                    type === "tv"
-                      ? "text-base mt-1 mb-1 md:text-lg"
-                      : "text-base mt-1 mb-2 md:text-lg"
-                  }
-                >
-                  <Chip size="md" className="bg-opacity-60">
-                    Genre
-                  </Chip>
-                  : {details.genres.map((genre) => genre.name).join(", ")}
-                </p>
-                {type === "tv" && (
-                  <p className="text-base md:text-lg mb-2">
-                    <Chip size="md" className="bg-opacity-60">
-                      Total Seasons
-                    </Chip>
-                    : {details.number_of_seasons}
-                  </p>
-                )}
-                <div className="flex">
-                  <Button
-                    variant="shadow"
-                    color="primary"
-                    radius="md"
-                    startContent={<FaPlay />}
-                    onClick={() => {
-                      if (type === "tv") {
-                        navigate(`/watch/${type}/${id}/${selectedSeason}/1`);
-                      } else {
-                        navigate(`/watch/${type}/${id}`);
-                      }
-                    }}
-                  >
-                    Play
-                  </Button>
-                  {watchlistLoading ? (
-                    <Button
-                      disabled
-                      variant="shadow"
-                      color="success"
-                      radius="md"
-                      className="ml-2"
-                    >
-                      <CSpinner color="white" size="md" />
-                    </Button>
-                  ) : (
-                    <>
-                      {watchlist ? (
-                        <Button
-                          onClick={() => {
-                            removeFromWatchlist(id, type);
-                          }}
-                          variant="shadow"
-                          color="success"
-                          radius="md"
-                          className="ml-2"
-                          endContent={<FaTrash />}
-                        >
-                          Remove From Watchlist
-                        </Button>
-                      ) : (
-                        <Button
-                          onClick={() => {
-                            addToWatchList(id, type);
-                          }}
-                          variant="shadow"
-                          color="success"
-                          radius="md"
-                          className="ml-2"
-                          endContent={<FaPlus />}
-                        >
-                          WatchList
-                        </Button>
-                      )}
-                    </>
-                  )}
-                </div>
-              </div>
-            </CardFooter>
-          </div>
-        </Card>
-      </div>
+  seasonItems.push(
+    <option key="0" value="0">
+      Specials
+    </option>
+  );
 
-      <div className="bg-[#202020] lg:mt-[450px] md:mt-[530px] mt-[740px] mb-2">
-        <h2 className="text-2xl ml-2 md:text-3xl font-semibold mb-2 text-white">
-          Cast
-        </h2>
+  return (
+    <div className="min-h-screen bg-gray-900 text-white">
+      <Navbar />
+      <div className="relative">
+        <div className="relative h-[400px] md:h-[500px]">
+          <img
+            src={`https://image.tmdb.org/t/p/w1280/${details.backdrop_path}`}
+            alt="Backdrop"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-900"></div>
+        </div>
+        <div className="container mx-auto px-4 py-6 relative">
+          <div className="flex flex-col md:flex-row items-start md:items-center">
+            <img
+              src={`https://image.tmdb.org/t/p/w300/${details.poster_path}`}
+              alt="Poster"
+              className="w-48 md:w-64 rounded-lg shadow-lg md:mr-8 mb-4 md:mb-0"
+            />
+            <div className="flex-1">
+              <h1 className="text-3xl md:text-5xl font-bold mb-2">
+                {type === "movie" ? details.title : details.name}
+              </h1>
+              <div className="mb-4">
+                <h2 className="text-xl md:text-2xl font-semibold mb-2">
+                  Overview
+                </h2>
+                <p className="text-base md:text-lg">
+                  {details.overview.length > 155 && !showFullText
+                    ? `${details.overview.substring(0, 155)}...`
+                    : details.overview}
+                  {details.overview.length > 155 && (
+                    <button
+                      className="ml-1 text-primary-500"
+                      onClick={toggleText}
+                    >
+                      {showFullText ? "Read Less" : "Read More"}
+                    </button>
+                  )}
+                </p>
+              </div>
+              <p className="text-base md:text-lg mb-2">
+                <span className="font-semibold">IMDB: </span>
+                {details.vote_average}
+              </p>
+              <p className="text-base md:text-lg mb-2">
+                <span className="font-semibold">Release Date: </span>
+                {type === "movie"
+                  ? details.release_date
+                  : `${details.first_air_date} - ${inProduction}`}
+              </p>
+              <p className="text-base md:text-lg mb-2">
+                <span className="font-semibold">Genre: </span>
+                {details.genres.map((genre) => genre.name).join(", ")}
+              </p>
+              {type === "tv" && (
+                <p className="text-base md:text-lg mb-2">
+                  <span className="font-semibold">Total Seasons: </span>
+                  {details.number_of_seasons}
+                </p>
+              )}
+              <div className="flex mt-4">
+                <button
+                  className="flex items-center bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2 px-4 rounded-md"
+                  onClick={() => {
+                    if (type === "tv") {
+                      navigate(`/watch/${type}/${id}/${selectedSeason}/1`);
+                    } else {
+                      navigate(`/watch/${type}/${id}`);
+                    }
+                  }}
+                >
+                  <FaPlay className="mr-2" /> Play
+                </button>
+                {watchlistLoading ? (
+                  <button
+                    className="flex items-center bg-gray-500 text-white font-semibold py-2 px-4 rounded-md ml-2"
+                    disabled
+                  >
+                    <CSpinner color="white" size="md" />
+                  </button>
+                ) : (
+                  <>
+                    {watchlist ? (
+                      <button
+                        className="flex items-center bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md ml-2"
+                        onClick={() => {
+                          removeFromWatchlist(id, type);
+                        }}
+                      >
+                        <FaTrash className="mr-2" /> Remove From Watchlist
+                      </button>
+                    ) : (
+                      <button
+                        className="flex items-center bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-md ml-2"
+                        onClick={() => {
+                          addToWatchList(id, type);
+                        }}
+                      >
+                        <FaPlus className="mr-2" /> Add to Watchlist
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="container mx-auto px-4 py-6">
+        <h2 className="text-2xl md:text-3xl font-semibold mb-4">Cast</h2>
         <Row items={cast} />
       </div>
-
       {type === "tv" && (
-        <div className="ml-2 pt-2">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-2 text-white">
-            Seasons
-          </h2>
-          <div className="text-white">
-            <Select
-              label="Select Season"
-              variant="flat"
-              placeholder="Select an season"
-              className="max-w-xs mb-2"
-              defaultSelectedKeys={"1"}
+        <div className="container mx-auto px-4 py-6">
+          <h2 className="text-2xl md:text-3xl font-semibold mb-4">Seasons</h2>
+          <div className="max-w-xs">
+            <select
+              className="w-full bg-gray-800 border border-gray-700 text-white py-2 px-3 rounded-md"
+              value={selectedSeason}
+              onChange={(e) => setSelectedSeason(Number(e.target.value))}
             >
               {seasonItems}
-            </Select>
+            </select>
           </div>
         </div>
       )}
-
       {type === "tv" && (
-        <div className="p-3 text-white z-20">
-          <h2 className="text-xl md:text-2xl font-semibold mb-2">
-            Episodes - Season {selectedSeason}{" "}
-            <span className="text-sm text-gray-600">({episodes.length})</span>
+        <div className="container mx-auto px-4 py-6">
+          <h2 className="text-xl md:text-2xl font-semibold mb-4">
+            Episodes - Season {selectedSeason}
+            <span className="text-sm text-gray-600 ml-2">
+              ({episodes.length})
+            </span>
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {episodes.map((episode) => (
-              <Card key={episode.id} className="text-center mb-6" shadow>
-                <Image
-                  onClick={() =>
-                    navigate(
-                      `/watch/${type}/${id}/${selectedSeason}/${episode.episode_number}`
-                    )
-                  }
-                  isZoomed
+              <div
+                key={episode.id}
+                className="bg-gray-800 rounded-lg shadow-lg overflow-hidden"
+              >
+                <img
                   src={
                     episode.still_path
                       ? `https://image.tmdb.org/t/p/original/${episode.still_path}`
                       : "/not-found.png"
                   }
                   alt={episode.name}
-                  className="w-full h-auto rounded-lg cursor-pointer"
+                  className="w-full h-auto cursor-pointer"
+                  onClick={() =>
+                    navigate(
+                      `/watch/${type}/${id}/${selectedSeason}/${episode.episode_number}`
+                    )
+                  }
                 />
-                <CardBody>
-                  <h3 className="text-base md:text-lg mt-2 mb-2 overflow-hidden">
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold mb-2">
                     {episode.episode_number}.{" "}
                     {episode.name.length > 30
                       ? `${episode.name.substring(0, 30)}...`
                       : episode.name}
                   </h3>
                   <p
-                    className={`text-xs md:text-sm ${expandedOverview[episode.id]
-                      ? "overflow-visible"
-                      : "overflow-hidden"
-                      }`}
+                    className={`text-sm ${
+                      expandedOverview[episode.id]
+                        ? "overflow-visible"
+                        : "overflow-hidden"
+                    }`}
                   >
                     {expandedOverview[episode.id]
                       ? episode.overview
-                      : episode.overview.substring(0, 100)}
+                      : `${episode.overview.substring(0, 100)}...`}
                   </p>
                   {episode.overview.length > 100 && (
-                    <Button
-                      className="hover:underline mt-2"
-                      color="danger"
-                      variant="solid"
+                    <button
+                      className="text-primary-500 mt-2"
                       onClick={() => toggleOverview(episode.id)}
                     >
                       {expandedOverview[episode.id] ? "Read Less" : "Read More"}
-                    </Button>
+                    </button>
                   )}
-                </CardBody>
-              </Card>
+                </div>
+              </div>
             ))}
           </div>
         </div>
       )}
-      <div className="mt-4">
-        <section className="mb-2">
-          <MovieRow items={similar} title="Similar" />
+      <div className="container mx-auto px-4 py-6">
+        <section className="mb-4">
+          <h2 className="text-2xl md:text-3xl font-semibold mb-4">Similar</h2>
+          <MovieRow items={similar} />
         </section>
         <section className="mb-4">
-          <MovieRow items={recommendations} title="Recommendations" />
+          <h2 className="text-2xl md:text-3xl font-semibold mb-4">
+            Recommendations
+          </h2>
+          <MovieRow items={recommendations} />
+        </section>
+        <section className="mb-4">
+          <h2 className="text-2xl md:text-3xl font-semibold mb-4">Reviews</h2>
+          {user ? (
+            <div className="mb-4">
+              <textarea
+                className="w-full p-2 rounded bg-gray-800 text-white"
+                placeholder="Write your review..."
+                value={newReview}
+                onChange={(e) => setNewReview(e.target.value)}
+              />
+              <button
+                className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
+                onClick={handleAddReview}
+              >
+                Add Review
+              </button>
+            </div>
+          ) : (
+            <p className="text-gray-400">Log in to write a review.</p>
+          )}
+          <div className="space-y-4">
+            {reviews.map((review) => (
+              <div key={review.id} className="p-4 bg-gray-800 rounded-lg">
+                <h3 className="text-lg font-bold">{review.userName}</h3>
+                <p className="text-gray-300">{review.text}</p>
+                <div className="flex items-center mt-2">
+                  {review.userId !== userUID && (
+                    <>
+                      <button
+                        className="mr-2 px-2 py-1 bg-blue-500 text-white rounded"
+                        onClick={() =>
+                          review.likes.includes(userUID)
+                            ? handleUnlikeReview(review.id)
+                            : handleLikeReview(review.id)
+                        }
+                      >
+                        {review.likes.includes(userUID) ? "Unlike" : "Like"}
+                      </button>
+                      <span>{review.likes.length} likes</span>
+                    </>
+                  )}
+                  {review.userId === userUID && (
+                    <button
+                      className="ml-2 px-2 py-1 bg-red-500 text-white rounded"
+                      onClick={() => handleDeleteReview(review.id)}
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
       </div>
     </div>
@@ -517,3 +613,4 @@ const InfoPage = () => {
 };
 
 export default InfoPage;
+

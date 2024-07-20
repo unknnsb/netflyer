@@ -19,6 +19,7 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(true);
   const [backdrop, setBackdrop] = useState("");
+  const [formLoading, setFormLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -29,8 +30,10 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setFormLoading(true);
 
     if (!username || !email || !password) {
+      setFormLoading(false);
       return createToast("Please fill in all the fields.", {
         cancel: "Cancel",
         timeout: 3000,
@@ -38,8 +41,14 @@ const SignUp = () => {
       });
     } else {
       if (checkForBadWords(username) || checkForBadWords(email)) {
-        alert(
-          "Your username or email contains inappropriate words. Please choose a different one."
+        setFormLoading(false);
+        return createToast(
+          "Your username or email contains inappropriate words. Please choose a different one.",
+          {
+            cancel: "Cancel",
+            timeout: 3000,
+            type: "error",
+          }
         );
       } else {
         try {
@@ -51,29 +60,18 @@ const SignUp = () => {
           const user = userCred.user;
           const colRef = doc(db, "users", user.uid);
           await setDoc(colRef, { username: username });
-          sendEmailVerification(user, {
+          await sendEmailVerification(user, {
             url: `${import.meta.env.VITE_WEBSITE_URL}/signup?verified=true`,
-          })
-            .then(() => {
-              return createToast(
-                "We Have Sent You An Email For Verification.",
-                {
-                  cancel: "Hide",
-                  timeout: 3000,
-                  type: "success",
-                }
-              );
-            })
-            .catch((error) => {
-              return createToast(error.message, {
-                cancel: "Cancel",
-                type: "error",
-                timeout: 3000,
-              });
-            });
+          });
+
+          createToast("We have sent you an email for verification.", {
+            cancel: "Hide",
+            timeout: 3000,
+            type: "success",
+          });
         } catch (error) {
           if (error.message.includes("email-already-in-use")) {
-            return createToast("The Email Is Already Exists.", {
+            createToast("The email is already in use.", {
               action: {
                 text: "Login",
                 callback(toast) {
@@ -85,44 +83,61 @@ const SignUp = () => {
               cancel: "Cancel",
               type: "dark",
             });
+          } else {
+            createToast(error.message, {
+              cancel: "Cancel",
+              timeout: 3000,
+              type: "error",
+            });
           }
+        } finally {
+          setFormLoading(false);
         }
       }
     }
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        navigate("/");
-      } else {
-        setLoading(false);
-      }
-    });
+    const fetchInitialData = async () => {
+      try {
+        const userStatus = new Promise((resolve) => {
+          const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+              navigate("/");
+            } else {
+              setLoading(false);
+            }
+            unsubscribe();
+            resolve();
+          });
+        });
 
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    axios
-      .get(
-        "https://api.themoviedb.org/3/movie/27205/images?api_key=bb2818a2abb39fbdf6da79343e5e376b"
-      )
-      .then((response) => {
-        setBackdrop(
-          "https://image.tmdb.org/t/p/original" +
-            response.data.backdrops[0].file_path
+        const backdropData = axios.get(
+          "https://api.themoviedb.org/3/movie/27205/images?api_key=bb2818a2abb39fbdf6da79343e5e376b"
         );
-      });
 
-    const params = new URLSearchParams(location.search);
-    if (params.get("verified") === "true") {
-      createToast("Your Email Has Been Verified.", {
-        cancel: "Cancel",
-        timeout: 3000,
-        type: "success",
-      });
-    }
+        await Promise.all([userStatus, backdropData]).then((results) => {
+          const response = results[1];
+          setBackdrop(
+            "https://image.tmdb.org/t/p/original" +
+              response.data.backdrops[0].file_path
+          );
+        });
+
+        const params = new URLSearchParams(location.search);
+        if (params.get("verified") === "true") {
+          createToast("Your email has been verified.", {
+            cancel: "Cancel",
+            timeout: 3000,
+            type: "success",
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching initial data:", error);
+      }
+    };
+
+    fetchInitialData();
   }, []);
 
   return (
@@ -137,65 +152,58 @@ const SignUp = () => {
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
-          className={`p-4 flex flex-col items-center justify-center min-h-screen`}
+          className="p-4 flex flex-col items-center justify-center min-h-screen bg-gray-900 bg-opacity-60"
         >
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              backgroundImage:
-                "linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 100%)",
-            }}
-          ></div>
-
-          <div className="relative z-10 w-full max-w-md flex flex-col items-center">
+          <div className="absolute inset-0 bg-black opacity-50"></div>
+          <div className="relative z-10 w-full max-w-md flex flex-col items-center bg-gray-800 bg-opacity-80 p-8 rounded-lg shadow-lg">
             <h1 className="text-white text-4xl font-bold mb-6 mt-2">Sign Up</h1>
-            <form className="w-full">
-              <Input
-                type="text"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-4 py-2 rounded text-white mb-2"
-                required={true}
-              />
-              <Input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 rounded text-white mb-2"
-                required={true}
-              />
-              <Input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 rounded text-white mb-4"
-                required={true}
-              />
-
+            <form className="w-full" onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <Input
+                  type="text"
+                  placeholder="Username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="w-full px-4 py-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <Input
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-4 py-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+              <div className="mb-6">
+                <Input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
               <Button
                 type="submit"
-                onClick={handleSubmit}
-                color="primary"
-                className="w-[95%]"
+                className="w-full py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600"
+                disabled={formLoading}
               >
-                Sign Up
+                {formLoading ? "Signing Up..." : "Sign Up"}
               </Button>
             </form>
-          </div>
-          <div className="relative z-10 text-white mt-4">
-            <p>
-              Already Have An Account?{" "}
-              <Link to="/login" className="text-blue-500">
-                Login
-              </Link>
-            </p>
+            <div className="relative z-10 text-white mt-4">
+              <p>
+                Already Have An Account?{" "}
+                <Link to="/login" className="text-blue-500">
+                  Login
+                </Link>
+              </p>
+            </div>
           </div>
         </div>
       )}
@@ -204,3 +212,4 @@ const SignUp = () => {
 };
 
 export default SignUp;
+

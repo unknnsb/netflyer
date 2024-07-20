@@ -16,8 +16,8 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(true);
-  const [isVisible, setIsVisible] = React.useState(false);
-  const [LoggedIn, setLoggedIn] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
   const [backdrop, setBackdrop] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
@@ -49,8 +49,8 @@ const Login = () => {
         }
       }
     } catch (error) {
+      setLoggedIn(false);
       if (error.message.includes("not-found")) {
-        setLoggedIn(false);
         return createToast("The user is not found", {
           action: {
             text: "Sign UP",
@@ -64,8 +64,13 @@ const Login = () => {
           type: "dark",
         });
       } else if (error.message.includes("wrong-password")) {
-        setLoggedIn(false);
         return createToast("The password is incorrect", {
+          cancel: "Cancel",
+          timeout: 3000,
+          type: "error",
+        });
+      } else {
+        return createToast(error.message, {
           cancel: "Cancel",
           timeout: 3000,
           type: "error",
@@ -87,23 +92,30 @@ const Login = () => {
   }, []);
 
   useEffect(() => {
-    axios
-      .get(
-        `https://api.themoviedb.org/3/movie/27205/images?api_key=bb2818a2abb39fbdf6da79343e5e376b`
-      )
-      .then((res) => {
+    const fetchInitialData = async () => {
+      try {
+        const [backdropResponse] = await Promise.all([
+          axios.get(
+            `https://api.themoviedb.org/3/movie/27205/images?api_key=bb2818a2abb39fbdf6da79343e5e376b`
+          ),
+        ]);
         setBackdrop(
           "https://image.tmdb.org/t/p/original" +
-            res.data.backdrops[5].file_path
+            backdropResponse.data.backdrops[5].file_path
         );
-      });
 
-    const params = new URLSearchParams(location.search);
-    const email = params.get("email");
-    if (email) {
-      setEmail(email);
-    }
-  }, []);
+        const params = new URLSearchParams(location.search);
+        const email = params.get("email");
+        if (email) {
+          setEmail(email);
+        }
+      } catch (error) {
+        console.error("Error fetching initial data:", error);
+      }
+    };
+
+    fetchInitialData();
+  }, [location.search]);
 
   const resetPassword = () => {
     if (email) {
@@ -143,88 +155,79 @@ const Login = () => {
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
-          className={`flex flex-col items-center justify-center min-h-screen`}
+          className="p-4 flex flex-col items-center justify-center min-h-screen bg-gray-900 bg-opacity-60"
         >
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              backgroundImage:
-                "linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 100%)",
-            }}
-          ></div>
-
-          <div className="relative z-10 w-full max-w-md flex flex-col items-center rounded-md p-8">
-            <h1 className="text-white text-3xl font-bold mb-6">Login</h1>
-            <form className="w-full">
-              <Input
-                isRequired
-                type="email"
-                placeholder="example@gmail.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 rounded-md text-white mb-4"
-                label="Email"
-                labelClassName="text-white"
-              />
-              <Input
-                isRequired
-                type={isVisible ? "text" : "password"}
-                placeholder="enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 rounded-md text-white mb-4"
-                label="Password"
-                labelClassName="text-white"
-                endContent={
-                  <button
-                    className="focus:outline-none"
-                    type="button"
-                    onClick={toggleVisibility}
-                  >
-                    {isVisible ? (
-                      <FaRegEye className="text-2xl text-default-400 pointer-events-none" />
-                    ) : (
-                      <FaRegEyeSlash className="text-2xl text-default-400 pointer-events-none" />
-                    )}
-                  </button>
-                }
-              />
-
-              {LoggedIn ? (
+          <div className="absolute inset-0 bg-black opacity-50"></div>
+          <div className="relative z-10 w-full max-w-md flex flex-col items-center bg-gray-800 bg-opacity-80 p-8 rounded-lg shadow-lg">
+            <h1 className="text-white text-4xl font-bold mb-6 mt-2">Login</h1>
+            <form className="w-full" onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <Input
+                  isRequired
+                  type="email"
+                  placeholder="example@gmail.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-4 py-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div className="mb-4">
+                <Input
+                  isRequired
+                  type={isVisible ? "text" : "password"}
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  endContent={
+                    <button
+                      className="focus:outline-none"
+                      type="button"
+                      onClick={toggleVisibility}
+                    >
+                      {isVisible ? (
+                        <FaRegEye className="text-2xl text-default-400 pointer-events-none" />
+                      ) : (
+                        <FaRegEyeSlash className="text-2xl text-default-400 pointer-events-none" />
+                      )}
+                    </button>
+                  }
+                />
+              </div>
+              {loggedIn ? (
                 <Button
                   disabled
                   color="primary"
-                  className="ml-auto w-full flex justify-center items-center gap-2"
+                  className="w-full flex justify-center items-center gap-2"
                 >
                   <Spinner color="default" />
                 </Button>
               ) : (
                 <Button
-                  onClick={handleSubmit}
-                  className="w-full mt-4 text-white"
+                  type="submit"
+                  className="w-full py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600"
                   color="primary"
                 >
                   Login
                 </Button>
               )}
             </form>
-            <p className="text-white mt-4 text-center">
-              Don't Have An Account?{" "}
-              <Link to="/signup" className="text-blue-500 underline">
-                Sign Up
-              </Link>
-              <span className="text-white"> | </span>
-              <Button
-                onClick={resetPassword}
-                className="bg-transparent text-blue-500 underline"
-              >
-                Forgot Password
-              </Button>
-            </p>
+            <div className="relative z-10 text-white mt-4 text-center">
+              <p>
+                Don't Have An Account?{" "}
+                <Link to="/signup" className="text-blue-500 underline">
+                  Sign Up
+                </Link>
+              </p>
+              <p>
+                <Button
+                  onClick={resetPassword}
+                  className="bg-transparent text-blue-500 underline mt-2"
+                >
+                  Forgot Password
+                </Button>
+              </p>
+            </div>
           </div>
         </div>
       )}
@@ -233,3 +236,4 @@ const Login = () => {
 };
 
 export default Login;
+
