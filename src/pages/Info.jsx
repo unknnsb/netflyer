@@ -5,18 +5,7 @@ import Navbar from "../components/Navbar";
 import { auth, db } from "../services/Firebase";
 import { TMDB_URL, TMDB_API_KEY } from "../services/Tmdb";
 import {
-  Card,
-  CardFooter,
-  Image,
-  CardBody,
-  Divider,
-  Chip,
-  Button,
   Spinner as CSpinner,
-  Select,
-  SelectItem,
-  Tabs,
-  Tab,
 } from "@nextui-org/react";
 import { onAuthStateChanged } from "firebase/auth";
 import {
@@ -32,8 +21,7 @@ import {
   setDoc,
 } from "firebase/firestore";
 import React, { useState, useEffect } from "react";
-import { FaStar, FaRegStar, FaPlay, FaTrash, FaPlus } from "react-icons/fa";
-import { FiCheck, FiX } from "react-icons/fi";
+import { FaPlay, FaTrash, FaPlus } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import { createToast } from "vercel-toast";
 
@@ -55,8 +43,6 @@ const InfoPage = () => {
   const [similar, setSimilar] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [newReview, setNewReview] = useState("");
-  const [editingReviewId, setEditingReviewId] = useState(null);
-  const [editingReviewText, setEditingReviewText] = useState("");
   const navigate = useNavigate();
 
   const toggleOverview = (episodeId) => {
@@ -277,10 +263,6 @@ const InfoPage = () => {
       inProduction = `Now Airing: Season ${season_number}`;
     }
   }
-
-  const onPerson = (actorId) => {
-    navigate(`/actor/${actorId}`);
-  };
 
   const addToWatchList = async (itemId, itemType) => {
     if (!user) {
@@ -518,11 +500,10 @@ const InfoPage = () => {
                       : episode.name}
                   </h3>
                   <p
-                    className={`text-sm ${
-                      expandedOverview[episode.id]
-                        ? "overflow-visible"
-                        : "overflow-hidden"
-                    }`}
+                    className={`text-sm ${expandedOverview[episode.id]
+                      ? "overflow-visible"
+                      : "overflow-hidden"
+                      }`}
                   >
                     {expandedOverview[episode.id]
                       ? episode.overview
