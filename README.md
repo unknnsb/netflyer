@@ -2,10 +2,6 @@
 
 NetFlyer is a free and ad-free movie/series streaming platform. Anyone can use the code, but attribution is appreciated.
 
-### NOTE: I'm completely re-working on the site so if you get any bugs/issues please open a issue
-
-### NOTE: This Website's Style is only responsive on small devices, if you are a expert in css please help me by restyling and creating pull requests
-
 ## Setup
 
 1. Clone the repository:
@@ -32,6 +28,7 @@ NetFlyer is a free and ad-free movie/series streaming platform. Anyone can use t
 
    - Go to the [Firebase Console](https://console.firebase.google.com/).
    - Create a new project or select an existing one.
+   - Make sure to enable firestore and email and pass auth
    - Navigate to Project Settings > General.
    - Under Your apps, click on the Web app (</>) icon to register a new app.
    - Copy the config object's values into your `.env` file.
