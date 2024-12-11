@@ -78,7 +78,7 @@ const About = () => {
 
               <p className="text-lg text-gray-400 mt-4">
                 Apart from being a front-end developer, I'm a YouTuber and a
-                Discord bot coder. Expect regular updates and improvements to
+                cinephile. Expect regular updates and improvements to
                 make your streaming experience even better!
               </p>
             </section>
@@ -89,11 +89,11 @@ const About = () => {
                 Check out some of the best movies and TV shows recommended by{" "}
                 <span className="font-bold text-blue-500">
                   <a
-                    href="https://github.com/itznesbrodev"
+                    href="https://github.com/itznesbro"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    ItzNesbro
+                    Me
                   </a>
                 </span>
               </p>
@@ -128,7 +128,7 @@ const About = () => {
                   startContent={<FaGithub />}
                   className="bg-gray-800 hover:bg-gray-700"
                   onClick={() => {
-                    window.location.href = "https://github.com/ItzNesbroDev";
+                    window.location.href = "https://github.com/ItzNesbro";
                   }}
                 >
                   GitHub
