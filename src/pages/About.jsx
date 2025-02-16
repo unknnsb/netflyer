@@ -89,7 +89,7 @@ const About = () => {
                 Check out some of the best movies and TV shows recommended by{" "}
                 <span className="font-bold text-blue-500">
                   <a
-                    href="https://github.com/itznesbro"
+                    href="https://github.com/asnesbeer"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -128,7 +128,7 @@ const About = () => {
                   startContent={<FaGithub />}
                   className="bg-gray-800 hover:bg-gray-700"
                   onClick={() => {
-                    window.location.href = "https://github.com/ItzNesbro";
+                    window.location.href = "https://github.com/AsNesbeer";
                   }}
                 >
                   GitHub
@@ -164,7 +164,7 @@ const About = () => {
                   startContent={<FaMailchimp />}
                   className="bg-slate-600 hover:bg-slate-500"
                   onClick={() => {
-                    window.location.href = "mailto:itznesbro@proton.me";
+                    window.location.href = "mailto:asnesbeer3@proton.me";
                   }}
                 >
                   Email
