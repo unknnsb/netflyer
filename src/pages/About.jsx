@@ -70,7 +70,7 @@ const About = () => {
             <section className="text-center mb-8">
               <h2 className="text-2xl font-bold mt-4">About Me</h2>
               <p className="text-lg text-gray-400">
-                Hey there! I'm Nesbeer, also known as ItzNesbro. I built this
+                Hey there! I'm Nesbeer, I built this
                 streaming app with passion and dedication, and it's currently
                 ad-free. In the future, I might consider adding ads to support
                 its development.
@@ -89,7 +89,7 @@ const About = () => {
                 Check out some of the best movies and TV shows recommended by{" "}
                 <span className="font-bold text-blue-500">
                   <a
-                    href="https://github.com/asnesbeer"
+                    href="https://github.com/unknnsb"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
