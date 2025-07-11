@@ -57,8 +57,8 @@ NetFlyer is a free and ad-free movie/series streaming platform. Anyone can use t
 
 ## Love My Work?
 
-- Support My Work By Donating *TON*:
-  `UQCv7Na2BE2VemPjUy27vh_wp49Gby08csoA3GooSpWEfu6b`
+- Support My Work By Donating *USDT(tron20)*:
+  `TZHDCKmV1q2pThK37cGgZjgWPLKUk8AJ7p`
 
 ## Contribution
 
