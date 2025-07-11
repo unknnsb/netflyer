@@ -10,7 +10,7 @@ const Watch = () => {
       referrerPolicy="origin"
       src={
         type === "movie"
-          ? `https://vidsrc.xyz/embed/movie/${id}`
+          ? `https://netflyer-backend.onrender.com/get-stream?id=${id}&type=movie`
           : `https://vidsrc.xyz/embed/tv/${id}/${season}-${episode}`
       }
       width="100%"
