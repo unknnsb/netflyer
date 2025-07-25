@@ -77,8 +77,7 @@ const About = () => {
               </p>
 
               <p className="text-lg text-gray-400 mt-4">
-                Apart from being a front-end developer, I'm a YouTuber and a
-                cinephile. Expect regular updates and improvements to
+                Expect regular updates and improvements to
                 make your streaming experience even better!
               </p>
             </section>

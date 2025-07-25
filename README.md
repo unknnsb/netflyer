@@ -7,7 +7,7 @@ NetFlyer is a free and ad-free movie/series streaming platform. Anyone can use t
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/AsNesbeer/netflyer.git
+   git clone https://github.com/unknnsb/netflyer.git
    ```
 
 2. Install dependencies using yarn:

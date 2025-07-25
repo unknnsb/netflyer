@@ -12,18 +12,9 @@ const Watch = () => {
       try {
         if (type === "movie") {
           setLoading(true);
-          const response = await fetch(
-            `https://netflyer-backend.onrender.com/get-stream?id=${id}&type=movie`
-          );
-          
-          if (!response.ok) {
-            throw new Error(`Failed to fetch stream (HTTP ${response.status})`);
-          }
-
-          const data = await response.json();
-          setStreamUrl(data.streamUrl);
+          setStreamUrl(`https://embed.su/embed/movie/${id}`);
         } else {
-          setStreamUrl(`https://vidsrc.xyz/embed/tv/${id}/${season}-${episode}`);
+          setStreamUrl(`https://embed.su/embed/tv/${id}/${season}/${episode}`);
         }
       } catch (err) {
         console.error("Error fetching stream URL:", err);
@@ -44,8 +35,8 @@ const Watch = () => {
     return (
       <div className="flex flex-col justify-center items-center h-screen text-red-500">
         <p>Error loading content: {error}</p>
-        <button 
-          onClick={() => window.location.reload()} 
+        <button
+          onClick={() => window.location.reload()}
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
         >
           Retry

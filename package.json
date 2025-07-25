@@ -10,15 +10,15 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
-  "author": "itznesbro <Nesbeer As nesbeeras3@gmail.com>",
+  "author": "unknnsb <Nesbeer As nesbeeras3@gmail.com>",
   "license": "MIT",
   "homepage": "https://netflyer.vercel.app",
   "repository": {
     "type": "git",
-    "url": "https://github.com/AsNesbeer/netflyer.git"
+    "url": "https://github.com/unknnsb/netflyer.git"
   },
   "bugs": {
-    "url": "https://github.com/AsNesbeer/netflyer/issues"
+    "url": "https://github.com/unknnsb/netflyer/issues"
   },
   "keywords": [
     "netflyer",
