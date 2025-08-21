@@ -37,20 +37,27 @@ Object.entries(endpoints).forEach(([key, path]) => {
 });
 
 app.get("/api/developer_picks", (req, res) => {
-  const picks = {
-    movies: [
-      { id: 1, title: "The Lighthouse", year: 2019, genre: "Drama/Horror" },
-      { id: 2, title: "Whiplash", year: 2014, genre: "Drama/Music" },
-      { id: 3, title: "Oldboy", year: 2003, genre: "Thriller" },
-    ],
-    tv: [
-      { id: 1, title: "True Detective (Season 1)", year: 2014, genre: "Crime/Drama" },
-      { id: 2, title: "Mr. Robot", year: 2015, genre: "Thriller/Drama" },
-      { id: 3, title: "Dark", year: 2017, genre: "Sci-Fi/Mystery" },
-    ],
-  };
+  try {
+    const picks = [
+      { id: 503919, type: "movie" },    
+      { id: 244786, type: "movie" }, 
+      { id: 670, type: "movie" }, 
+      { id: 46648, type: "tv" },
+      { id: 62560, type: "tv" }
+    ];
 
-  res.json(picks);
+    const results = await Promise.all(
+      picks.map(async (pick) => {
+        const url = `${TMDB_URL}/${pick.type}/${pick.id}?api_key=${TMDB_API_KEY}&language=en-US`;
+        const res = await fetch(url);
+        return res.json();
+      })
+    );
+
+    res.json({ picks: results });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 
