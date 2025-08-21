@@ -60,5 +60,28 @@ app.get("/api/developer_picks", async (req, res) => {
   }
 });
 
+app.get("/api/discover", async (req, res) => {
+  try {
+    const [popularMoviesRes, topRatedTVRes, trendingRes] = await Promise.all([
+      fetch(`${TMDB_URL}/movie/popular?api_key=${TMDB_API_KEY}&language=en-US`),
+      fetch(`${TMDB_URL}/tv/top_rated?api_key=${TMDB_API_KEY}&language=en-US`),
+      fetch(`${TMDB_URL}/trending/all/day?api_key=${TMDB_API_KEY}`),
+    ]);
+
+    const [popularMovies, topRatedTV, trending] = await Promise.all([
+      popularMoviesRes.json(),
+      topRatedTVRes.json(),
+      trendingRes.json(),
+    ]);
+
+    res.json({
+      popularMovies,
+      topRatedTV,
+      trending,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 app.listen(PORT, () => console.log(`Scraper API running on http://localhost:${PORT}`));
