@@ -36,7 +36,7 @@ Object.entries(endpoints).forEach(([key, path]) => {
   });
 });
 
-app.get("/api/developer_picks", (req, res) => {
+app.get("/api/developer_picks", async (req, res) => {
   try {
     const picks = [
       { id: 503919, type: "movie" },    
