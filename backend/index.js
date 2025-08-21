@@ -36,5 +36,22 @@ Object.entries(endpoints).forEach(([key, path]) => {
   });
 });
 
+app.get("/api/developer_picks", (req, res) => {
+  const picks = {
+    movies: [
+      { id: 1, title: "The Lighthouse", year: 2019, genre: "Drama/Horror" },
+      { id: 2, title: "Whiplash", year: 2014, genre: "Drama/Music" },
+      { id: 3, title: "Oldboy", year: 2003, genre: "Thriller" },
+    ],
+    tv: [
+      { id: 1, title: "True Detective (Season 1)", year: 2014, genre: "Crime/Drama" },
+      { id: 2, title: "Mr. Robot", year: 2015, genre: "Thriller/Drama" },
+      { id: 3, title: "Dark", year: 2017, genre: "Sci-Fi/Mystery" },
+    ],
+  };
+
+  res.json(picks);
+});
+
 
 app.listen(PORT, () => console.log(`Scraper API running on http://localhost:${PORT}`));
