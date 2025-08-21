@@ -1,5 +1,3 @@
-// Imports
-// Pages
 import App from "./App";
 import About from "./pages/About";
 import ActorInfoPage from "./pages/ActorInfo";
@@ -62,7 +60,6 @@ const routes = [
 
 const router = createBrowserRouter(routes);
 
-// Render the app
 ReactDOM.createRoot(document.querySelector("#root")).render(
   <React.StrictMode>
     <NextUIProvider>
