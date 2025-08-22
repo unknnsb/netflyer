@@ -21,7 +21,6 @@ const endpoints = {
   trending: "/trending/all/week",
   airing_today: "/tv/airing_today?language=en-US&sort_by=popularity.desc",
   popular: "/movie/popular",
-  search: "/search/multi?language=en-US&sort_by=popularity.desc",
   anime: "/discover/tv?with_keywords=210024&sort_by=vote_average.desc",
 };
 
@@ -39,9 +38,9 @@ Object.entries(endpoints).forEach(([key, path]) => {
 app.get("/api/developer_picks", async (req, res) => {
   try {
     const picks = [
-      { id: 503919, type: "movie" },    
-      { id: 244786, type: "movie" }, 
-      { id: 670, type: "movie" }, 
+      { id: 503919, type: "movie" },
+      { id: 244786, type: "movie" },
+      { id: 670, type: "movie" },
       { id: 46648, type: "tv" },
       { id: 62560, type: "tv" }
     ];
@@ -79,6 +78,50 @@ app.get("/api/discover", async (req, res) => {
       topRatedTV,
       trending,
     });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get("/api/search/:query", async (req, res) => {
+  try {
+    const response = await fetch(
+      `${TMDB_URL}/search/multi?api_key=${TMDB_API_KEY}&language=en-US&query=${req.params.query}&page=1&include_adult=false`
+    );
+    res.json(await response.json());
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get("/api/info/:type/:id", async (req, res) => {
+  try {
+    const response = await fetch(
+      `${TMDB_URL}/${req.params.type}/${req.params.id}?api_key=${TMDB_API_KEY}&language=en-US`
+    );
+    res.json(await response.json());
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get("/api/weekly_trending", async (req, res) => {
+  try {
+    const response = await fetch(
+      `${TMDB_URL}/trending/all/week?api_key=${TMDB_API_KEY}&language=en-US`
+    );
+    res.json(await response.json());
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get("/api/backdrop/:type/:id", async (req, res) => {
+  try {
+    const response = await fetch(
+      `${TMDB_URL}/${req.params.type}/${req.params.id}/images?api_key=${TMDB_API_KEY}`
+    );
+    res.json(await response.json());
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
