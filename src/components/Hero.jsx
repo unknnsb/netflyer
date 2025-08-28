@@ -1,8 +1,8 @@
-import { TMDB_API_KEY } from "../services/Tmdb";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaPlay, FaInfo } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { BACKEND_URL } from "../services/Api";
 
 const HeroSection = () => {
   const [randomMovie, setRandomMovie] = useState(null);
@@ -10,10 +10,13 @@ const HeroSection = () => {
 
   useEffect(() => {
     axios
-      .get(
-        `https://api.themoviedb.org/3/trending/all/week?api_key=${TMDB_API_KEY}&language=en-US&page=1`
-      )
+      .get(`${BACKEND_URL}/api/weekly_trending`)
       .then((response) => {
+        response.data.results.sort((a, b) => {
+          const dateA = new Date(a.release_date || a.first_air_date);
+          const dateB = new Date(b.release_date || b.first_air_date);
+          return dateB.getTime() - dateA.getTime();
+        })
         const movies = response.data.results;
         const randomIndex = Math.floor(Math.random() * movies.length);
         setRandomMovie(movies[randomIndex]);

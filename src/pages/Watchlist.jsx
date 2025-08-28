@@ -2,7 +2,7 @@ import Spinner from "../components/Loading";
 import Navbar from "../components/Navbar";
 import { auth } from "../services/Firebase";
 import { db } from "../services/Firebase";
-import { TMDB_API_KEY } from "../services/Tmdb";
+import { BACKEND_URL } from "../services/Api";
 import {
   Card,
   CardBody,
@@ -27,8 +27,6 @@ const WatchlistPage = () => {
   const [userID, setUserID] = useState(null);
 
   const fetchWatchlistData = async (userID) => {
-    const apiKey = TMDB_API_KEY;
-
     const q = query(collection(db, "watchlist"), where("userID", "==", userID));
     const querySnapshot = await getDocs(q);
 
@@ -37,9 +35,8 @@ const WatchlistPage = () => {
       userWatchlist.push(doc.data());
     });
 
-    // Fetch details for each watchlist item
     const promises = userWatchlist.map(async ({ type, id }) => {
-      const url = `https://api.themoviedb.org/3/${type}/${id}?api_key=${apiKey}`;
+      const url = `${BACKEND_URL}/api/info/${type}/${id}`;
       const response = await fetch(url);
       return await response.json();
     });

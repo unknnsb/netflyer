@@ -1,6 +1,5 @@
 import Loading from "../components/Loading";
 import { auth, db } from "../services/Firebase";
-import { TMDB_API_KEY, TMDB_URL } from "../services/Tmdb";
 import { Button, Input } from "@nextui-org/react";
 import axios from "axios";
 import Filter from "bad-words";
@@ -13,6 +12,7 @@ import { doc, setDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { createToast } from "vercel-toast";
+import { BACKEND_URL } from "../services/Api";
 
 const checkForBadWords = (text) => {
   const filter = new Filter();
@@ -22,7 +22,7 @@ const checkForBadWords = (text) => {
 const fetchBackdrop = async () => {
   try {
     const { data } = await axios.get(
-      `${TMDB_URL}/movie/27205/images?api_key=${TMDB_API_KEY}`
+      `${BACKEND_URL}/api/backdrop/movie/27205`
     );
     return `https://image.tmdb.org/t/p/original${data.backdrops[9].file_path}`;
   } catch (error) {

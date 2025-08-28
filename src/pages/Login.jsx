@@ -1,5 +1,4 @@
 import { auth } from "../services/Firebase";
-import { TMDB_API_KEY, TMDB_URL } from "../services/Tmdb";
 import { Spinner } from "@nextui-org/react";
 import axios from "axios";
 import {
@@ -11,8 +10,9 @@ import React, { useEffect, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { useNavigate, Link } from "react-router-dom";
 import { createToast } from "vercel-toast";
+import { BACKEND_URL } from "../services/Api"
 
-const TMDB_API_URL = `${TMDB_URL}/movie/27205/images?api_key=${TMDB_API_KEY}`;
+const TMDB_API_URL = `${BACKEND_URL}/api/backdrop/movie/27205`;
 const BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/original";
 
 const useAuthListener = (navigate) => {

@@ -2,10 +2,10 @@ import HeroSection from "./components/Hero";
 import Loading from "./components/Loading";
 import Row from "./components/MovieRow";
 import Header from "./components/Navbar";
-import { TMDB_URL, TMDB_API_KEY, endpoints } from "./services/Tmdb";
+import { endpoints } from "./services/Api";
 import axios from "axios";
-import { Modal, Button, ModalContent, ModalBody, Chip } from '@nextui-org/react';
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { BACKEND_URL } from './services/Api'
 
 const useFetchData = () => {
   const [loading, setLoading] = useState(true);
@@ -21,7 +21,7 @@ const useFetchData = () => {
   useEffect(() => {
     const fetchDataPromises = Object.entries(endpoints).map(([key, endpoint]) =>
       axios
-        .get(`${TMDB_URL}${endpoint}`, { params: { api_key: TMDB_API_KEY } })
+        .get(`${BACKEND_URL}${endpoint}`)
         .then((response) => [key, response.data.results])
     );
 

@@ -1,63 +1,79 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { BACKEND_URL } from "../services/Api";
 
 const Watch = () => {
   const { type, id, season, episode } = useParams();
-  const [streamUrl, setStreamUrl] = useState(null);
+  const providers = ["vidsrc-pk", "vidsrc-icu"];
+  const [provider, setProvider] = useState(providers[0]);
+  const [embedUrl, setEmbedUrl] = useState("");
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+
+  const fetchEmbedUrl = async () => {
+    setLoading(true);
+    try {
+      let url = `${BACKEND_URL}/api/embed/${type}/${id}?provider=${provider}`;
+      if (type === "tv" && season && episode) {
+        url += `&s=${season}&e=${episode}`;
+      }
+
+      const res = await fetch(url);
+      const data = await res.json();
+      setEmbedUrl(data.url || "");
+    } catch (err) {
+      console.error("Failed to fetch embed URL:", err);
+      setEmbedUrl("");
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
-    const fetchStreamUrl = async () => {
-      try {
-        if (type === "movie") {
-          setLoading(true);
-          setStreamUrl(`https://embed.su/embed/movie/${id}`);
-        } else {
-          setStreamUrl(`https://embed.su/embed/tv/${id}/${season}/${episode}`);
-        }
-      } catch (err) {
-        console.error("Error fetching stream URL:", err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStreamUrl();
-  }, [type, id, season, episode]);
-
-  if (loading) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
-  }
-
-  if (error) {
-    return (
-      <div className="flex flex-col justify-center items-center h-screen text-red-500">
-        <p>Error loading content: {error}</p>
-        <button
-          onClick={() => window.location.reload()}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
-        >
-          Retry
-        </button>
-      </div>
-    );
-  }
+    fetchEmbedUrl();
+  }, [type, id, season, episode, provider]);
 
   return (
-    <iframe
-      allowFullScreen
-      referrerPolicy="origin"
-      src={streamUrl}
-      width="100%"
-      height="100%"
-      style={{
-        height: "100vh",
-        width: "100%",
-      }}
-      title="video-player"
-    />
+    <div className="p-6 max-w-5xl mx-auto">
+      <h2 className="text-2xl font-semibold mb-4">
+        Watching {type === "movie" ? "Movie" : `TV Show S${season}E${episode}`}
+      </h2>
+
+      <div className="mb-4 flex items-center gap-2">
+        <span className="font-medium">Provider:</span>
+        <select
+          value={provider}
+          onChange={(e) => setProvider(e.target.value)}
+          className="border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          {providers.map((p) => (
+            <option key={p} value={p}>
+              {p}
+            </option>
+          ))}
+        </select>
+        <button
+          onClick={fetchEmbedUrl}
+          className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
+        >
+          Reload
+        </button>
+      </div>
+
+      {loading ? (
+        <p>Loading...</p>
+      ) : embedUrl ? (
+        <iframe
+          src={embedUrl}
+          title="video player"
+          width="100%"
+          height="600px"
+          className="rounded shadow"
+          frameBorder="0"
+          allowFullScreen
+        ></iframe>
+      ) : (
+        <p className="text-red-500">Failed to load video.</p>
+      )}
+    </div>
   );
 };
 

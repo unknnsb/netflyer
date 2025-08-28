@@ -1,6 +1,5 @@
 import App from "./App";
 import About from "./pages/About";
-import ActorInfoPage from "./pages/ActorInfo";
 import Discover from "./pages/Discover";
 import InfoPage from "./pages/Info";
 import Login from "./pages/Login";
@@ -19,10 +18,6 @@ const routes = [
   {
     path: "/",
     element: <App />,
-  },
-  {
-    path: "/actor/:id",
-    element: <ActorInfoPage />,
   },
   {
     path: "/about",

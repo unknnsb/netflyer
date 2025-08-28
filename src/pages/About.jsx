@@ -1,14 +1,11 @@
 import Header from "../components/Navbar";
-import { TMDB_API_KEY } from "../services/Tmdb";
 import { Button, Image } from "@nextui-org/react";
 import {
   FaGithub,
-  FaYoutube,
-  FaTelegram,
-  FaDiscord,
-  FaMailchimp,
+  FaEnvelope,
 } from "react-icons/fa";
-import React, { useEffect, useState } from "react";
+import { BACKEND_URL } from "../services/Api";
+import { useEffect, useState } from "react";
 
 const About = () => {
   const [developerPicks, setDeveloperPicks] = useState([]);
@@ -17,35 +14,15 @@ const About = () => {
   useEffect(() => {
     const fetchDeveloperPicks = async () => {
       try {
-        const picks = [
-          { title: "Interstellar", type: "movie", id: 157336 },
-          { title: "Breaking Bad", type: "tv", id: 1396 },
-          { title: "Dark", type: "tv", id: 70523 },
-          { title: "Lost", type: "tv", id: 4607 },
-        ];
-
-        const promises = picks.map(async (pick) => {
-          const response = await fetch(
-            `https://api.themoviedb.org/3/${pick.type}/${pick.id}?api_key=${TMDB_API_KEY}&language=en-US`
-          );
-          const data = await response.json();
-          return {
-            title: pick.title,
-            type: pick.type,
-            id: pick.id,
-            posterPath: data.poster_path,
-          };
-        });
-
-        const results = await Promise.all(promises);
-        setDeveloperPicks(results);
+        const response = await fetch(`${BACKEND_URL}/api/developer_picks`);
+        const data = await response.json();
+        setDeveloperPicks(data.picks);
+        console.log(data.picks)
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching developer picks:", error);
-      } finally {
-        setLoading(false);
       }
-    };
-
+    }
     fetchDeveloperPicks();
   }, []);
 
@@ -85,30 +62,21 @@ const About = () => {
             <section className="text-center mb-8">
               <h2 className="text-2xl font-bold mb-4 mt-4">Developer Picks</h2>
               <p className="text-lg text-gray-400">
-                Check out some of the best movies and TV shows recommended by{" "}
-                <span className="font-bold text-blue-500">
-                  <a
-                    href="https://github.com/unknnsb"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Me
-                  </a>
-                </span>
+                Check out some of the best movies and TV shows recommendtions by me!
               </p>
 
               <div className="flex flex-wrap gap-2 justify-center mt-4">
                 {developerPicks.map((pick) => (
                   <Image
                     key={pick.id}
-                    src={`https://image.tmdb.org/t/p/w300${pick.posterPath}`}
+                    src={`https://image.tmdb.org/t/p/w300${pick.poster_path}`}
                     alt={pick.title}
                     width={"96px"}
                     height={"144px"}
                     radius="md"
                     className="object-cover m-2 cursor-pointer transition-transform duration-300 hover:scale-105"
                     onClick={() => {
-                      window.location.href = `info/${pick.type}/${pick.id}`;
+                      window.location.href = `info/${pick.media_type}/${pick.id}`;
                     }}
                   />
                 ))}
@@ -127,43 +95,16 @@ const About = () => {
                   startContent={<FaGithub />}
                   className="bg-gray-800 hover:bg-gray-700"
                   onClick={() => {
-                    window.location.href = "https://github.com/AsNesbeer";
+                    window.location.href = "https://github.com/unknnsb";
                   }}
                 >
                   GitHub
                 </Button>
                 <Button
-                  startContent={<FaYoutube />}
-                  className="bg-red-600 hover:bg-red-500"
-                  onClick={() => {
-                    window.location.href = "https://www.youtube.com/@itznesbro";
-                  }}
-                >
-                  YouTube
-                </Button>
-                <Button
-                  startContent={<FaDiscord />}
-                  className="bg-blue-600 hover:bg-blue-500"
-                  onClick={() => {
-                    window.location.href = "https://dsc.gg/itznesbro";
-                  }}
-                >
-                  Discord
-                </Button>
-                <Button
-                  startContent={<FaTelegram />}
-                  className="bg-blue-500 hover:bg-blue-400"
-                  onClick={() => {
-                    window.location.href = "https://t.me/NetflyerSupportGroup";
-                  }}
-                >
-                  Telegram
-                </Button>
-                <Button
-                  startContent={<FaMailchimp />}
+                  startContent={<FaEnvelope />}
                   className="bg-slate-600 hover:bg-slate-500"
                   onClick={() => {
-                    window.location.href = "mailto:asnesbeer3@proton.me";
+                    window.location.href = "mailto:asnesbeer3@gmail.com";
                   }}
                 >
                   Email

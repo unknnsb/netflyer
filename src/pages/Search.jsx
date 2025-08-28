@@ -1,10 +1,9 @@
 import Navbar from "../components/Navbar";
-import { TMDB_API_KEY, endpoints, TMDB_URL } from "../services/Tmdb";
-import { Input, Card, CardBody, Image, Button } from "@nextui-org/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { BACKEND_URL } from "../services/Api";
+import { Card, CardBody, Image, Input } from "@nextui-org/react";
 
 const SearchPage = () => {
   const [query, setQuery] = useState("");
@@ -12,15 +11,10 @@ const SearchPage = () => {
 
   useEffect(() => {
     axios
-      .get(`${TMDB_URL}${endpoints.search}`, {
-        params: {
-          query: query,
-          api_key: TMDB_API_KEY,
-        },
-      })
+      .get(`${BACKEND_URL}/api/search/${query}`)
       .then((res) => {
         setResults(res.data.results);
-      });
+      })
   }, [query]);
 
   const getDate = (date) => {

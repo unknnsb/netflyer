@@ -3,7 +3,7 @@ import Spinner from "../components/Loading";
 import MovieRow from "../components/MovieRow";
 import Navbar from "../components/Navbar";
 import { auth, db } from "../services/Firebase";
-import { TMDB_URL, TMDB_API_KEY } from "../services/Tmdb";
+import { BACKEND_URL } from "../services/Api";
 import {
   Spinner as CSpinner,
 } from "@nextui-org/react";
@@ -96,7 +96,7 @@ const InfoPage = () => {
     const fetchDetails = async () => {
       try {
         const response = await fetch(
-          `${TMDB_URL}/${type}/${id}?api_key=${TMDB_API_KEY}`
+          `${BACKEND_URL}/api/info/${type}/${id}`
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -105,7 +105,7 @@ const InfoPage = () => {
         setDetails(data);
 
         const castResponse = await fetch(
-          `${TMDB_URL}/${type}/${id}/credits?api_key=${TMDB_API_KEY}`
+          `${BACKEND_URL}/api/info/${type}/${id}/credits`
         );
         if (castResponse.ok) {
           const castData = await castResponse.json();
@@ -125,7 +125,7 @@ const InfoPage = () => {
     const fetchRecommendations = async () => {
       try {
         const response = await fetch(
-          `${TMDB_URL}/${type}/${id}/recommendations?api_key=${TMDB_API_KEY}`
+          `${BACKEND_URL}/api/info/${type}/${id}/recommendations`
         );
         if (response.ok) {
           const data = await response.json();
@@ -141,7 +141,7 @@ const InfoPage = () => {
     const fetchSimilar = async () => {
       try {
         const response = await fetch(
-          `${TMDB_URL}/${type}/${id}/similar?api_key=${TMDB_API_KEY}`
+          `${BACKEND_URL}/api/info/${type}/${id}/similar`
         );
         if (response.ok) {
           const data = await response.json();
@@ -159,7 +159,7 @@ const InfoPage = () => {
     const fetchEpisodes = async () => {
       if (type === "tv") {
         const response = await fetch(
-          `${TMDB_URL}/${type}/${id}/season/${selectedSeason}?api_key=${TMDB_API_KEY}`
+          `${BACKEND_URL}/api/info/${type}/${id}/season/${selectedSeason}`
         );
         if (response.ok) {
           const data = await response.json();
