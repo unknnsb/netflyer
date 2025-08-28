@@ -1,5 +1,0 @@
-ignoredBuiltDependencies:
-  - '@p-stream/providers'
-  - esbuild
-  - protobufjs
-  - sharp
