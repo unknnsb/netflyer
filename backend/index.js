@@ -249,6 +249,9 @@ async function tmdbToImdbId(type, tmdbId) {
 
 function buildEmbedUrl({ provider, type, id, season, episode }) {
   switch (provider) {
+    case "vidplus":
+      if (type === "movie") return `https://player.vidplus.to/embed/movie/${id}`;
+      return `https://player.vidplus.to/embed/tv/${id}/${season}/${episode}`;
     case "vidsrc-icu":
       if (type === "movie") return `https://vidsrc.icu/embed/movie/${id}`;
       return `https://vidsrc.icu/embed/tv/${id}/${season}/${episode}`;
