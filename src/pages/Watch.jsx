@@ -4,7 +4,7 @@ import { BACKEND_URL } from "../services/Api";
 
 const Watch = () => {
   const { type, id, season, episode } = useParams();
-  const providers = ["vidsrc-pk", "vidsrc-icu"];
+  const providers = ["vidplus", "vidsrc-pk", "vidsrc-icu"];
   const [provider, setProvider] = useState(providers[0]);
   const [embedUrl, setEmbedUrl] = useState("");
   const [loading, setLoading] = useState(true);
