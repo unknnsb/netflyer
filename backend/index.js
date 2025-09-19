@@ -233,6 +233,28 @@ app.get("/api/backdrop/:type/:id", async (req, res) => {
   }
 });
 
+app.get("/api/person/:id", async (req, res) => {
+  try {
+    const response = await fetch(
+      `${TMDB_URL}/person/${req.params.id}?api_key=${TMDB_API_KEY}&language=en-US`
+    );
+    res.json(await response.json());
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get("/api/person/:id/credits", async (req, res) => {
+  try {
+    const response = await fetch(
+      `${TMDB_URL}/person/${req.params.id}/combined_credits?api_key=${TMDB_API_KEY}&language=en-US`
+    );
+    res.json(await response.json());
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 // STREAMING
 
