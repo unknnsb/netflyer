@@ -52,7 +52,7 @@ const App = () => {
         <Loading />
       ) : (
         <>
-          <div className="relative bg-gray-900 text-white">
+          <div className="relative text-white">
             <Header />
             <HeroSection />
             <div className="container mx-auto px-4 py-6">

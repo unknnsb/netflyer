@@ -1,15 +1,17 @@
 import App from "./App";
 import About from "./pages/About";
+import ActorInfo from "./pages/ActorInfo";
 import Discover from "./pages/Discover";
 import InfoPage from "./pages/Info";
 import Login from "./pages/Login";
+import NotFound from "./pages/NotFound";
 import SearchPage from "./pages/Search";
 import SignUp from "./pages/SignUp";
 import Watch from "./pages/Watch";
 import WatchlistPage from "./pages/Watchlist";
 // Styles
 import "./styles/index.css";
-import { NextUIProvider } from "@nextui-org/react";
+import { HeroUIProvider } from "@heroui/react";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -24,6 +26,10 @@ const routes = [
     element: <About />,
   },
   {
+    path: "/actor/:id",
+    element: <ActorInfo />,
+  },
+  {
     path: "/discover",
     element: <Discover />
   },
@@ -34,6 +40,10 @@ const routes = [
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
   {
     path: "/search",
@@ -50,17 +60,17 @@ const routes = [
   {
     path: "/watchlist",
     element: <WatchlistPage />,
-  },
+  }
 ];
 
 const router = createBrowserRouter(routes);
 
 ReactDOM.createRoot(document.querySelector("#root")).render(
   <React.StrictMode>
-    <NextUIProvider>
-      <main className="w-full h-full bg-gray-900">
+    <HeroUIProvider>
+      <main className="w-full h-full ">
         <RouterProvider router={router} />
       </main>
-    </NextUIProvider>
+    </HeroUIProvider>
   </React.StrictMode>
 );

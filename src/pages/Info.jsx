@@ -6,7 +6,15 @@ import { auth, db } from "../services/Firebase";
 import { BACKEND_URL } from "../services/Api";
 import {
   Spinner as CSpinner,
-} from "@nextui-org/react";
+  Button,
+  Card,
+  CardBody,
+  Select,
+  SelectItem,
+  Textarea,
+  Chip,
+  Avatar,
+} from "@heroui/react";
 import { onAuthStateChanged } from "firebase/auth";
 import {
   addDoc,
@@ -21,9 +29,10 @@ import {
   setDoc,
 } from "firebase/firestore";
 import React, { useState, useEffect } from "react";
-import { FaPlay, FaTrash, FaPlus } from "react-icons/fa";
+import { Play, Trash2, Plus, Star, Calendar, Clock, Heart, MessageSquare, ThumbsUp, Eye } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { createToast } from "vercel-toast";
+import { motion, AnimatePresence } from "framer-motion";
 
 const InfoPage = () => {
   const { type, id } = useParams();
@@ -61,7 +70,6 @@ const InfoPage = () => {
         if (userDoc.exists()) {
           setUserName(userDoc.data().username);
         } else {
-          // If user does not have a username, prompt for it
           let username = prompt("Please enter a username:");
           if (username) {
             await setDoc(doc(db, "users", user.uid), { username });
@@ -103,7 +111,6 @@ const InfoPage = () => {
         }
         const data = await response.json();
         setDetails(data);
-
         const castResponse = await fetch(
           `${BACKEND_URL}/api/info/${type}/${id}/credits`
         );
@@ -117,7 +124,6 @@ const InfoPage = () => {
         setIsLoading(false);
       }
     };
-
     fetchDetails();
   }, [type, id]);
 
@@ -135,7 +141,6 @@ const InfoPage = () => {
         console.error("Error fetching recommendations:", error);
       }
     };
-
     fetchRecommendations();
 
     const fetchSimilar = async () => {
@@ -151,7 +156,6 @@ const InfoPage = () => {
         console.error("Error fetching similar:", error);
       }
     };
-
     fetchSimilar();
   }, [type, id]);
 
@@ -167,7 +171,6 @@ const InfoPage = () => {
         }
       }
     };
-
     fetchEpisodes();
   }, [type, id, selectedSeason]);
 
@@ -177,7 +180,6 @@ const InfoPage = () => {
 
   const handleAddReview = async () => {
     if (newReview.trim() === "") return;
-
     await addDoc(collection(db, "reviews"), {
       userId: userUID,
       userName: userName,
@@ -193,13 +195,11 @@ const InfoPage = () => {
   const handleLikeReview = async (reviewId) => {
     const reviewRef = doc(db, "reviews", reviewId);
     const reviewDoc = await getDoc(reviewRef);
-
     if (reviewDoc.exists() && !Array.isArray(reviewDoc.data().likes)) {
       await updateDoc(reviewRef, {
         likes: [],
       });
     }
-
     if (reviewDoc.exists() && !reviewDoc.data().likes.includes(userUID)) {
       await updateDoc(reviewRef, {
         likes: [...reviewDoc.data().likes, userUID],
@@ -211,13 +211,11 @@ const InfoPage = () => {
   const handleUnlikeReview = async (reviewId) => {
     const reviewRef = doc(db, "reviews", reviewId);
     const reviewDoc = await getDoc(reviewRef);
-
     if (reviewDoc.exists() && !Array.isArray(reviewDoc.data().likes)) {
       await updateDoc(reviewRef, {
         likes: [],
       });
     }
-
     if (reviewDoc.exists() && reviewDoc.data().likes.includes(userUID)) {
       await updateDoc(reviewRef, {
         likes: reviewDoc.data().likes.filter((uid) => uid !== userUID),
@@ -256,7 +254,6 @@ const InfoPage = () => {
   let inProduction = "Unknown";
   if (details.last_episode_to_air) {
     const { episode_type, season_number } = details.last_episode_to_air;
-
     if (episode_type === "finale") {
       inProduction = "Ended";
     } else if (episode_type === "standard") {
@@ -324,84 +321,118 @@ const InfoPage = () => {
     seasonNumber <= details.number_of_seasons;
     seasonNumber++
   ) {
-    seasonItems.push(
-      <option key={seasonNumber} value={seasonNumber}>
-        Season {seasonNumber}
-      </option>
-    );
+    seasonItems.push({
+      key: seasonNumber.toString(),
+      label: `Season ${seasonNumber}`,
+    });
   }
-
-  seasonItems.push(
-    <option key="0" value="0">
-      Specials
-    </option>
-  );
+  seasonItems.push({
+    key: "0",
+    label: "Specials",
+  });
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen bg-black text-white">
       <Navbar />
+
+      {/* Hero Section */}
       <div className="relative">
-        <div className="relative h-[400px] md:h-[500px]">
-          <img
+        <div className="relative h-[50vh] md:h-[60vh] overflow-hidden">
+          <motion.img
+            initial={{ scale: 1.1 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 1.5 }}
             src={`https://image.tmdb.org/t/p/w1280/${details.backdrop_path}`}
             alt="Backdrop"
             className="absolute inset-0 w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-900"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
         </div>
-        <div className="container mx-auto px-4 py-6 relative">
-          <div className="flex flex-col md:flex-row items-start md:items-center">
-            <img
-              src={`https://image.tmdb.org/t/p/w300/${details.poster_path}`}
-              alt="Poster"
-              className="w-48 md:w-64 rounded-lg shadow-lg md:mr-8 mb-4 md:mb-0"
-            />
-            <div className="flex-1">
-              <h1 className="text-3xl md:text-5xl font-bold mb-2">
-                {type === "movie" ? details.title : details.name}
-              </h1>
-              <div className="mb-4">
-                <h2 className="text-xl md:text-2xl font-semibold mb-2">
-                  Overview
-                </h2>
-                <p className="text-base md:text-lg">
-                  {details.overview.length > 155 && !showFullText
-                    ? `${details.overview.substring(0, 155)}...`
+
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="container mx-auto px-6 relative -mt-40 md:-mt-48 z-10"
+        >
+          <div className="flex flex-col lg:flex-row items-start gap-8">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="flex-shrink-0"
+            >
+              <img
+                src={`https://image.tmdb.org/t/p/w400/${details.poster_path}`}
+                alt="Poster"
+                className="w-48 md:w-64 lg:w-72 rounded-2xl shadow-2xl"
+              />
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="flex-1 space-y-6"
+            >
+              <div>
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight">
+                  {type === "movie" ? details.title : details.name}
+                </h1>
+
+                <div className="flex flex-wrap items-center gap-4 mb-6">
+                  <div className="flex items-center gap-2 bg-yellow-500/20 rounded-full px-3 py-1">
+                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                    <span className="font-semibold">{details.vote_average?.toFixed(1)}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-zinc-400">
+                    <Calendar className="w-4 h-4" />
+                    <span>
+                      {type === "movie" ? details.release_date?.split('-')[0] : details.first_air_date?.split('-')[0]}
+                    </span>
+                  </div>
+                  {type === "tv" && (
+                    <Chip variant="bordered" size="sm">
+                      {details.number_of_seasons} Season{details.number_of_seasons !== 1 ? 's' : ''}
+                    </Chip>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h2 className="text-xl font-semibold">Overview</h2>
+                <p className="text-lg text-zinc-300 leading-relaxed">
+                  {details.overview.length > 200 && !showFullText
+                    ? `${details.overview.substring(0, 200)}...`
                     : details.overview}
-                  {details.overview.length > 155 && (
+                  {details.overview.length > 200 && (
                     <button
-                      className="ml-1 text-primary-500"
+                      className="ml-2 text-blue-400 hover:text-blue-300 font-medium"
                       onClick={toggleText}
                     >
-                      {showFullText ? "Read Less" : "Read More"}
+                      {showFullText ? "Show Less" : "Show More"}
                     </button>
                   )}
                 </p>
               </div>
-              <p className="text-base md:text-lg mb-2">
-                <span className="font-semibold">IMDB: </span>
-                {details.vote_average}
-              </p>
-              <p className="text-base md:text-lg mb-2">
-                <span className="font-semibold">Release Date: </span>
-                {type === "movie"
-                  ? details.release_date
-                  : `${details.first_air_date} - ${inProduction}`}
-              </p>
-              <p className="text-base md:text-lg mb-2">
-                <span className="font-semibold">Genre: </span>
-                {details.genres.map((genre) => genre.name).join(", ")}
-              </p>
-              {type === "tv" && (
-                <p className="text-base md:text-lg mb-2">
-                  <span className="font-semibold">Total Seasons: </span>
-                  {details.number_of_seasons}
-                </p>
-              )}
-              <div className="flex mt-4">
-                <button
-                  className="flex items-center bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2 px-4 rounded-md"
-                  onClick={() => {
+
+              <div className="space-y-3">
+                <div className="flex flex-wrap gap-2">
+                  {details.genres.map((genre) => (
+                    <Chip key={genre.id} variant="flat" size="sm" className="bg-zinc-800 text-zinc-300">
+                      {genre.name}
+                    </Chip>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-4 pt-4">
+                <Button
+                  color="primary"
+                  size="lg"
+                  startContent={<Play className="w-5 h-5" />}
+                  className="rounded-xl font-semibold shadow-lg shadow-blue-500/25"
+                  onPress={() => {
                     if (type === "tv") {
                       navigate(`/watch/${type}/${id}/${selectedSeason}/1`);
                     } else {
@@ -409,185 +440,299 @@ const InfoPage = () => {
                     }
                   }}
                 >
-                  <FaPlay className="mr-2" /> Play
-                </button>
+                  Play Now
+                </Button>
+
                 {watchlistLoading ? (
-                  <button
-                    className="flex items-center bg-gray-500 text-white font-semibold py-2 px-4 rounded-md ml-2"
-                    disabled
+                  <Button
+                    size="lg"
+                    variant="bordered"
+                    className="rounded-xl"
+                    isLoading
                   >
-                    <CSpinner color="white" size="md" />
-                  </button>
+                    Loading
+                  </Button>
+                ) : watchlist ? (
+                  <Button
+                    color="danger"
+                    variant="bordered"
+                    size="lg"
+                    startContent={<Trash2 className="w-5 h-5" />}
+                    className="rounded-xl"
+                    onPress={() => removeFromWatchlist(id, type)}
+                  >
+                    Remove
+                  </Button>
                 ) : (
-                  <>
-                    {watchlist ? (
-                      <button
-                        className="flex items-center bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md ml-2"
-                        onClick={() => {
-                          removeFromWatchlist(id, type);
-                        }}
-                      >
-                        <FaTrash className="mr-2" /> Remove From Watchlist
-                      </button>
-                    ) : (
-                      <button
-                        className="flex items-center bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-md ml-2"
-                        onClick={() => {
-                          addToWatchList(id, type);
-                        }}
-                      >
-                        <FaPlus className="mr-2" /> Add to Watchlist
-                      </button>
-                    )}
-                  </>
+                  <Button
+                    color="secondary"
+                    variant="bordered"
+                    size="lg"
+                    startContent={<Plus className="w-5 h-5" />}
+                    className="rounded-xl"
+                    onPress={() => addToWatchList(id, type)}
+                  >
+                    Watchlist
+                  </Button>
                 )}
               </div>
-            </div>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
       </div>
-      <div className="container mx-auto px-4 py-6">
-        <h2 className="text-2xl md:text-3xl font-semibold mb-4">Cast</h2>
-        <Row items={cast} />
-      </div>
-      {type === "tv" && (
-        <div className="container mx-auto px-4 py-6">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-4">Seasons</h2>
-          <div className="max-w-xs">
-            <select
-              className="w-full bg-gray-800 border border-gray-700 text-white py-2 px-3 rounded-md"
-              value={selectedSeason}
-              onChange={(e) => setSelectedSeason(Number(e.target.value))}
-            >
-              {seasonItems}
-            </select>
-          </div>
-        </div>
-      )}
-      {type === "tv" && (
-        <div className="container mx-auto px-4 py-6">
-          <h2 className="text-xl md:text-2xl font-semibold mb-4">
-            Episodes - Season {selectedSeason}
-            <span className="text-sm text-gray-600 ml-2">
-              ({episodes.length})
-            </span>
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {episodes.map((episode) => (
-              <div
-                key={episode.id}
-                className="bg-gray-800 rounded-lg shadow-lg overflow-hidden"
+
+      <div className="container mx-auto px-6 py-12 space-y-16">
+        {/* Cast Section */}
+        <motion.section
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-3xl font-bold mb-8">Cast & Crew</h2>
+          <Row items={cast} />
+        </motion.section>
+
+        {/* TV Season Selection */}
+        {type === "tv" && (
+          <motion.section
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="flex items-center gap-6 mb-8">
+              <h2 className="text-3xl font-bold">Episodes</h2>
+              <Select
+                selectedKeys={[selectedSeason.toString()]}
+                onSelectionChange={(keys) => setSelectedSeason(Number(Array.from(keys)[0]))}
+                className="max-w-xs"
+                radius="lg"
+                variant="bordered"
               >
-                <img
-                  src={
-                    episode.still_path
-                      ? `https://image.tmdb.org/t/p/original/${episode.still_path}`
-                      : "/not-found.png"
-                  }
-                  alt={episode.name}
-                  className="w-full h-auto cursor-pointer"
-                  onClick={() =>
-                    navigate(
-                      `/watch/${type}/${id}/${selectedSeason}/${episode.episode_number}`
-                    )
-                  }
-                />
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold mb-2">
-                    {episode.episode_number}.{" "}
-                    {episode.name.length > 30
-                      ? `${episode.name.substring(0, 30)}...`
-                      : episode.name}
-                  </h3>
-                  <p
-                    className={`text-sm ${expandedOverview[episode.id]
-                      ? "overflow-visible"
-                      : "overflow-hidden"
-                      }`}
+                {seasonItems.map((season) => (
+                  <SelectItem key={season.key}>
+                    {season.label}
+                  </SelectItem>
+                ))}
+              </Select>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {episodes.map((episode, index) => (
+                <motion.div
+                  key={episode.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <Card
+                    className="bg-zinc-900/50 border border-zinc-800 hover:bg-zinc-800/50 hover:border-zinc-700 transition-all duration-300 cursor-pointer group"
+                    isPressable
+                    onPress={() =>
+                      navigate(
+                        `/watch/${type}/${id}/${selectedSeason}/${episode.episode_number}`
+                      )
+                    }
                   >
-                    {expandedOverview[episode.id]
-                      ? episode.overview
-                      : `${episode.overview.substring(0, 100)}...`}
-                  </p>
-                  {episode.overview.length > 100 && (
-                    <button
-                      className="text-primary-500 mt-2"
-                      onClick={() => toggleOverview(episode.id)}
-                    >
-                      {expandedOverview[episode.id] ? "Read Less" : "Read More"}
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-      <div className="container mx-auto px-4 py-6">
-        <section className="mb-4">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-4">Similar</h2>
-          <MovieRow items={similar} />
-        </section>
-        <section className="mb-4">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-4">
-            Recommendations
-          </h2>
-          <MovieRow items={recommendations} />
-        </section>
-        <section className="mb-4">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-4">Reviews</h2>
-          {user ? (
-            <div className="mb-4">
-              <textarea
-                className="w-full p-2 rounded bg-gray-800 text-white"
-                placeholder="Write your review..."
-                value={newReview}
-                onChange={(e) => setNewReview(e.target.value)}
-              />
-              <button
-                className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
-                onClick={handleAddReview}
-              >
-                Add Review
-              </button>
-            </div>
-          ) : (
-            <p className="text-gray-400">Log in to write a review.</p>
-          )}
-          <div className="space-y-4">
-            {reviews.map((review) => (
-              <div key={review.id} className="p-4 bg-gray-800 rounded-lg">
-                <h3 className="text-lg font-bold">{review.userName}</h3>
-                <p className="text-gray-300">{review.text}</p>
-                <div className="flex items-center mt-2">
-                  {review.userId !== userUID && (
-                    <>
-                      <button
-                        className="mr-2 px-2 py-1 bg-blue-500 text-white rounded"
-                        onClick={() =>
-                          review.likes.includes(userUID)
-                            ? handleUnlikeReview(review.id)
-                            : handleLikeReview(review.id)
+                    <div className="relative overflow-hidden">
+                      <img
+                        src={
+                          episode.still_path
+                            ? `https://image.tmdb.org/t/p/w500/${episode.still_path}`
+                            : "/not-found.png"
                         }
-                      >
-                        {review.likes.includes(userUID) ? "Unlike" : "Like"}
-                      </button>
-                      <span>{review.likes.length} likes</span>
-                    </>
-                  )}
-                  {review.userId === userUID && (
-                    <button
-                      className="ml-2 px-2 py-1 bg-red-500 text-white rounded"
-                      onClick={() => handleDeleteReview(review.id)}
-                    >
-                      Delete
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
+                        alt={episode.name}
+                        className="w-full aspect-video object-cover group-hover:scale-110 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <Play className="w-12 h-12 text-white" />
+                      </div>
+                      <div className="absolute top-3 left-3">
+                        <Chip size="sm" className="bg-black/60 text-white">
+                          Episode {episode.episode_number}
+                        </Chip>
+                      </div>
+                    </div>
+
+                    <CardBody className="p-4 space-y-3">
+                      <h3 className="text-lg font-semibold line-clamp-2 group-hover:text-blue-400 transition-colors">
+                        {episode.name}
+                      </h3>
+                      <p className="text-sm text-zinc-400 line-clamp-3">
+                        {expandedOverview[episode.id] || episode.overview.length <= 100
+                          ? episode.overview
+                          : `${episode.overview.substring(0, 100)}...`}
+                      </p>
+                      {episode.overview.length > 100 && (
+                        <button
+                          className="text-blue-400 hover:text-blue-300 text-sm font-medium"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleOverview(episode.id);
+                          }}
+                        >
+                          {expandedOverview[episode.id] ? "Show Less" : "Show More"}
+                        </button>
+                      )}
+                    </CardBody>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </motion.section>
+        )}
+
+        {/* Similar & Recommendations */}
+        <motion.section
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="space-y-12"
+        >
+          {similar.length > 0 && (
+            <div>
+              <h2 className="text-3xl font-bold mb-8">Similar Content</h2>
+              <MovieRow items={similar} />
+            </div>
+          )}
+
+          {recommendations.length > 0 && (
+            <div>
+              <h2 className="text-3xl font-bold mb-8">Recommendations</h2>
+              <MovieRow items={recommendations} />
+            </div>
+          )}
+        </motion.section>
+
+        {/* Reviews Section */}
+        <motion.section
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="space-y-8"
+        >
+          <div className="flex items-center gap-3">
+            <MessageSquare className="w-8 h-8 text-blue-400" />
+            <h2 className="text-3xl font-bold">Reviews</h2>
+            <Chip variant="flat" size="sm">
+              {reviews.length}
+            </Chip>
           </div>
-        </section>
+
+          {user ? (
+            <Card className="bg-zinc-900/50 border border-zinc-800 rounded-2xl">
+              <CardBody className="p-6 space-y-4">
+                <Textarea
+                  variant="bordered"
+                  placeholder="Share your thoughts about this content..."
+                  value={newReview}
+                  onChange={(e) => setNewReview(e.target.value)}
+                  className="text-white"
+                  radius="lg"
+                  minRows={3}
+                />
+                <div className="flex justify-end">
+                  <Button
+                    color="primary"
+                    onPress={handleAddReview}
+                    className="rounded-lg font-semibold"
+                    isDisabled={!newReview.trim()}
+                  >
+                    Post Review
+                  </Button>
+                </div>
+              </CardBody>
+            </Card>
+          ) : (
+            <Card className="bg-zinc-900/50 border border-zinc-800 rounded-2xl">
+              <CardBody className="p-6 text-center">
+                <MessageSquare className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
+                <p className="text-zinc-400 mb-4">Sign in to write a review and share your thoughts</p>
+                <Button
+                  color="primary"
+                  variant="bordered"
+                  onPress={() => navigate("/login")}
+                  className="rounded-lg"
+                >
+                  Sign In
+                </Button>
+              </CardBody>
+            </Card>
+          )}
+
+          <div className="space-y-6">
+            <AnimatePresence>
+              {reviews.map((review) => (
+                <motion.div
+                  key={review.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Card className="bg-zinc-900/50 border border-zinc-800 hover:border-zinc-700 transition-colors rounded-2xl">
+                    <CardBody className="p-6 space-y-4">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-center gap-3">
+                          <Avatar
+                            name={review.userName.charAt(0).toUpperCase()}
+                            size="sm"
+                            className="bg-blue-500"
+                          />
+                          <h3 className="font-semibold">{review.userName}</h3>
+                        </div>
+                        {review.userId === userUID && (
+                          <Button
+                            isIconOnly
+                            color="danger"
+                            variant="light"
+                            size="sm"
+                            onPress={() => handleDeleteReview(review.id)}
+                            className="rounded-lg"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
+
+                      <p className="text-zinc-300 leading-relaxed">{review.text}</p>
+
+                      {review.userId !== userUID && user && (
+                        <div className="flex items-center gap-4 pt-2">
+                          <Button
+                            size="sm"
+                            variant={review.likes.includes(userUID) ? "solid" : "bordered"}
+                            color="primary"
+                            startContent={<ThumbsUp className="w-4 h-4" />}
+                            onPress={() =>
+                              review.likes.includes(userUID)
+                                ? handleUnlikeReview(review.id)
+                                : handleLikeReview(review.id)
+                            }
+                            className="rounded-lg"
+                          >
+                            {review.likes.length}
+                          </Button>
+                        </div>
+                      )}
+
+                      {!user && review.likes.length > 0 && (
+                        <div className="flex items-center gap-2 pt-2 text-sm text-zinc-500">
+                          <ThumbsUp className="w-4 h-4" />
+                          <span>{review.likes.length} likes</span>
+                        </div>
+                      )}
+                    </CardBody>
+                  </Card>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        </motion.section>
       </div>
     </div>
   );

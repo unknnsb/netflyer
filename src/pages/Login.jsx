@@ -1,5 +1,5 @@
 import { auth } from "../services/Firebase";
-import { Spinner } from "@nextui-org/react";
+import { Spinner, Input, Button, Card } from "@heroui/react";
 import axios from "axios";
 import {
   signInWithEmailAndPassword,
@@ -7,17 +7,17 @@ import {
   sendPasswordResetEmail,
 } from "firebase/auth";
 import React, { useEffect, useState } from "react";
-import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import { Eye, EyeOff, LogIn } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import { createToast } from "vercel-toast";
-import { BACKEND_URL } from "../services/Api"
+import { BACKEND_URL } from "../services/Api";
+import { motion } from "framer-motion";
 
 const TMDB_API_URL = `${BACKEND_URL}/api/backdrop/movie/27205`;
 const BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/original";
 
 const useAuthListener = (navigate) => {
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) navigate("/");
@@ -25,7 +25,6 @@ const useAuthListener = (navigate) => {
     });
     return () => unsubscribe();
   }, [navigate]);
-
   return loading;
 };
 
@@ -47,7 +46,6 @@ const Login = () => {
 
   const navigate = useNavigate();
   const loading = useAuthListener(navigate);
-
   const toggleVisibility = () => setIsVisible((prev) => !prev);
 
   const validateInputs = () => {
@@ -71,7 +69,6 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateInputs()) return;
-
     try {
       setLoggedIn(true);
       await signInWithEmailAndPassword(auth, email, password);
@@ -83,7 +80,6 @@ const Login = () => {
         : error.message.includes("wrong-password")
         ? "The password is incorrect"
         : error.message;
-
       createToast(errorMessage, { type: "error", timeout: 3000 });
     }
   };
@@ -96,7 +92,6 @@ const Login = () => {
       });
       return;
     }
-
     sendPasswordResetEmail(auth, email)
       .then(() =>
         createToast("Password reset email sent", {
@@ -117,82 +112,95 @@ const Login = () => {
   }, []);
 
   return loading ? (
-    <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">
-      <Spinner color="primary" size="xl" />
+    <div className="flex justify-center items-center min-h-screen bg-black text-white">
+      <Spinner color="primary" size="lg" />
     </div>
   ) : (
     <div
-      className="relative min-h-screen flex items-center justify-center px-6 p-2"
+      className="relative min-h-screen flex items-center justify-center px-6"
       style={{
         backgroundImage: `url(${backdrop})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      <div className="absolute inset-0 bg-black bg-opacity-70" />
-      <div className="relative z-10 bg-black bg-opacity-60 backdrop-blur-md p-8 rounded-lg shadow-lg w-full max-w-sm space-y-6">
-        <h1 className="text-3xl font-bold text-white text-center">Login</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <input
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="relative z-10 w-full max-w-sm"
+      >
+        <Card className="bg-zinc-900/80 border border-zinc-800 p-8 rounded-2xl shadow-xl space-y-6">
+          <div className="flex flex-col items-center text-center">
+            <LogIn className="text-blue-400 h-10 w-10 mb-3" />
+            <h1 className="text-3xl font-bold text-white">Login</h1>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <Input
               type="email"
+              variant="bordered"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300"
-              required
+              radius="lg"
+              className="text-white"
+              isRequired
             />
+
+            <div className="relative">
+              <Input
+                type={isVisible ? "text" : "password"}
+                variant="bordered"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                radius="lg"
+                className="text-white"
+                isRequired
+              />
+              <button
+                type="button"
+                onClick={toggleVisibility}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 transition"
+              >
+                {isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+
+            <Button
+              type="submit"
+              color="primary"
+              className="w-full rounded-lg font-semibold shadow-md"
+              isLoading={loggedIn}
+            >
+              {loggedIn ? "Logging in..." : "Login"}
+            </Button>
+          </form>
+
+          <div className="text-center text-sm text-zinc-400 space-y-2">
+            <p>
+              Forgot password?{" "}
+              <button
+                onClick={resetPassword}
+                className="text-blue-400 hover:underline"
+              >
+                Reset here
+              </button>
+            </p>
+            <p>
+              New here?{" "}
+              <Link
+                to="/signup"
+                className="text-blue-400 hover:underline"
+              >
+                Sign up
+              </Link>
+            </p>
           </div>
-          <div className="relative">
-            <input
-              type={isVisible ? "text" : "password"}
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300"
-              required
-            />
-            <button
-              type="button"
-              onClick={toggleVisibility}
-              className="absolute inset-y-0 right-4 flex items-center text-gray-400 hover:text-gray-300 transition duration-200"
-            >
-              {isVisible ? <FaRegEye /> : <FaRegEyeSlash />}
-            </button>
-          </div>
-          <button
-            type="submit"
-            className={`w-full py-2 rounded-md text-white font-semibold transition-all duration-300 ${
-              loggedIn
-                ? "bg-blue-600 cursor-not-allowed"
-                : "bg-blue-500 hover:bg-blue-600"
-            }`}
-            disabled={loggedIn}
-          >
-            {loggedIn ? "Logging in..." : "Login"}
-          </button>
-        </form>
-        <div className="text-center text-sm text-gray-400 space-y-2">
-          <p>
-            Forgot password?{" "}
-            <button
-              onClick={resetPassword}
-              className="text-blue-400 hover:text-blue-300 underline transition duration-200"
-            >
-              Reset here
-            </button>
-          </p>
-          <p>
-            New here?{" "}
-            <Link
-              to="/signup"
-              className="text-blue-400 hover:text-blue-300 underline transition duration-200"
-            >
-              Sign up
-            </Link>
-          </p>
-        </div>
-      </div>
+        </Card>
+      </motion.div>
     </div>
   );
 };

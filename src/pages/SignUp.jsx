@@ -1,6 +1,5 @@
 import Loading from "../components/Loading";
 import { auth, db } from "../services/Firebase";
-import { Button, Input } from "@nextui-org/react";
 import axios from "axios";
 import Filter from "bad-words";
 import {
@@ -13,6 +12,9 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { createToast } from "vercel-toast";
 import { BACKEND_URL } from "../services/Api";
+import { Input, Button, Card } from "@heroui/react";
+import { motion } from "framer-motion";
+import { UserPlus } from "lucide-react";
 
 const checkForBadWords = (text) => {
   const filter = new Filter();
@@ -44,8 +46,7 @@ const SignUp = () => {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        // Wait for both user state and backdrop data
-        const [userStatus, backdropUrl] = await Promise.all([
+        const [_, backdropUrl] = await Promise.all([
           new Promise((resolve) => {
             const unsubscribe = onAuthStateChanged(auth, (user) => {
               if (user) navigate("/");
@@ -57,7 +58,6 @@ const SignUp = () => {
           fetchBackdrop(),
         ]);
         setBackdrop(backdropUrl);
-
         const params = new URLSearchParams(location.search);
         if (params.get("verified") === "true") {
           createToast("Your email has been verified.", {
@@ -70,7 +70,6 @@ const SignUp = () => {
         console.error("Error fetching initial data:", error);
       }
     };
-
     fetchInitialData();
   }, [navigate, location.search]);
 
@@ -107,7 +106,6 @@ const SignUp = () => {
       await sendEmailVerification(user, {
         url: `${import.meta.env.VITE_WEBSITE_URL}/signup?verified=true`,
       });
-
       createToast("We have sent you an email for verification.", {
         cancel: "Hide",
         timeout: 3000,
@@ -149,65 +147,75 @@ const SignUp = () => {
         <Loading />
       ) : (
         <div
+          className="relative flex items-center justify-center min-h-screen bg-black"
           style={{
-            position: "relative",
             backgroundImage: `url(${backdrop})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
-          className="p-4 flex flex-col items-center justify-center min-h-screen bg-black bg-opacity-60"
         >
-          <div className="absolute inset-0 bg-black opacity-50"></div>
-          <div className="relative z-10 w-full max-w-md flex flex-col items-center bg-black bg-opacity-80 backdrop-blur-md p-3 rounded-lg shadow-lg">
-            <h1 className="text-white text-4xl font-bold mb-6 mt-2">Sign Up</h1>
-            <form className="w-full" onSubmit={handleSubmit}>
-              <div className="mb-4">
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-md"></div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="relative z-10 w-full max-w-md px-6"
+          >
+            <Card className="bg-zinc-900/80 border border-zinc-800 rounded-2xl shadow-2xl p-8">
+              <div className="flex flex-col items-center text-center">
+                <UserPlus className="text-blue-400 h-10 w-10 mb-3" />
+                <h1 className="text-3xl font-bold text-white mb-6">Sign Up</h1>
+              </div>
+
+              <form className="space-y-5" onSubmit={handleSubmit}>
                 <Input
                   type="text"
+                  variant="bordered"
                   placeholder="Username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="w-full px-4 py-2 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
+                  className="text-white"
+                  radius="lg"
+                  isRequired
                 />
-              </div>
-              <div className="mb-4">
                 <Input
                   type="email"
+                  variant="bordered"
                   placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-2 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
+                  className="text-white"
+                  radius="lg"
+                  isRequired
                 />
-              </div>
-              <div className="mb-6">
                 <Input
                   type="password"
+                  variant="bordered"
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-2 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
+                  className="text-white"
+                  radius="lg"
+                  isRequired
                 />
-              </div>
-              <Button
-                type="submit"
-                className="w-full py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600"
-                disabled={formLoading}
-              >
-                {formLoading ? "Signing Up..." : "Sign Up"}
-              </Button>
-            </form>
-            <div className="relative z-10 text-white mt-4">
-              <p>
-                Already Have An Account?{" "}
-                <Link to="/login" className="text-blue-500">
+                <Button
+                  type="submit"
+                  color="primary"
+                  className="w-full rounded-lg text-md font-semibold shadow-md"
+                  isLoading={formLoading}
+                >
+                  {formLoading ? "Signing Up..." : "Sign Up"}
+                </Button>
+              </form>
+
+              <p className="text-zinc-400 text-sm mt-6 text-center">
+                Already have an account?{" "}
+                <Link to="/login" className="text-blue-400 hover:underline">
                   Login
                 </Link>
               </p>
-            </div>
-          </div>
+            </Card>
+          </motion.div>
         </div>
       )}
     </>

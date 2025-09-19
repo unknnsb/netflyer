@@ -7,14 +7,13 @@ import {
   Spinner,
   Select,
   SelectItem,
-  Input,
   Button,
   Chip,
   Card,
   CardBody,
   Pagination,
   Slider
-} from "@nextui-org/react";
+} from "@heroui/react";
 import {
   Search,
   Filter,
@@ -23,8 +22,10 @@ import {
   Star,
   Calendar,
   X,
-  SlidersHorizontal
+  SlidersHorizontal,
+  Play
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Discover = () => {
   const [loading, setLoading] = useState(true);
@@ -34,7 +35,6 @@ const Discover = () => {
   const [totalResults, setTotalResults] = useState(0);
   const [viewMode, setViewMode] = useState('grid');
   const [showFilters, setShowFilters] = useState(false);
-
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -62,7 +62,7 @@ const Discover = () => {
   ];
 
   const typeOptions = [
-    { key: 'all', label: 'All' },
+    { key: 'all', label: 'All Content' },
     { key: 'movie', label: 'Movies' },
     { key: 'tv', label: 'TV Series' }
   ];
@@ -145,10 +145,6 @@ const Discover = () => {
     });
   };
 
-  const getMediaType = (item) => {
-    return item.title ? 'movie' : 'tv';
-  };
-
   const getActiveFiltersCount = () => {
     let count = 0;
     if (filters.type !== 'all') count++;
@@ -167,34 +163,60 @@ const Discover = () => {
     return years;
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
   return (
-    <div className="bg-gray-950 text-white min-h-screen">
+    <div className="bg-black text-white min-h-screen">
       <Navbar />
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
+      <div className="container mx-auto px-6 py-8">
+        {/* Header Section */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8"
+        >
           <div>
-            <h1 className="text-4xl font-bold mb-2">Discover</h1>
-            <p className="text-gray-400">
+            <h1 className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+              Discover
+            </h1>
+            <p className="text-zinc-400 text-lg">
               {totalResults.toLocaleString()} results found
             </p>
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="flex gap-2">
+            <div className="flex gap-2 p-1 bg-zinc-900 rounded-xl">
               <Button
                 isIconOnly
-                variant={viewMode === 'grid' ? 'solid' : 'bordered'}
+                variant={viewMode === 'grid' ? 'solid' : 'light'}
                 color="primary"
-                onClick={() => setViewMode('grid')}
+                size="sm"
+                className="rounded-lg"
+                onPress={() => setViewMode('grid')}
               >
                 <Grid className="w-4 h-4" />
               </Button>
               <Button
                 isIconOnly
-                variant={viewMode === 'list' ? 'solid' : 'bordered'}
+                variant={viewMode === 'list' ? 'solid' : 'light'}
                 color="primary"
-                onClick={() => setViewMode('list')}
+                size="sm"
+                className="rounded-lg"
+                onPress={() => setViewMode('list')}
               >
                 <List className="w-4 h-4" />
               </Button>
@@ -203,179 +225,199 @@ const Discover = () => {
             <Button
               variant="bordered"
               startContent={<SlidersHorizontal className="w-4 h-4" />}
-              onClick={() => setShowFilters(!showFilters)}
-              className="relative"
+              onPress={() => setShowFilters(!showFilters)}
+              className="relative rounded-xl border-zinc-700 hover:border-zinc-600"
             >
               Filters
               {getActiveFiltersCount() > 0 && (
-                <Chip size="sm" color="primary" className="absolute -top-2 -right-2">
+                <Chip size="sm" color="primary" className="absolute -top-2 -right-2 min-w-6 h-6">
                   {getActiveFiltersCount()}
                 </Chip>
               )}
             </Button>
           </div>
-        </div>
+        </motion.div>
 
-        {showFilters && (
-          <Card className="mb-8 bg-gray-900 border-gray-800">
-            <CardBody className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-xl font-semibold">Filters</h3>
-                <div className="flex gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={clearFilters}
-                    startContent={<X className="w-4 h-4" />}
-                  >
-                    Clear All
-                  </Button>
-                  <Button
-                    isIconOnly
-                    variant="light"
-                    size="sm"
-                    onClick={() => setShowFilters(false)}
-                  >
-                    <X className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
+        {/* Filters Panel */}
+        <AnimatePresence>
+          {showFilters && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mb-8"
+            >
+              <Card className="bg-zinc-900/50 border border-zinc-800 rounded-2xl shadow-xl">
+                <CardBody className="p-6">
+                  <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-xl font-semibold">Advanced Filters</h3>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="light"
+                        size="sm"
+                        onPress={clearFilters}
+                        startContent={<X className="w-4 h-4" />}
+                        className="rounded-lg"
+                      >
+                        Clear All
+                      </Button>
+                      <Button
+                        isIconOnly
+                        variant="light"
+                        size="sm"
+                        onPress={() => setShowFilters(false)}
+                        className="rounded-lg"
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Content Type</label>
-                  <Select
-                    value={filters.type}
-                    onChange={(e) => handleFilterChange('type', e.target.value)}
-                    className="w-full"
-                    classNames={{
-                      trigger: "bg-gray-800 border-gray-700"
-                    }}
-                  >
-                    {typeOptions.map((option) => (
-                      <SelectItem key={option.key} value={option.key}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </Select>
-                </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium mb-3 text-zinc-300">Content Type</label>
+                      <Select
+                        selectedKeys={[filters.type]}
+                        onSelectionChange={(keys) => handleFilterChange('type', Array.from(keys)[0])}
+                        className="w-full"
+                        radius="lg"
+                        variant="bordered"
+                      >
+                        {typeOptions.map((option) => (
+                          <SelectItem key={option.key}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </Select>
+                    </div>
 
-                <div>
-                  <label className="block text-sm font-medium mb-2">Genre</label>
-                  <Select
-                    value={filters.genre}
-                    onChange={(e) => handleFilterChange('genre', e.target.value)}
-                    placeholder="All Genres"
-                    className="w-full"
-                    classNames={{
-                      trigger: "bg-gray-800 border-gray-700"
-                    }}
-                  >
-                    {(filters.type === 'movie' ? genres.movie :
-                      filters.type === 'tv' ? genres.tv :
-                      [...genres.movie, ...genres.tv]).map((genre) => (
-                      <SelectItem key={genre.id} value={genre.id.toString()}>
-                        {genre.name}
-                      </SelectItem>
-                    ))}
-                  </Select>
-                </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-3 text-zinc-300">Genre</label>
+                      <Select
+                        selectedKeys={filters.genre ? [filters.genre] : []}
+                        onSelectionChange={(keys) => handleFilterChange('genre', Array.from(keys)[0] || '')}
+                        placeholder="All Genres"
+                        className="w-full"
+                        radius="lg"
+                        variant="bordered"
+                      >
+                        {(filters.type === 'movie' ? genres.movie :
+                          filters.type === 'tv' ? genres.tv :
+                          [...genres.movie, ...genres.tv]).map((genre) => (
+                          <SelectItem key={genre.id.toString()}>
+                            {genre.name}
+                          </SelectItem>
+                        ))}
+                      </Select>
+                    </div>
 
-                <div>
-                  <label className="block text-sm font-medium mb-2">Year</label>
-                  <Select
-                    value={filters.year}
-                    onChange={(e) => handleFilterChange('year', e.target.value)}
-                    placeholder="Any Year"
-                    className="w-full"
-                    classNames={{
-                      trigger: "bg-gray-800 border-gray-700"
-                    }}
-                  >
-                    {generateYearOptions().slice(0, 50).map((year) => (
-                      <SelectItem key={year.key} value={year.key}>
-                        {year.label}
-                      </SelectItem>
-                    ))}
-                  </Select>
-                </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-3 text-zinc-300">Year</label>
+                      <Select
+                        selectedKeys={filters.year ? [filters.year] : []}
+                        onSelectionChange={(keys) => handleFilterChange('year', Array.from(keys)[0] || '')}
+                        placeholder="Any Year"
+                        className="w-full"
+                        radius="lg"
+                        variant="bordered"
+                      >
+                        {generateYearOptions().slice(0, 50).map((year) => (
+                          <SelectItem key={year.key}>
+                            {year.label}
+                          </SelectItem>
+                        ))}
+                      </Select>
+                    </div>
 
-                <div>
-                  <label className="block text-sm font-medium mb-2">Sort By</label>
-                  <Select
-                    value={filters.sort_by}
-                    onChange={(e) => handleFilterChange('sort_by', e.target.value)}
-                    className="w-full"
-                    classNames={{
-                      trigger: "bg-gray-800 border-gray-700"
-                    }}
-                  >
-                    {sortOptions.map((option) => (
-                      <SelectItem key={option.key} value={option.key}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </Select>
-                </div>
-              </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-3 text-zinc-300">Sort By</label>
+                      <Select
+                        selectedKeys={[filters.sort_by]}
+                        onSelectionChange={(keys) => handleFilterChange('sort_by', Array.from(keys)[0])}
+                        className="w-full"
+                        radius="lg"
+                        variant="bordered"
+                      >
+                        {sortOptions.map((option) => (
+                          <SelectItem key={option.key}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </Select>
+                    </div>
+                  </div>
 
-              <div className="mt-6">
-                <label className="block text-sm font-medium mb-4">
-                  Rating: {filters.rating[0]} - {filters.rating[1]}
-                </label>
-                <Slider
-                  step={0.1}
-                  minValue={0}
-                  maxValue={10}
-                  value={filters.rating}
-                  onChange={(value) => handleFilterChange('rating', value)}
-                  className="w-full"
-                  classNames={{
-                    track: "bg-gray-700",
-                    filler: "bg-primary"
-                  }}
-                />
-              </div>
-            </CardBody>
-          </Card>
-        )}
+                  <div className="mt-6">
+                    <label className="block text-sm font-medium mb-4 text-zinc-300">
+                      Rating: {filters.rating[0]} - {filters.rating[1]} ★
+                    </label>
+                    <Slider
+                      step={0.1}
+                      minValue={0}
+                      maxValue={10}
+                      value={filters.rating}
+                      onChange={(value) => handleFilterChange('rating', value)}
+                      className="w-full"
+                      color="primary"
+                      size="md"
+                    />
+                  </div>
+                </CardBody>
+              </Card>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
+        {/* Results Section */}
         {loading ? (
           <div className="flex justify-center items-center py-20">
-            <Spinner color="primary" size="xl" />
+            <Spinner color="primary" size="lg" />
           </div>
         ) : (
-          <>
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
             {viewMode === 'grid' ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 mb-8">
                 {results.map((item) => (
-                  <ResultCard key={item.id} item={item} navigate={navigate} />
+                  <motion.div key={item.id} variants={itemVariants}>
+                    <ResultCard item={item} navigate={navigate} />
+                  </motion.div>
                 ))}
               </div>
             ) : (
               <div className="space-y-4 mb-8">
                 {results.map((item) => (
-                  <ResultListItem key={item.id} item={item} navigate={navigate} />
+                  <motion.div key={item.id} variants={itemVariants}>
+                    <ResultListItem item={item} navigate={navigate} />
+                  </motion.div>
                 ))}
               </div>
             )}
 
             {totalPages > 1 && (
-              <div className="flex justify-center">
+              <motion.div
+                variants={itemVariants}
+                className="flex justify-center"
+              >
                 <Pagination
                   total={totalPages}
                   page={filters.page}
                   onChange={(page) => handleFilterChange('page', page)}
                   color="primary"
                   showControls
+                  radius="lg"
                   classNames={{
                     wrapper: "gap-2",
-                    item: "bg-gray-800 border-gray-700"
+                    item: "bg-zinc-900 border-zinc-800 hover:bg-zinc-800",
+                    cursor: "shadow-lg"
                   }}
                 />
-              </div>
+              </motion.div>
             )}
-          </>
+          </motion.div>
         )}
       </div>
     </div>
@@ -386,39 +428,48 @@ const ResultCard = ({ item, navigate }) => {
   const mediaType = item.title ? 'movie' : 'tv';
 
   return (
-    <div
-      className="cursor-pointer transition-transform duration-300 hover:scale-105 group"
-      onClick={() => navigate(`/info/${mediaType}/${item.id}`)}
+    <motion.div
+      className="cursor-pointer group"
+      whileHover={{ y: -5 }}
+      transition={{ type: "spring", stiffness: 300 }}
+      onTap={() => navigate(`/info/${mediaType}/${item.id}`)}
     >
-      <div className="relative rounded-lg overflow-hidden bg-gray-800 shadow-lg">
-        <Image
-          src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-          alt={item.title || item.name}
-          className="w-full h-80 object-cover"
-          fallbackSrc="/placeholder-poster.jpg"
-          removeWrapper
-        />
-
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
-          <div className="flex items-center gap-1 mb-2">
-            <Star className="w-4 h-4 text-yellow-400 fill-current" />
-            <span className="text-sm">{item.vote_average?.toFixed(1)}</span>
+      <div className="relative rounded-2xl overflow-hidden bg-zinc-900 shadow-xl group-hover:shadow-2xl transition-all duration-300">
+        <div className="relative overflow-hidden">
+          <Image
+            src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+            alt={item.title || item.name}
+            className="w-full aspect-[2/3] object-cover group-hover:scale-110 transition-transform duration-300"
+            fallbackSrc="/placeholder-poster.jpg"
+            removeWrapper
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-1 bg-black/60 rounded-full px-2 py-1">
+                <Star className="w-3 h-3 text-yellow-400 fill-current" />
+                <span className="text-xs font-medium">{item.vote_average?.toFixed(1)}</span>
+              </div>
+              <Button
+                isIconOnly
+                size="sm"
+                color="primary"
+                className="rounded-full opacity-90"
+              >
+                <Play className="w-3 h-3" />
+              </Button>
+            </div>
           </div>
-          <h3 className="text-white font-semibold text-sm line-clamp-2">
-            {item.title || item.name}
-          </h3>
         </div>
       </div>
-
-      <div className="pt-3">
-        <h3 className="font-semibold text-sm mb-1 line-clamp-2">
+      <div className="pt-3 px-1">
+        <h3 className="font-semibold text-sm mb-1 line-clamp-2 group-hover:text-blue-400 transition-colors">
           {item.title || item.name}
         </h3>
-        <p className="text-gray-400 text-xs">
+        <p className="text-zinc-500 text-xs">
           {item.release_date?.split('-')[0] || item.first_air_date?.split('-')[0]}
         </p>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -426,50 +477,60 @@ const ResultListItem = ({ item, navigate }) => {
   const mediaType = item.title ? 'movie' : 'tv';
 
   return (
-    <Card
-      className="bg-gray-900 border-gray-800 hover:bg-gray-800 transition-colors cursor-pointer"
-      onClick={() => navigate(`/info/${mediaType}/${item.id}`)}
+    <motion.div
+      whileHover={{ scale: 1.02 }}
+      transition={{ type: "spring", stiffness: 300 }}
     >
-      <CardBody className="p-4">
-        <div className="flex gap-4">
-          <Image
-            src={`https://image.tmdb.org/t/p/w200${item.poster_path}`}
-            alt={item.title || item.name}
-            className="w-20 h-28 object-cover rounded-lg flex-shrink-0"
-            fallbackSrc="/placeholder-poster.jpg"
-            removeWrapper
-          />
-
-          <div className="flex-1 min-w-0">
-            <div className="flex justify-between items-start mb-2">
-              <h3 className="text-xl font-semibold line-clamp-1">
-                {item.title || item.name}
-              </h3>
-              <div className="flex items-center gap-1 ml-4">
-                <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                <span>{item.vote_average?.toFixed(1)}</span>
-              </div>
+      <Card
+        className="bg-zinc-900/50 border border-zinc-800 hover:bg-zinc-800/50 hover:border-zinc-700 transition-all duration-300 cursor-pointer rounded-2xl shadow-lg"
+        isPressable
+        onPress={() => navigate(`/info/${mediaType}/${item.id}`)}
+      >
+        <CardBody className="p-4">
+          <div className="flex gap-4">
+            <div className="relative overflow-hidden rounded-xl">
+              <Image
+                src={`https://image.tmdb.org/t/p/w200${item.poster_path}`}
+                alt={item.title || item.name}
+                className="w-20 h-28 object-cover flex-shrink-0"
+                fallbackSrc="/placeholder-poster.jpg"
+                removeWrapper
+              />
             </div>
-
-            <div className="flex items-center gap-4 mb-3 text-sm text-gray-400">
-              <div className="flex items-center gap-1">
-                <Calendar className="w-4 h-4" />
-                <span>
-                  {item.release_date?.split('-')[0] || item.first_air_date?.split('-')[0]}
-                </span>
+            <div className="flex-1 min-w-0">
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="text-xl font-semibold line-clamp-1 hover:text-blue-400 transition-colors">
+                  {item.title || item.name}
+                </h3>
+                <div className="flex items-center gap-1 ml-4 bg-zinc-800 rounded-full px-2 py-1">
+                  <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                  <span className="text-sm font-medium">{item.vote_average?.toFixed(1)}</span>
+                </div>
               </div>
-              <Chip size="sm" variant="bordered" className="text-xs">
-                {mediaType === 'movie' ? 'Movie' : 'TV Series'}
-              </Chip>
+              <div className="flex items-center gap-4 mb-3 text-sm text-zinc-400">
+                <div className="flex items-center gap-1">
+                  <Calendar className="w-4 h-4" />
+                  <span>
+                    {item.release_date?.split('-')[0] || item.first_air_date?.split('-')[0]}
+                  </span>
+                </div>
+                <Chip
+                  size="sm"
+                  variant="bordered"
+                  className="text-xs border-zinc-700"
+                  color={mediaType === 'movie' ? 'primary' : 'secondary'}
+                >
+                  {mediaType === 'movie' ? 'Movie' : 'TV Series'}
+                </Chip>
+              </div>
+              <p className="text-zinc-300 text-sm line-clamp-2 leading-relaxed">
+                {item.overview}
+              </p>
             </div>
-
-            <p className="text-gray-300 text-sm line-clamp-2">
-              {item.overview}
-            </p>
           </div>
-        </div>
-      </CardBody>
-    </Card>
+        </CardBody>
+      </Card>
+    </motion.div>
   );
 };
 

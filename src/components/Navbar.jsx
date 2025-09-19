@@ -8,7 +8,7 @@ import {
   NavbarMenu,
   NavbarMenuItem,
   NavbarMenuToggle,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import React, { useState, useEffect } from "react";
 import { FiEye, FiList, FiSearch } from "react-icons/fi";
@@ -23,15 +23,11 @@ const Header = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(true);
-        setLoading(false);
-      } else {
-        setUser(false);
-        setLoading(false);
-      }
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(!!user);
+      setLoading(false);
     });
+    return unsubscribe;
   }, []);
 
   const handleSignOut = () => {
@@ -40,8 +36,7 @@ const Header = () => {
         navigate("/");
       })
       .catch((error) => {
-        console.log(error);
-        alert(error.message);
+        createToast(error.message, { type: "error", timeout: 3000 });
       });
   };
 
@@ -69,10 +64,10 @@ const Header = () => {
 
   return (
     <Navbar
-      className="bg-black/80"
-      onMenuOpenChange={setIsMenuOpen}
+      className="bg-black/80 backdrop-blur-lg shadow-lg"
       isBlurred
       isBordered
+      onMenuOpenChange={setIsMenuOpen}
     >
       <NavbarContent>
         <NavbarMenuToggle
@@ -83,38 +78,40 @@ const Header = () => {
           <Link to="/">
             <img
               src="/logo.png"
-              alt="Logo"
-              className="h-12 w-12 md:h-16 md:w-16 lg:h-20 lg:w-20 object-contain"
+              alt="Netflyer Logo"
+              className="h-12 w-12 md:h-16 md:w-16 lg:h-20 lg:w-20 object-contain rounded-lg"
             />
           </Link>
         </NavbarBrand>
       </NavbarContent>
+
       <NavbarContent
-        className="hidden text-white sm:flex gap-4"
+        className="hidden sm:flex gap-6 text-white"
         justify="center"
       >
-        <NavbarItem className="text-white">
-          <Button onClick={() => navigate("/search")} variant="flat">
-            <FiSearch /> Search
+        <NavbarItem>
+          <Button onClick={() => navigate("/search")} variant="flat" size="md" className="flex items-center gap-2 text-white">
+            <FiSearch className="text-lg" /> Search
           </Button>
         </NavbarItem>
         <NavbarItem>
-          <Button variant="flat" onClick={() => navigate("/discover")}>
-            <FiEye /> Discover
-          </Button>
-        </NavbarItem>
-        <NavbarItem className="font-bold">
-          <Button variant="flat" onClick={handleWatchlist}>
-            <FiList /> Watchlist
+          <Button onClick={() => navigate("/discover")} variant="flat" size="md" className="flex items-center gap-2 text-white">
+            <FiEye className="text-lg" /> Discover
           </Button>
         </NavbarItem>
         <NavbarItem>
-          <Button variant="flat" onClick={() => navigate("/about")}>
-            <MdQuestionMark /> About
+          <Button onClick={handleWatchlist} variant="flat" size="md" className="flex items-center gap-2 font-bold text-white">
+            <FiList className="text-lg" /> Watchlist
+          </Button>
+        </NavbarItem>
+        <NavbarItem>
+          <Button onClick={() => navigate("/about")} variant="flat" size="md" className="flex items-center gap-2 text-white">
+            <MdQuestionMark className="text-lg" /> About
           </Button>
         </NavbarItem>
       </NavbarContent>
-      <NavbarContent justify="end">
+
+      <NavbarContent justify="end" className="text-white">
         {loading ? (
           <NavbarItem>
             <Button color="primary" variant="flat" isLoading>
@@ -122,7 +119,7 @@ const Header = () => {
             </Button>
           </NavbarItem>
         ) : user ? (
-          <NavbarItem className="flex gap-1 items-center">
+          <NavbarItem className="flex items-center gap-2">
             <Button color="primary" variant="flat" onClick={handleSignOut}>
               Sign Out
             </Button>
@@ -131,51 +128,92 @@ const Header = () => {
           <NavbarItem>
             <Button
               variant="flat"
-              onClick={() => navigate("/login")}
               color="primary"
+              onClick={() => navigate("/login")}
             >
               Login
             </Button>
           </NavbarItem>
         )}
       </NavbarContent>
-      <NavbarMenu className="text-white">
+
+      <NavbarMenu className="text-white bg-black/90">
         <NavbarMenuItem>
-          <Button onClick={() => navigate("/search")} variant="flat">
-            <FiSearch /> Search
+          <Button
+            onClick={() => {
+              setIsMenuOpen(false);
+              navigate("/search");
+            }}
+            variant="flat"
+            className="w-full justify-start text-white"
+          >
+            <FiSearch className="mr-2" /> Search
           </Button>
         </NavbarMenuItem>
         <NavbarMenuItem>
-          <Button variant="flat" onClick={() => navigate("/discover")}>
-            <FiEye /> Discover
+          <Button
+            onClick={() => {
+              setIsMenuOpen(false);
+              navigate("/discover");
+            }}
+            variant="flat"
+            className="w-full justify-start text-white"
+          >
+            <FiEye className="mr-2" /> Discover
           </Button>
         </NavbarMenuItem>
         <NavbarMenuItem>
-          <Button variant="flat" onClick={handleWatchlist}>
-            <FiList /> Watchlist
+          <Button
+            onClick={() => {
+              setIsMenuOpen(false);
+              handleWatchlist();
+            }}
+            variant="flat"
+            className="w-full justify-start text-white"
+          >
+            <FiList className="mr-2" /> Watchlist
           </Button>
         </NavbarMenuItem>
         <NavbarMenuItem>
-          <Button variant="flat" onClick={() => navigate("/about")}>
-            <MdQuestionMark /> About
+          <Button
+            onClick={() => {
+              setIsMenuOpen(false);
+              navigate("/about");
+            }}
+            variant="flat"
+            className="w-full justify-start text-white"
+          >
+            <MdQuestionMark className="mr-2" /> About
           </Button>
         </NavbarMenuItem>
         <NavbarMenuItem>
           {loading ? (
-            <Button color="primary" variant="flat" isLoading>
+            <Button color="primary" variant="flat" isLoading className="w-full">
               Loading
             </Button>
           ) : user ? (
-            <div className="flex gap-1 items-center">
-              <Button color="primary" variant="flat" onClick={handleSignOut}>
+            <div className="flex items-center gap-2">
+              <Button
+                color="primary"
+                variant="flat"
+                className="w-full"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  handleSignOut();
+                }}
+              >
                 Sign Out
               </Button>
             </div>
           ) : (
             <Button
               variant="flat"
-              onClick={() => navigate("/login")}
               color="primary"
+              className="w-full"
+              onClick={() => {
+                setIsMenuOpen(false);
+                navigate("/login");
+              }}
             >
               Login
             </Button>
