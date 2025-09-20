@@ -27,6 +27,7 @@ import {
   doc,
   getDoc,
   setDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 import React, { useState, useEffect } from "react";
 import { Play, Trash2, Plus, Star, Calendar, Clock, Heart, MessageSquare, ThumbsUp, Eye } from "lucide-react";
@@ -187,6 +188,9 @@ const InfoPage = () => {
       type: type,
       text: newReview,
       likes: [],
+      likeCount: 0,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
     });
     setNewReview("");
     fetchReviews();
@@ -194,15 +198,18 @@ const InfoPage = () => {
 
   const handleLikeReview = async (reviewId) => {
     const reviewRef = doc(db, "reviews", reviewId);
-    const reviewDoc = await getDoc(reviewRef);
-    if (reviewDoc.exists() && !Array.isArray(reviewDoc.data().likes)) {
+    const reviewSnap = await getDoc(reviewRef);
+
+    if (!reviewSnap.exists()) return;
+
+    const reviewData = reviewSnap.data();
+    const currentLikes = Array.isArray(reviewData.likes) ? reviewData.likes : [];
+
+    if (!currentLikes.includes(userUID)) {
       await updateDoc(reviewRef, {
-        likes: [],
-      });
-    }
-    if (reviewDoc.exists() && !reviewDoc.data().likes.includes(userUID)) {
-      await updateDoc(reviewRef, {
-        likes: [...reviewDoc.data().likes, userUID],
+        likes: [...currentLikes, userUID],
+        likeCount: (reviewData.likeCount || 0) + 1,
+        updatedAt: serverTimestamp()
       });
       fetchReviews();
     }
@@ -210,16 +217,20 @@ const InfoPage = () => {
 
   const handleUnlikeReview = async (reviewId) => {
     const reviewRef = doc(db, "reviews", reviewId);
-    const reviewDoc = await getDoc(reviewRef);
-    if (reviewDoc.exists() && !Array.isArray(reviewDoc.data().likes)) {
+    const reviewSnap = await getDoc(reviewRef);
+
+    if (!reviewSnap.exists()) return;
+
+    const reviewData = reviewSnap.data();
+    const currentLikes = Array.isArray(reviewData.likes) ? reviewData.likes : [];
+
+    if (currentLikes.includes(userUID)) {
       await updateDoc(reviewRef, {
-        likes: [],
+        likes: currentLikes.filter((uid) => uid !== userUID),
+        likeCount: Math.max((reviewData.likeCount || 1) - 1, 0),
+        updatedAt: serverTimestamp()
       });
-    }
-    if (reviewDoc.exists() && reviewDoc.data().likes.includes(userUID)) {
-      await updateDoc(reviewRef, {
-        likes: reviewDoc.data().likes.filter((uid) => uid !== userUID),
-      });
+
       fetchReviews();
     }
   };
@@ -288,6 +299,9 @@ const InfoPage = () => {
       type: itemType,
       id: itemId,
       userID: userUID,
+      title: details.title || details.name,
+      posterPath: details.poster_path,
+      addedAt: serverTimestamp()
     }).then(() => {
       setWatchlistLoading(false);
     });

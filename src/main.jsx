@@ -1,6 +1,7 @@
 import App from "./App";
 import About from "./pages/About";
 import ActorInfo from "./pages/ActorInfo";
+import AdminDashboard from "./pages/Admin";
 import Discover from "./pages/Discover";
 import InfoPage from "./pages/Info";
 import Login from "./pages/Login";
@@ -60,6 +61,10 @@ const routes = [
   {
     path: "/watchlist",
     element: <WatchlistPage />,
+  },
+  {
+    path: '/admin',
+    element: <AdminDashboard />
   }
 ];
 

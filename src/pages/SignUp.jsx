@@ -7,7 +7,7 @@ import {
   onAuthStateChanged,
   sendEmailVerification,
 } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { createToast } from "vercel-toast";
@@ -95,17 +95,20 @@ const SignUp = () => {
     }
 
     try {
-      const userCred = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const userCred = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCred.user;
+
       const colRef = doc(db, "users", user.uid);
-      await setDoc(colRef, { username: username });
+      await setDoc(colRef, {
+        username: username,
+        email: user.email,
+        createdAt: new Date().toISOString(),
+      });
+
       await sendEmailVerification(user, {
         url: `${import.meta.env.VITE_WEBSITE_URL}/signup?verified=true`,
       });
+
       createToast("We have sent you an email for verification.", {
         cancel: "Hide",
         timeout: 3000,
@@ -117,6 +120,7 @@ const SignUp = () => {
       setFormLoading(false);
     }
   };
+
 
   const handleSignUpError = (error) => {
     if (error.message.includes("email-already-in-use")) {
